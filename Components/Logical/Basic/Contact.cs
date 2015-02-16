@@ -1,0 +1,96 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Components.Logical
+{
+    public class Contact : ComponentBase
+    {
+        #region Properties
+
+        public bool IsClosed
+        {
+            get { return _IsClosed; }
+            set 
+            { 
+                _IsClosed = value;
+                RaisePropertyChanged("IsClosed");
+            }
+        }
+
+        public bool IsInverted
+        {
+            get { return _IsInverted; }
+            set
+            {
+                _IsInverted = value;
+                RaisePropertyChanged("IsInverted");
+            }
+        }
+
+        public ContactType Type
+        {
+            get { return _Type; }
+            set
+            {
+                _Type = value;
+
+                NamePerfix = (char)((_Type == ContactType.InputPin) ? ComponentPrefix.Input : 
+                                    (_Type == ContactType.InternalRelay) ? ComponentPrefix.Relay : ComponentPrefix.Output); 
+
+                RaisePropertyChanged("Type");
+            }
+        }
+        #endregion Properties
+
+        #region Functions
+        protected override void RunLogicalTest()
+        {
+            InternalState = (_IsInverted ^ _IsClosed);
+        }
+        #endregion Functions
+
+        #region Constructors
+        public Contact(string name, bool inverted, ContactType type, Node Left, Node Right)
+            : base(name,Left,Right)
+        {
+            this.IsInverted = inverted;
+            this.Type = type;
+        }
+
+        public Contact(string name, Node Left, Node Right)
+            : base(name, Left, Right)
+        {
+            this.Type = ContactType.InputPin;
+        }
+
+        public Contact(Node Left, Node Right)
+            : base(Left, Right)
+        {
+            this.Type = ContactType.InputPin;
+        }
+
+        public Contact()
+        {
+            this.Type = ContactType.InputPin;
+        }
+        #endregion Constructors
+
+        #region Internal Data
+        ContactType _Type;
+        bool _IsClosed;
+        bool _IsInverted;
+        #endregion Internal Data
+
+        #region Enum
+        public enum ContactType
+        {
+            InputPin,
+            InternalRelay,
+            OutputPin
+        }
+        #endregion Enum
+    }
+}
