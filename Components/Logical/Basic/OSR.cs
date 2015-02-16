@@ -24,13 +24,13 @@ namespace Components.Logical
         #region Constructors
         public OSR()
         {
-            
+            Class = ComponentClass.Input;
         }
 
         public OSR(Node Left, Node Right)
             : base(Left, Right)
         {
-
+            Class = ComponentClass.Input;
         }
         #endregion Constructors
 

@@ -4,18 +4,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Components.Logical
+namespace Components.Logical.Counter
 {
     /// <summary>
-    /// Component: Count Up
+    /// Component: Circular Couter
     /// Description: Raising edge counter
     /// Function: Counts plus one for each raising edge detected, once counter is bigger or equals its limit, it will give high output
     /// </summary>
-    public class CTU : NameableComponentBase
+    public class CTC : NameableComponentBase
     {
         #region Properties
         /// <summary>
-        /// Counter limit value
+        /// Counter maximum value
         /// </summary>
         public int Limit
         {
@@ -46,39 +46,40 @@ namespace Components.Logical
         {
             if (!LastInput && LeftLide.LogicLevel) CurrentValue++;
             LastInput = LeftLide.LogicLevel;
-            InternalState = (CurrentValue >= Limit);
+            InternalState = (CurrentValue == Limit);
+            if (CurrentValue > Limit) CurrentValue = 0;
         }
         #endregion Functions
 
         #region Constructors
-        public CTU()
+        public CTC()
         {
-            Class = ComponentClass.Mixed;
+            Class = ComponentClass.Output;
         }
 
-        public CTU(Node Left, Node Right)
+        public CTC(Node Left, Node Right)
             : base(Left, Right)
         {
-            Class = ComponentClass.Mixed;
+            Class = ComponentClass.Output;
         }
 
-        public CTU(int startValue, Node Left, Node Right)
+        public CTC(int startValue, Node Left, Node Right)
             : this(Left, Right)
         {
             CurrentValue = startValue;
         }
 
-        public CTU(string name, Node Left, Node Right)
+        public CTC(string name, Node Left, Node Right)
             : base(name, Left, Right)
         {
-            Class = ComponentClass.Mixed;
+            Class = ComponentClass.Output;
         }
 
-        public CTU(string name, int startValue, Node Left, Node Right)
+        public CTC(string name, int startValue, Node Left, Node Right)
             : base(name, Left, Right)
         {
             CurrentValue = startValue;
-            Class = ComponentClass.Mixed;
+            Class = ComponentClass.Output;
         }
         #endregion Constructors
 

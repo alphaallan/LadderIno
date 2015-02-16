@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Raising edge counter
     /// Function: Counts minus one for each raising edge detected, while counter is bigger or equals its limit, it will give high output
     /// </summary>
-    class CTD : NameableComponentBase
+    public class CTD : NameableComponentBase
     {
         #region Properties
         /// <summary>
@@ -53,13 +53,13 @@ namespace Components.Logical
         #region Constructors
         public CTD()
         {
-            
+            Class = ComponentClass.Mixed;
         }
 
         public CTD(Node Left, Node Right)
             : base(Left, Right)
         {
-
+            Class = ComponentClass.Mixed;
         }
 
         public CTD(int startValue, Node Left, Node Right)
@@ -71,13 +71,14 @@ namespace Components.Logical
         public CTD(string name, Node Left, Node Right)
             : base(name, Left, Right)
         {
-
+            Class = ComponentClass.Mixed;
         }
 
         public CTD(string name, int startValue, Node Left, Node Right)
             : base(name, Left, Right)
         {
             CurrentValue = startValue;
+            Class = ComponentClass.Mixed;
         }
         #endregion Constructors
 

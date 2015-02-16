@@ -73,6 +73,7 @@ namespace Components.Logical
         {
             this.Type = type;
             this.Mode = mode;
+            this.Class = ComponentClass.Output;
         }
 
         public Coil(string name, Node Left, Node Right)
@@ -80,6 +81,7 @@ namespace Components.Logical
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
+            this.Class = ComponentClass.Output;
         }
 
         public Coil(Node Left, Node Right)
@@ -87,12 +89,14 @@ namespace Components.Logical
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
+            this.Class = ComponentClass.Output;
         }
 
         public Coil()
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
+            this.Class = ComponentClass.Output;
         }
         #endregion Constructors
 

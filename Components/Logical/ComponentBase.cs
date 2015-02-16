@@ -66,6 +66,19 @@ namespace Components.Logical
                 RaisePropertyChanged("RightLide");
             }
         }
+
+        /// <summary>
+        /// Compoenet class (output, input or mixed)
+        /// </summary>
+        public ComponentClass Class
+        {
+            get { return _Class; }
+            protected set
+            {
+                _Class = value;
+                RaisePropertyChanged("Class");
+            }
+        }
         #endregion Properties
 
         #region Functions
@@ -124,7 +137,18 @@ namespace Components.Logical
         private Node _LeftLide;
         private Node _RightLide;
 
+        private ComponentClass _Class;
+        
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
+
+        #region Enum
+        public enum ComponentClass
+        {
+            Input,
+            Mixed,
+            Output,
+        }
+        #endregion Enum
     }
 }

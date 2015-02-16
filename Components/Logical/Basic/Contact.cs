@@ -73,23 +73,27 @@ namespace Components.Logical
         {
             this.IsInverted = inverted;
             this.Type = type;
+            this.Class = ComponentClass.Input;
         }
 
         public Contact(string name, Node Left, Node Right)
             : base(name, Left, Right)
         {
             this.Type = ContactType.InputPin;
+            this.Class = ComponentClass.Input;
         }
 
         public Contact(Node Left, Node Right)
             : base(Left, Right)
         {
             this.Type = ContactType.InputPin;
+            this.Class = ComponentClass.Input;
         }
 
         public Contact()
         {
             this.Type = ContactType.InputPin;
+            this.Class = ComponentClass.Input;
         }
         #endregion Constructors
 
