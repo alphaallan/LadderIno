@@ -44,12 +44,14 @@
     <Compile Include="Logical\Basic\OSR.cs" />
     <Compile Include="Logical\ComponentBase.cs" />
     <Compile Include="Logical\Basic\Contact.cs" />
+    <Compile Include="Logical\Counter\CTD.cs" />
+    <Compile Include="Logical\Counter\CTU.cs" />
+    <Compile Include="Logical\NameableComponentBase.cs" />
     <Compile Include="Logical\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logical\Analog\" />
-    <Folder Include="Logical\Counter\" />
     <Folder Include="Logical\Delay\" />
     <Folder Include="Logical\Math\" />
     <Folder Include="Logical\Timer\" />
