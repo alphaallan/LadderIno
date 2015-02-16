@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace Components.Logical
 {
-    public class Coil : ComponentBase
+    /// <summary>
+    /// Component: Coil
+    /// Description: Basic boolean output
+    /// Function: Set output level dependin on its mode and input (LeftLide logical level)
+    /// Mode:
+    ///     Normal = Set output equals input level
+    ///     Negated = Set output level opposite input level
+    ///     Set = SetOnly mode, set and lock output high on input level high
+    ///     Reset = ResetOnly mode, set and lock output low on input level high
+    /// </summary>
+    public class Coil : NameableComponentBase
     {
         #region Properties
         public CoilType Type

@@ -14,35 +14,6 @@ namespace Components.Logical
     {
         #region Properties
         /// <summary>
-        /// Component Name
-        /// Used by compiler as identifier
-        /// </summary>
-        public string Name
-        {
-            get { return _Name; }
-            set
-            {
-                if (!string.IsNullOrEmpty(value))
-                {
-                    if (value.Length > 40) value = value.Substring(0, 40);
-                    _Name = value;
-                }
-                else _Name = string.Empty;
-                RaisePropertyChanged("Name");
-            }
-        }
-
-        /// <summary>
-        /// Name prefix 
-        /// </summary>
-        public char NamePerfix
-        {
-            get { return _NamePrefix; }
-            protected set { _NamePrefix = value; }
-        }
-
-
-        /// <summary>
         /// Componente comment
         /// Used only for documentation purposes  
         /// </summary>
@@ -128,37 +99,24 @@ namespace Components.Logical
 
         public override string ToString()
         {
-            return this.Name + this.GetType().ToString();
+            return this.GetType().ToString();
         }
         #endregion Functions
 
         #region Constructors
-        public ComponentBase() : this("NEW")
+        public ComponentBase() : this(new Node(), new Node())
         {
             
         }
 
-        public ComponentBase(string name) : this(name, new Node(), new Node())
+        public ComponentBase(Node Left, Node Right)
         {
-            
-        }
-
-        public ComponentBase(Node Left, Node Right) : this ("NEW", Left, Right)
-        {
-
-        }
-
-        public ComponentBase(string name, Node Left, Node Right)
-        {
-            Name = name;
             this.LeftLide = LeftLide;
             this.RightLide = Right;
         }
         #endregion Constructors
 
         #region Internal Data
-        private char _NamePrefix;
-        private string _Name;
         private string _Comment;
 
         private bool _InternalState;
@@ -168,18 +126,5 @@ namespace Components.Logical
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
-
-        #region Enums
-        public enum ComponentPrefix
-        {
-            AnalogInput = 'A',
-            Conter = 'C',
-            Input = 'X',
-            Output = 'Y',
-            Relay = 'R',
-            Timer = 'T',
-            None = ' '
-        }
-        #endregion Enums
     }
 }

@@ -6,10 +6,18 @@ using System.Threading.Tasks;
 
 namespace Components.Logical
 {
-    public class Contact : ComponentBase
+    /// <summary>
+    /// Component: Contact
+    /// Description: Basic boolean input component
+    /// Function: Let flux pass whenever its input is true
+    /// Mode: Inverted = let flux pass when input is false
+    /// </summary>
+    public class Contact : NameableComponentBase
     {
         #region Properties
-
+        /// <summary>
+        /// Define whenever the contact is closed (high logical level on input)
+        /// </summary>
         public bool IsClosed
         {
             get { return _IsClosed; }
@@ -20,6 +28,9 @@ namespace Components.Logical
             }
         }
 
+        /// <summary>
+        /// Define if the contact is normally open
+        /// </summary>
         public bool IsInverted
         {
             get { return _IsInverted; }
@@ -30,6 +41,10 @@ namespace Components.Logical
             }
         }
 
+        /// <summary>
+        /// Define what type of input the contact reads.
+        /// Input pin, output pin or internal relay
+        /// </summary>
         public ContactType Type
         {
             get { return _Type; }

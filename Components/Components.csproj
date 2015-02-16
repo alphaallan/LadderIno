@@ -40,11 +40,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Logical\Basic\Coil.cs" />
+    <Compile Include="Logical\Basic\OSF.cs" />
+    <Compile Include="Logical\Basic\OSR.cs" />
     <Compile Include="Logical\ComponentBase.cs" />
-    <Compile Include="Logical\ComponentEnums.cs" />
     <Compile Include="Logical\Basic\Contact.cs" />
     <Compile Include="Logical\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logical\Analog\" />
+    <Folder Include="Logical\Counter\" />
+    <Folder Include="Logical\Delay\" />
+    <Folder Include="Logical\Math\" />
+    <Folder Include="Logical\Timer\" />
+    <Folder Include="Logical\UART\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
