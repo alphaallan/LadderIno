@@ -44,7 +44,7 @@
     <Compile Include="Logical\Basic\Coil.cs" />
     <Compile Include="Logical\Basic\OSF.cs" />
     <Compile Include="Logical\Basic\OSR.cs" />
-    <Compile Include="Logical\Compare\CompareCompoentBase.cs" />
+    <Compile Include="Logical\Compare\CompareComponentBase.cs" />
     <Compile Include="Logical\Compare\EQU.cs" />
     <Compile Include="Logical\Compare\GEQ.cs" />
     <Compile Include="Logical\Compare\GRT.cs" />
@@ -57,13 +57,18 @@
     <Compile Include="Logical\Counter\CTD.cs" />
     <Compile Include="Logical\Counter\CTU.cs" />
     <Compile Include="Logical\Counter\RES.cs" />
+    <Compile Include="Logical\Math\ADD.cs" />
+    <Compile Include="Logical\Math\DIV.cs" />
+    <Compile Include="Logical\Math\MathComponentBase.cs" />
+    <Compile Include="Logical\Math\MOV.cs" />
+    <Compile Include="Logical\Math\MUL.cs" />
+    <Compile Include="Logical\Math\SUB.cs" />
     <Compile Include="Logical\NameableComponentBase.cs" />
     <Compile Include="Logical\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Logical\Delay\" />
-    <Folder Include="Logical\Math\" />
     <Folder Include="Logical\Timer\" />
     <Folder Include="Logical\UART\" />
   </ItemGroup>

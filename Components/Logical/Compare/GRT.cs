@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Greater than compare block
     /// Function: True if value A is greater than value B
     /// </summary>
-    public class GRT : CompareCompoentBase
+    public class GRT : CompareComponentBase
     {
         #region Functions
         protected override void RunLogicalTest()

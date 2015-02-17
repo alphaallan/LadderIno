@@ -7,26 +7,27 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Component: Less than
-    /// Description: Less than compare block
-    /// Function: True if value A is less than value B
+    /// Component: MUL
+    /// Description: Integer 16 bits multiply function block
+    /// Function: put on destination variable value A multiplied by value B
     /// </summary>
-    public class LES : CompareComponentBase
+    public class MUL : MathComponentBase
     {
         #region Functions
         protected override void RunLogicalTest()
         {
-            InternalState = (ValueA < ValueB);
+            if (LeftLide.LogicLevel) Destination = (short)(ValueA * ValueB);
+            InternalState = LeftLide.LogicLevel;
         }
         #endregion Functions
 
         #region Constructors
-        public LES()
+        public MUL()
         {
             
         }
 
-        public LES(Node Left, Node Right)
+        public MUL(Node Left, Node Right)
             : base(Left, Right)
         {
             

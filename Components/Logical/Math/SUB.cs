@@ -7,26 +7,27 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Component: Less than
-    /// Description: Less than compare block
-    /// Function: True if value A is less than value B
+    /// Component: SUB
+    /// Description: Integer 16 bits subtraction function block
+    /// Function: put on destination variable the diference between value A and value B
     /// </summary>
-    public class LES : CompareComponentBase
+    public class SUB : MathComponentBase
     {
         #region Functions
         protected override void RunLogicalTest()
         {
-            InternalState = (ValueA < ValueB);
+            if (LeftLide.LogicLevel) Destination = (short)(ValueA - ValueB);
+            InternalState = LeftLide.LogicLevel;
         }
         #endregion Functions
 
         #region Constructors
-        public LES()
+        public SUB()
         {
             
         }
 
-        public LES(Node Left, Node Right)
+        public SUB(Node Left, Node Right)
             : base(Left, Right)
         {
             

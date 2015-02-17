@@ -7,26 +7,28 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Component: Less than
-    /// Description: Less than compare block
-    /// Function: True if value A is less than value B
+    /// Component: MOV
+    /// Description: Move value function block
+    /// Function: moves a value to the destination variable
+    /// Obs: Value B is not used by this component
     /// </summary>
-    public class LES : CompareComponentBase
+    public class MOV : MathComponentBase
     {
         #region Functions
         protected override void RunLogicalTest()
         {
-            InternalState = (ValueA < ValueB);
+            if (LeftLide.LogicLevel) Destination = ValueA;
+            InternalState = LeftLide.LogicLevel;
         }
         #endregion Functions
 
         #region Constructors
-        public LES()
+        public MOV()
         {
             
         }
 
-        public LES(Node Left, Node Right)
+        public MOV(Node Left, Node Right)
             : base(Left, Right)
         {
             

@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Component: 
-    /// Description: 
-    /// Function: 
+    /// Component: ADC Read
+    /// Description: Analog input read command
+    /// Function: Execute one read in a selected input
     /// </summary>
     public class ADC : NameableComponentBase
     {

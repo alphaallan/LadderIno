@@ -7,26 +7,27 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Component: Less than
-    /// Description: Less than compare block
-    /// Function: True if value A is less than value B
+    /// Component: ADD
+    /// Description: Integer 16 bits sum function block
+    /// Function: put on destination variable the sum of value A and value B
     /// </summary>
-    public class LES : CompareComponentBase
+    public class ADD : MathComponentBase
     {
         #region Functions
         protected override void RunLogicalTest()
         {
-            InternalState = (ValueA < ValueB);
+            if (LeftLide.LogicLevel) Destination = (short)(ValueA + ValueB);
+            InternalState = LeftLide.LogicLevel;
         }
         #endregion Functions
 
         #region Constructors
-        public LES()
+        public ADD()
         {
             
         }
 
-        public LES(Node Left, Node Right)
+        public ADD(Node Left, Node Right)
             : base(Left, Right)
         {
             

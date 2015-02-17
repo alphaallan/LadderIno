@@ -7,11 +7,24 @@ using System.Threading.Tasks;
 namespace Components.Logical
 {
     /// <summary>
-    /// Base classe for compare operations
+    /// Math components base
     /// </summary>
-    public abstract class CompareCompoentBase : ComponentBase
+    public abstract class MathComponentBase : ComponentBase
     {
         #region Properties
+        /// <summary>
+        /// Destination Variable
+        /// </summary>
+        public Int16 Destination
+        {
+            get { return _Destination; }
+            set
+            {
+                _Destination = value;
+                RaisePropertyChanged("Destination");
+            }
+        }
+
         /// <summary>
         /// Variable A
         /// </summary>
@@ -40,19 +53,20 @@ namespace Components.Logical
         #endregion Properties
 
         #region Constructors
-        public CompareCompoentBase()
+        public MathComponentBase()
         {
-            Class = ComponentClass.Input;
+            Class = ComponentClass.Output;
         }
 
-        public CompareCompoentBase(Node Left, Node Right)
+        public MathComponentBase(Node Left, Node Right)
             : base(Left, Right)
         {
-            Class = ComponentClass.Input;
+            Class = ComponentClass.Output;
         }
         #endregion Constructors
 
         #region Internal Data
+        Int16 _Destination;
         Int16 _ValueA;
         Int16 _ValueB;
         #endregion Internal Data
