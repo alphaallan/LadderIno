@@ -37,21 +37,21 @@ namespace Components.Logical
             : base(name,Left,null)
         {
             Class = ComponentClass.Output;
-            NamePerfix = ComponentPrefix.AnalogInput;
+            NamePerfix = ComponentPrefix.PWM;
         }
 
         public PWM(Node Left)
             : base(Left, null)
         {
             Class = ComponentClass.Output;
-            NamePerfix = ComponentPrefix.AnalogInput;
+            NamePerfix = ComponentPrefix.PWM;
         }
 
         public PWM()
             : base(new Node(), null)
         {
             Class = ComponentClass.Output;
-            NamePerfix = ComponentPrefix.AnalogInput;
+            NamePerfix = ComponentPrefix.PWM;
         }
         #endregion Constructors
 

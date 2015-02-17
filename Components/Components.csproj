@@ -44,6 +44,13 @@
     <Compile Include="Logical\Basic\Coil.cs" />
     <Compile Include="Logical\Basic\OSF.cs" />
     <Compile Include="Logical\Basic\OSR.cs" />
+    <Compile Include="Logical\Compare\CompareCompoentBase.cs" />
+    <Compile Include="Logical\Compare\EQU.cs" />
+    <Compile Include="Logical\Compare\GEQ.cs" />
+    <Compile Include="Logical\Compare\GRT.cs" />
+    <Compile Include="Logical\Compare\LEG.cs" />
+    <Compile Include="Logical\Compare\LES.cs" />
+    <Compile Include="Logical\Compare\NEQ.cs" />
     <Compile Include="Logical\ComponentBase.cs" />
     <Compile Include="Logical\Basic\Contact.cs" />
     <Compile Include="Logical\Counter\CTC.cs" />
