@@ -119,12 +119,12 @@ namespace Components.Logical
         #region Constructors
         public ComponentBase() : this(new Node(), new Node())
         {
-            
+            RightLide.Root = this;
         }
 
         public ComponentBase(Node Left, Node Right)
         {
-            this.LeftLide = LeftLide;
+            this.LeftLide = Left;
             this.RightLide = Right;
         }
         #endregion Constructors

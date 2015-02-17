@@ -3,6 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <CheckBox Content="Input" IsChecked="{Binding contact.IsClosed}"/>
+            <CheckBox Content="Output" IsChecked="{Binding coil.InternalState}"/>
+            <Button Content="Run" Click="Button_Click"/>
+        </StackPanel>
         
+        <DataGrid Grid.Row="1" ItemsSource="{Binding rung.Components}">
+            
+        </DataGrid>
     </Grid>
 </Window>

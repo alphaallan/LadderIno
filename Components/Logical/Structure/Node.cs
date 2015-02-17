@@ -22,5 +22,15 @@ namespace Components.Logical
         /// Node’s current logical level 
         /// </summary>
         public bool LogicLevel { get; set; }
+
+        public Node()
+        {
+
+        }
+
+        public Node(ComponentBase root)
+        {
+            Root = root;
+        }
     }
 }
