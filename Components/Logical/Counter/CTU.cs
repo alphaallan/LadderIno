@@ -53,12 +53,14 @@ namespace Components.Logical
         #region Constructors
         public CTU()
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Mixed;
         }
 
         public CTU(Node Left, Node Right)
             : base(Left, Right)
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Mixed;
         }
 
@@ -71,6 +73,7 @@ namespace Components.Logical
         public CTU(string name, Node Left, Node Right)
             : base(name, Left, Right)
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Mixed;
         }
 
@@ -78,6 +81,7 @@ namespace Components.Logical
             : base(name, Left, Right)
         {
             CurrentValue = startValue;
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Mixed;
         }
         #endregion Constructors

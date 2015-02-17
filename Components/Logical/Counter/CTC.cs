@@ -54,31 +54,35 @@ namespace Components.Logical.Counter
         #region Constructors
         public CTC()
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Output;
         }
 
-        public CTC(Node Left, Node Right)
-            : base(Left, Right)
+        public CTC(Node Left)
+            : base(Left, null)
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Output;
         }
 
-        public CTC(int startValue, Node Left, Node Right)
-            : this(Left, Right)
+        public CTC(int startValue, Node Left)
+            : this(Left)
         {
             CurrentValue = startValue;
         }
 
-        public CTC(string name, Node Left, Node Right)
-            : base(name, Left, Right)
+        public CTC(string name, Node Left)
+            : base(name, Left, null)
         {
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Output;
         }
 
-        public CTC(string name, int startValue, Node Left, Node Right)
-            : base(name, Left, Right)
+        public CTC(string name, int startValue, Node Left)
+            : base(name, Left, null)
         {
             CurrentValue = startValue;
+            NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Output;
         }
         #endregion Constructors

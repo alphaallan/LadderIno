@@ -91,7 +91,7 @@ namespace Components.Logical
             if (_LeftLide != null) RunLogicalTest();
             else InternalState = false;
 
-            if (_RightLide != null) _RightLide.LogicLevel = (_RightLide.Root == this) ? _InternalState : (_InternalState || _RightLide.LogicLevel);
+            if (_RightLide != null && Class != ComponentClass.Output) _RightLide.LogicLevel = (_RightLide.Root == this) ? _InternalState : (_InternalState || _RightLide.LogicLevel);
             return _InternalState;
         }
 

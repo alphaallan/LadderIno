@@ -26,7 +26,7 @@ namespace Components.Logical
             {
                 _Type = value;
 
-                NamePerfix = (char)((_Type == CoilType.OutputPin) ? ComponentPrefix.Output : ComponentPrefix.Relay); 
+                NamePerfix = (_Type == CoilType.OutputPin) ? ComponentPrefix.Output : ComponentPrefix.Relay; 
 
                 RaisePropertyChanged("Type");
             }
@@ -68,31 +68,31 @@ namespace Components.Logical
         #endregion Functions
 
         #region Constructors
-        public Coil(string name, CoilType type, CoilMode mode, Node Left, Node Right)
-            : base(name,Left,Right)
+        public Coil(string name, CoilType type, CoilMode mode, Node Left)
+            : base(name,Left,null)
         {
             this.Type = type;
             this.Mode = mode;
             this.Class = ComponentClass.Output;
         }
 
-        public Coil(string name, Node Left, Node Right)
-            : base(name, Left, Right)
+        public Coil(string name, Node Left)
+            : base(name, Left, null)
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
             this.Class = ComponentClass.Output;
         }
 
-        public Coil(Node Left, Node Right)
-            : base(Left, Right)
+        public Coil(Node Left)
+            : base(Left, null)
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
             this.Class = ComponentClass.Output;
         }
 
-        public Coil()
+        public Coil() : base(new Node(), null)
         {
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;

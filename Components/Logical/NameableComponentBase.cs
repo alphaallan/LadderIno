@@ -34,7 +34,7 @@ namespace Components.Logical
         /// <summary>
         /// Name prefix 
         /// </summary>
-        public char NamePerfix
+        public ComponentPrefix NamePerfix
         {
             get { return _NamePrefix; }
             protected set 
@@ -48,7 +48,7 @@ namespace Components.Logical
         #region Functions
         public override string ToString()
         {
-            return this._NamePrefix + this._Name + " (" + this.GetType().ToString() + ")" ;
+            return ((char)this._NamePrefix) + this._Name + " (" + this.GetType().ToString() + ")" ;
         }
         #endregion Functions
 
@@ -77,7 +77,7 @@ namespace Components.Logical
         #endregion Constructors
 
         #region Internal Data
-        private char _NamePrefix;
+        private ComponentPrefix _NamePrefix;
         private string _Name;
         #endregion Internal Data
 
@@ -88,6 +88,7 @@ namespace Components.Logical
             Conter = 'C',
             Input = 'X',
             Output = 'Y',
+            PWM = 'D',
             Relay = 'R',
             Timer = 'T',
             None = ' '

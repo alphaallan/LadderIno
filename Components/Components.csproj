@@ -39,19 +39,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logical\Analog\ADC.cs" />
+    <Compile Include="Logical\Analog\PWM.cs" />
     <Compile Include="Logical\Basic\Coil.cs" />
     <Compile Include="Logical\Basic\OSF.cs" />
     <Compile Include="Logical\Basic\OSR.cs" />
     <Compile Include="Logical\ComponentBase.cs" />
     <Compile Include="Logical\Basic\Contact.cs" />
+    <Compile Include="Logical\Counter\CTC.cs" />
     <Compile Include="Logical\Counter\CTD.cs" />
     <Compile Include="Logical\Counter\CTU.cs" />
+    <Compile Include="Logical\Counter\RES.cs" />
     <Compile Include="Logical\NameableComponentBase.cs" />
     <Compile Include="Logical\Node.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Logical\Analog\" />
     <Folder Include="Logical\Delay\" />
     <Folder Include="Logical\Math\" />
     <Folder Include="Logical\Timer\" />

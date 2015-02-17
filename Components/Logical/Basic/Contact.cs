@@ -52,8 +52,8 @@ namespace Components.Logical
             {
                 _Type = value;
 
-                NamePerfix = (char)((_Type == ContactType.InputPin) ? ComponentPrefix.Input : 
-                                    (_Type == ContactType.InternalRelay) ? ComponentPrefix.Relay : ComponentPrefix.Output); 
+                NamePerfix = ((_Type == ContactType.InputPin) ? ComponentPrefix.Input : 
+                              (_Type == ContactType.InternalRelay) ? ComponentPrefix.Relay : ComponentPrefix.Output); 
 
                 RaisePropertyChanged("Type");
             }
