@@ -241,21 +241,28 @@ namespace Components.Logical
         {
             if (!_Components.Contains(component)) throw new Exception("Component not inserted in current Rung");
 
-            int componentIndex = _Components.IndexOf(component);
+            int nextComponentIndex = _Components.IndexOf(component) + 1;
 
-            if (component.RightLide.Root == component)
+            if (component.RightLide.Root == component) //Component is owner of the Right node
             {
-                if (componentIndex < _Components.Count - 1)
+                if (nextComponentIndex < _Components.Count) //is not the last component in rung
                 {
-
+                    if (_Components[nextComponentIndex].RightLide == component.RightLide)// Next component conected in parallel
+                    {
+                        component.RightLide.Root = _Components[nextComponentIndex];
+                    }
+                    else //next component in series
+                    {
+                        //In case of parallel components
+                        for (int c = nextComponentIndex; c < _Components.Count && _Components[c].LeftLide == component.RightLide; c++)
+                        {
+                            _Components[c].LeftLide = component.LeftLide;
+                        }
+                    }
                 }
-
-                _Components.Remove(component);
             }
-            else
-            {
 
-            }
+            _Components.Remove(component);
         }
 
         public void Clear()
