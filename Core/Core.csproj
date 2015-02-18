@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AAE9FF4A-7A71-4750-9EE5-908A336F272D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Core</RootNamespace>
+    <AssemblyName>LDICore</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Data\LDIVariableTable.cs" />
+    <Compile Include="Logical\Analog\ADC.cs" />
+    <Compile Include="Logical\Analog\PWM.cs" />
+    <Compile Include="Logical\Basic\Coil.cs" />
+    <Compile Include="Logical\Basic\OSF.cs" />
+    <Compile Include="Logical\Basic\OSR.cs" />
+    <Compile Include="Logical\Counter\CounterComponent.cs" />
+    <Compile Include="Logical\Structure\ShortCircuit.cs" />
+    <Compile Include="Logical\Compare\CompareComponent.cs" />
+    <Compile Include="Logical\Compare\EQU.cs" />
+    <Compile Include="Logical\Compare\GEQ.cs" />
+    <Compile Include="Logical\Compare\GRT.cs" />
+    <Compile Include="Logical\Compare\LEG.cs" />
+    <Compile Include="Logical\Compare\LES.cs" />
+    <Compile Include="Logical\Compare\NEQ.cs" />
+    <Compile Include="Logical\ComponentBase.cs" />
+    <Compile Include="Logical\Basic\Contact.cs" />
+    <Compile Include="Logical\Counter\CTC.cs" />
+    <Compile Include="Logical\Counter\CTD.cs" />
+    <Compile Include="Logical\Counter\CTU.cs" />
+    <Compile Include="Logical\Counter\RES.cs" />
+    <Compile Include="Logical\Math\ADD.cs" />
+    <Compile Include="Logical\Math\DIV.cs" />
+    <Compile Include="Logical\Math\MathComponent.cs" />
+    <Compile Include="Logical\Math\MOV.cs" />
+    <Compile Include="Logical\Math\MUL.cs" />
+    <Compile Include="Logical\Math\SUB.cs" />
+    <Compile Include="Logical\NameableComponent.cs" />
+    <Compile Include="Logical\Structure\Node.cs" />
+    <Compile Include="Logical\Structure\Rung.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Logical\Delay\" />
+    <Folder Include="Logical\Timer\" />
+    <Folder Include="Logical\UART\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
