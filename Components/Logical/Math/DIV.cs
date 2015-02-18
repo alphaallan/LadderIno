@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Integer 16 bits divide function block
     /// Function: put on destination variable the proportion between value A and value B
     /// </summary>
-    public class DIV : MathComponentBase
+    public class DIV : MathComponent
     {
         #region Functions
         protected override void RunLogicalTest()

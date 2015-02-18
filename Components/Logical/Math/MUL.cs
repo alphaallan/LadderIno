@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Integer 16 bits multiply function block
     /// Function: put on destination variable value A multiplied by value B
     /// </summary>
-    public class MUL : MathComponentBase
+    public class MUL : MathComponent
     {
         #region Functions
         protected override void RunLogicalTest()

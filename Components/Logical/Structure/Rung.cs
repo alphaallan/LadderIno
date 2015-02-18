@@ -13,7 +13,7 @@ namespace Components.Logical
         #region Properties
         public ObservableCollection<ComponentBase> Components
         {
-            get { return _Components; }
+            get { return _Components; }//set as internal
             private set
             {
                 _Components = value;
@@ -235,6 +235,29 @@ namespace Components.Logical
         }
 
         #endregion Insert Functions
+
+        #region Delete Functions
+        public void Remove(ComponentBase component)
+        {
+            if (!_Components.Contains(component)) throw new Exception("Component not inserted in current Rung");
+
+            int componentIndex = _Components.IndexOf(component);
+
+            if (component.RightLide.Root == component)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        public void Clear()
+        {
+            _Components.Clear();
+        }
+        #endregion Delete Functions
 
         #endregion Functions
 

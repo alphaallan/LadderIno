@@ -16,7 +16,7 @@ namespace Components.Logical
     ///     Set = SetOnly mode, set and lock output high on input level high
     ///     Reset = ResetOnly mode, set and lock output low on input level high
     /// </summary>
-    public class Coil : NameableComponentBase
+    public class Coil : NameableComponent
     {
         #region Properties
         public CoilType Type

@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Integer 16 bits subtraction function block
     /// Function: put on destination variable the diference between value A and value B
     /// </summary>
-    public class SUB : MathComponentBase
+    public class SUB : MathComponent
     {
         #region Functions
         protected override void RunLogicalTest()

@@ -11,36 +11,8 @@ namespace Components.Logical
     /// Description: Raising edge counter
     /// Function: Counts plus one for each raising edge detected, once counter is bigger or equals its limit, it will give high output
     /// </summary>
-    public class CTU : NameableComponentBase
+    public class CTU : CounterComponent
     {
-        #region Properties
-        /// <summary>
-        /// Counter limit value
-        /// </summary>
-        public int Limit
-        {
-            get { return _Limit; }
-            set
-            {
-                _Limit = value;
-                RaisePropertyChanged("Limit");
-            }
-        }
-
-        /// <summary>
-        /// Counter current value
-        /// </summary>
-        public int CurrentValue
-        {
-            get { return _CurrentValue; }
-            set
-            {
-                _CurrentValue = value;
-                RaisePropertyChanged("CurrentValue");
-            }
-        }
-        #endregion Properties
-
         #region Functions
         protected override void RunLogicalTest()
         {
@@ -53,43 +25,27 @@ namespace Components.Logical
         #region Constructors
         public CTU()
         {
-            NamePerfix = ComponentPrefix.Conter;
-            Class = ComponentClass.Mixed;
         }
 
         public CTU(Node Left, Node Right)
             : base(Left, Right)
         {
-            NamePerfix = ComponentPrefix.Conter;
-            Class = ComponentClass.Mixed;
         }
 
         public CTU(int startValue, Node Left, Node Right)
-            : this(Left, Right)
+            : base(startValue, Left, Right)
         {
-            CurrentValue = startValue;
         }
 
         public CTU(string name, Node Left, Node Right)
             : base(name, Left, Right)
         {
-            NamePerfix = ComponentPrefix.Conter;
-            Class = ComponentClass.Mixed;
         }
 
         public CTU(string name, int startValue, Node Left, Node Right)
-            : base(name, Left, Right)
+            : base(name, startValue, Left, Right)
         {
-            CurrentValue = startValue;
-            NamePerfix = ComponentPrefix.Conter;
-            Class = ComponentClass.Mixed;
         }
         #endregion Constructors
-
-        #region Internal Data
-        bool LastInput;
-        int _Limit;
-        int _CurrentValue;
-        #endregion Internal Data
     }
 }

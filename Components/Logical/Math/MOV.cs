@@ -12,7 +12,7 @@ namespace Components.Logical
     /// Function: moves a value to the destination variable
     /// Obs: Value B is not used by this component
     /// </summary>
-    public class MOV : MathComponentBase
+    public class MOV : MathComponent
     {
         #region Functions
         protected override void RunLogicalTest()

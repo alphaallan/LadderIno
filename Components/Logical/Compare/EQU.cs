@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Equals compare block
     /// Function: True if value A is equals to value B
     /// </summary>
-    public class EQU : CompareComponentBase
+    public class EQU : CompareComponent
     {
         #region Functions
         protected override void RunLogicalTest()

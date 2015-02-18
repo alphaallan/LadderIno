@@ -44,8 +44,9 @@
     <Compile Include="Logical\Basic\Coil.cs" />
     <Compile Include="Logical\Basic\OSF.cs" />
     <Compile Include="Logical\Basic\OSR.cs" />
+    <Compile Include="Logical\Counter\CounterComponent.cs" />
     <Compile Include="Logical\Structure\ShortCircuit.cs" />
-    <Compile Include="Logical\Compare\CompareComponentBase.cs" />
+    <Compile Include="Logical\Compare\CompareComponent.cs" />
     <Compile Include="Logical\Compare\EQU.cs" />
     <Compile Include="Logical\Compare\GEQ.cs" />
     <Compile Include="Logical\Compare\GRT.cs" />
@@ -60,11 +61,11 @@
     <Compile Include="Logical\Counter\RES.cs" />
     <Compile Include="Logical\Math\ADD.cs" />
     <Compile Include="Logical\Math\DIV.cs" />
-    <Compile Include="Logical\Math\MathComponentBase.cs" />
+    <Compile Include="Logical\Math\MathComponent.cs" />
     <Compile Include="Logical\Math\MOV.cs" />
     <Compile Include="Logical\Math\MUL.cs" />
     <Compile Include="Logical\Math\SUB.cs" />
-    <Compile Include="Logical\NameableComponentBase.cs" />
+    <Compile Include="Logical\NameableComponent.cs" />
     <Compile Include="Logical\Structure\Node.cs" />
     <Compile Include="Logical\Structure\Rung.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

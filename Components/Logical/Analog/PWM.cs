@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Analog output based on Pulse Width Modulation
     /// Function: Set PWM Duty Cycle in one of the modules avaliable
     /// </summary>
-    public class PWM : NameableComponentBase
+    public class PWM : NameableComponent
     {
         #region Properties
         public byte DudyCycle 

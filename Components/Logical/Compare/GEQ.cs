@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Greater than or equal compare block
     /// Function: True if value A is Greater or equal to value B
     /// </summary>
-    public class GEQ : CompareComponentBase
+    public class GEQ : CompareComponent
     {
         #region Functions
         protected override void RunLogicalTest()

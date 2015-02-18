@@ -9,7 +9,7 @@ namespace Components.Logical
     /// <summary>
     /// Base class for LadderIno components that have name 
     /// </summary>
-    public abstract class NameableComponentBase : ComponentBase
+    public abstract class NameableComponent : ComponentBase
     {
         #region Properties
         /// <summary>
@@ -53,23 +53,23 @@ namespace Components.Logical
         #endregion Functions
 
         #region Constructors
-        public NameableComponentBase() : this("NEW")
+        public NameableComponent() : this("NEW")
         {
             
         }
 
-        public NameableComponentBase(string name)
+        public NameableComponent(string name)
         {
             Name = name;            
         }
 
-        public NameableComponentBase(Node Left, Node Right) 
+        public NameableComponent(Node Left, Node Right) 
             : this ("NEW", Left, Right)
         {
 
         }
 
-        public NameableComponentBase(string name, Node Left, Node Right)
+        public NameableComponent(string name, Node Left, Node Right)
             : base(Left, Right)
         {
             Name = name;

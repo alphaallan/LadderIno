@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Not Equals compare block
     /// Function: True if value A is different of value B
     /// </summary>
-    public class NEQ : CompareComponentBase
+    public class NEQ : CompareComponent
     {
         #region Functions
         protected override void RunLogicalTest()

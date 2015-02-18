@@ -12,7 +12,7 @@ namespace Components.Logical
     /// Function: Let flux pass whenever its input is true
     /// Mode: Inverted = let flux pass when input is false
     /// </summary>
-    public class Contact : NameableComponentBase
+    public class Contact : NameableComponent
     {
         #region Properties
         /// <summary>

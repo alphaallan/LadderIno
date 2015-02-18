@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Analog input read command
     /// Function: Execute one read in a selected input
     /// </summary>
-    public class ADC : NameableComponentBase
+    public class ADC : NameableComponent
     {
         #region Properties
         public int ReadValue

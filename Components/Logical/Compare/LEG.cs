@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Less than or equal compare block
     /// Function: True if value A is Less or equal to value B
     /// </summary>
-    public class LEG : CompareComponentBase
+    public class LEG : CompareComponent
     {
         #region Functions
         protected override void RunLogicalTest()

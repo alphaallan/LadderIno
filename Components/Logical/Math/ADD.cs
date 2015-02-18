@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Integer 16 bits sum function block
     /// Function: put on destination variable the sum of value A and value B
     /// </summary>
-    public class ADD : MathComponentBase
+    public class ADD : MathComponent
     {
         #region Functions
         protected override void RunLogicalTest()

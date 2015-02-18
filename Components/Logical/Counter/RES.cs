@@ -11,7 +11,7 @@ namespace Components.Logical
     /// Description: Resets a counter or timer
     /// Function: Set zero to the control variable of an counter or timer 
     /// </summary>
-    public class RES : NameableComponentBase
+    public class RES : NameableComponent
     {
         #region Properties
         /// <summary>
