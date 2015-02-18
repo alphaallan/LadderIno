@@ -245,7 +245,12 @@ namespace Components.Logical
 
             if (component.RightLide.Root == component)
             {
+                if (componentIndex < _Components.Count - 1)
+                {
 
+                }
+
+                _Components.Remove(component);
             }
             else
             {
