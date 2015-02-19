@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 namespace Core.Components.Logical
 {
     /// <summary>
-    /// Auxiliar structure component
+    /// Auxiliar structure component.
+    /// This always will be deleted
     /// </summary>
     public class ShortCircuit : ComponentBase
     {
-
         protected override void RunLogicalTest()
         {
             InternalState = LeftLide.LogicLevel;

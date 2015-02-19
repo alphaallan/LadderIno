@@ -47,7 +47,7 @@
     <Compile Include="Logical\Basic\OSF.cs" />
     <Compile Include="Logical\Basic\OSR.cs" />
     <Compile Include="Logical\Counter\CounterComponent.cs" />
-    <Compile Include="Logical\Structure\ShortCircuit.cs" />
+    <Compile Include="Logical\Basic\ShortCircuit.cs" />
     <Compile Include="Logical\Compare\CompareComponent.cs" />
     <Compile Include="Logical\Compare\EQU.cs" />
     <Compile Include="Logical\Compare\GEQ.cs" />

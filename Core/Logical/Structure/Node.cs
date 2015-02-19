@@ -23,11 +23,18 @@ namespace Core.Components.Logical
         /// </summary>
         public bool LogicLevel { get; set; }
 
+        /// <summary>
+        /// Default builder
+        /// </summary>
         public Node()
         {
 
         }
 
+        /// <summary>
+        /// Builder
+        /// </summary>
+        /// <param name="root">Owner component</param>
         public Node(ComponentBase root)
         {
             Root = root;

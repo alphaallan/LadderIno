@@ -15,6 +15,9 @@ namespace Core.Data
     public static class LDIVariableTable
     {
         #region Properties
+        /// <summary>
+        /// Get how many variables are currently stored in core’s memory
+        /// </summary>
         public static int Count
         {
             get { return Table.Count; }
@@ -22,6 +25,12 @@ namespace Core.Data
         #endregion Properties
 
         #region Functions
+        /// <summary>
+        /// Manage memory allocation.
+        /// In case of an existing variable it only increase its reference counter
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="type">Variable type</param>
         public static void Add(string name, Type type)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -41,6 +50,12 @@ namespace Core.Data
             }
         }
 
+        /// <summary>
+        /// Manage memory allocation and set its value
+        /// In case of an existing variable it only increase its reference counter
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="type">Variable type</param>
         public static void Add(string name, Type type, object value)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -63,6 +78,11 @@ namespace Core.Data
             }
         }
 
+        /// <summary>
+        /// Manage memory free
+        /// In case of a variable with multiple references it only decrease variable’s reference counter
+        /// </summary>
+        /// <param name="name">Variable name</param>
         public static void Remove(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -77,7 +97,13 @@ namespace Core.Data
             }
             else throw new ArgumentException("Variable not found", "name");
         }
-
+        
+        /// <summary>
+        /// Manage variable rename attempt.
+        /// In case of a single reference variable it renames directly, otherwise it will try to add a variable with the new name 
+        /// </summary>
+        /// <param name="oldName">Variable old name</param>
+        /// <param name="newName">Variable new name</param>
         public static void Rename(string oldName, string newName)
         {
             if (string.IsNullOrEmpty(oldName)) throw new ArgumentException("Variable old name must be provided", "oldName");
@@ -107,6 +133,11 @@ namespace Core.Data
             else throw new ArgumentException("Variable name not found", "oldName");
         }
 
+        /// <summary>
+        /// Get a variable index in data table based on its name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <returns>Variable index</returns>
         public static int GetIndexOf(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -117,6 +148,11 @@ namespace Core.Data
             throw new ArgumentException("Variable not found", "name");
         }
 
+        /// <summary>
+        /// Get if an variable name exists in data table
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <returns>True for existing variable</returns>
         public static bool Contains(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -127,6 +163,11 @@ namespace Core.Data
             return false;
         }
 
+        /// <summary>
+        /// Get a variable value by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <returns>Variable value</returns>
         public static object GetValue(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
@@ -137,6 +178,11 @@ namespace Core.Data
             throw new ArgumentException("Variable not found", "name");
         }
 
+        /// <summary>
+        /// Get a variable value by index
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <returns>Variable value</returns>
         public static object GetValueAt(int index)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
@@ -144,6 +190,11 @@ namespace Core.Data
             return Table[index].Value;
         }
 
+        /// <summary>
+        /// Set variable value by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Value to be set</param>
         public static void SetValue(string name, object value)
         {
             for (int c = 0; c < Table.Count; c++)
@@ -159,6 +210,11 @@ namespace Core.Data
             throw new ArgumentException("Variable not found", "name");
         }
 
+        /// <summary>
+        /// Set variable value by index
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Value to be set</param>
         public static void SetValueAt(int index, object value)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
@@ -169,6 +225,9 @@ namespace Core.Data
         #endregion Functions
 
         #region Constructors
+        /// <summary>
+        /// Static class builder 
+        /// </summary>
         static LDIVariableTable()
         {
             Table = new List<LDIVariable>();
@@ -190,6 +249,13 @@ namespace Core.Data
             public int NumRefs { get; set; }
             public Type Type { get; set; }
 
+            /// <summary>
+            /// Master builder 
+            /// </summary>
+            /// <param name="name">Variable name</param>
+            /// <param name="type">Variable type</param>
+            /// <param name="numRefs">Number of references to this variable</param>
+            /// <param name="value">Variable initial value</param>
             public LDIVariable(string name, Type type, int numRefs, object value)
             {
                 Name = name;
@@ -198,6 +264,11 @@ namespace Core.Data
                 Type = type;
             }
 
+            /// <summary>
+            /// Builder (sets type's default value)
+            /// </summary>
+            /// <param name="name">Variable name</param>
+            /// <param name="type">Variable type</param>
             public LDIVariable(string name, Type type)
                 : this(name, type, 1, null)
             {
@@ -205,6 +276,12 @@ namespace Core.Data
                 Value = (type.IsValueType) ? Activator.CreateInstance(type) : null; 
             }
 
+            /// <summary>
+            /// Builder 
+            /// </summary>
+            /// <param name="name">Variable name</param>
+            /// <param name="type">Variable type</param>
+            /// <param name="value">Variable initial value</param>
             public LDIVariable(string name, Type type, object value)
                 : this(name, type, 1, value)
             {

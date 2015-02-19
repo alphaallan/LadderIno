@@ -117,11 +117,19 @@ namespace Core.Components.Logical
         #endregion Functions
 
         #region Constructors
+        /// <summary>
+        /// Default builder
+        /// </summary>
         public ComponentBase() : this(new Node(), new Node())
         {
             RightLide.Root = this;
         }
 
+        /// <summary>
+        /// Builder
+        /// </summary>
+        /// <param name="Left">Left lide connection</param>
+        /// <param name="Right">Right lide connection</param>
         public ComponentBase(Node Left, Node Right)
         {
             this.LeftLide = Left;
@@ -143,6 +151,10 @@ namespace Core.Components.Logical
         #endregion Internal Data
 
         #region Enum
+        /// <summary>
+        /// Component class
+        /// used to control insertion permissions
+        /// </summary>
         public enum ComponentClass
         {
             Input,

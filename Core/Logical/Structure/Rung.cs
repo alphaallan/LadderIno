@@ -8,9 +8,16 @@ using System.Threading.Tasks;
 
 namespace Core.Components.Logical
 {
+    /// <summary>
+    /// Program rung 
+    /// Represents one line in a ladder diagram.
+    /// </summary>
     public class Rung : INotifyPropertyChanged
     {
         #region Properties
+        /// <summary>
+        /// Get or set (internally only) rung’s component collection
+        /// </summary>
         public ObservableCollection<ComponentBase> Components
         {
             get { return _Components; }//set as internal
@@ -21,6 +28,9 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Get or set rung power
+        /// </summary>
         public bool RungPower
         {
             get { return PowerRail.LogicLevel; }
@@ -34,24 +44,37 @@ namespace Core.Components.Logical
 
         #region Functions
 
+        /// <summary>
+        /// Run logical test in the entire rung
+        /// </summary>
         public void Execute()
         {
-            foreach (ComponentBase comp in _Components)
+            if (RungPower)
             {
-                comp.Execute();
+                foreach (ComponentBase comp in _Components) comp.Execute();
             }
         }
 
 
         #region Insert Functions
+        //This sector contains all the functions that insert a component in the rung
 
         #region Auxiliar
+        /// <summary>
+        /// Check component nodes to avoid null references
+        /// </summary>
+        /// <param name="component">Component to be verified</param>
         private void CheckNodes(ComponentBase component)
         {
             if (component.LeftLide == null) component.LeftLide = new Node();
             if (component.RightLide == null) component.RightLide = new Node();
         }
 
+        /// <summary>
+        /// Verify component pair to be sure the insertion can happen 
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor component</param>
         private void CheckComponentPair(ComponentBase component, ComponentBase anchor)
         {
             if (anchor == null || component == null) throw new Exception("Null component");
@@ -62,6 +85,10 @@ namespace Core.Components.Logical
         }
         #endregion Auxiliar
 
+        /// <summary>
+        /// Inset component with auto select position 
+        /// </summary>
+        /// <param name="component">Component to be added</param>
         public void Add(ComponentBase component)
         {
             if (component == null) throw new Exception("Null component");
@@ -121,6 +148,11 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Insert above anchor component
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor component</param>
         public void InsertAbove(ComponentBase component, ComponentBase anchor)
         {
             CheckComponentPair(component, anchor);
@@ -147,6 +179,11 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Insert under anchor component
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor component</param>
         public void InsertUnder(ComponentBase component, ComponentBase anchor)
         {
             CheckComponentPair(component, anchor);
@@ -175,6 +212,11 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Insert before anchor component
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor component</param>
         public void InsertBefore(ComponentBase component, ComponentBase anchor)
         {
             CheckComponentPair(component, anchor);
@@ -200,6 +242,11 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Insert after anchor component
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor component</param>
         public void InsertAfter(ComponentBase component, ComponentBase anchor)
         {
             CheckComponentPair(component, anchor);
@@ -237,6 +284,10 @@ namespace Core.Components.Logical
         #endregion Insert Functions
 
         #region Delete Functions
+        /// <summary>
+        /// Delete compoenent from the rung
+        /// </summary>
+        /// <param name="component">Component to be deleted</param>
         public void Remove(ComponentBase component)
         {
             if (!_Components.Contains(component)) throw new Exception("Component not inserted in current Rung");
@@ -265,6 +316,9 @@ namespace Core.Components.Logical
             _Components.Remove(component);
         }
 
+        /// <summary>
+        /// Clear Rung (delete all components)
+        /// </summary>
         public void Clear()
         {
             _Components.Clear();
@@ -274,6 +328,9 @@ namespace Core.Components.Logical
         #endregion Functions
 
         #region Constructors
+        /// <summary>
+        /// Default Builder
+        /// </summary>
         public Rung()
         {
             Components = new ObservableCollection<ComponentBase>();

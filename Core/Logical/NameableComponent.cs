@@ -130,7 +130,6 @@ namespace Core.Components.Logical
             Conter = 'C',
             Input = 'X',
             Output = 'Y',
-            PWM = 'D',
             Relay = 'R',
             Timer = 'T',
             None = ' '
