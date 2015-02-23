@@ -68,6 +68,7 @@
     <Compile Include="Logical\Math\MUL.cs" />
     <Compile Include="Logical\Math\SUB.cs" />
     <Compile Include="Logical\NameableComponent.cs" />
+    <Compile Include="Logical\Structure\Diagram.cs" />
     <Compile Include="Logical\Structure\Node.cs" />
     <Compile Include="Logical\Structure\Rung.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

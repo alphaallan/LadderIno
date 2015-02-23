@@ -36,17 +36,16 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentException("Variable type must be provided", "type");
 
-            int c = 0;
-            for (; c < Table.Count && Table[c].Name != name; c++);
+            int index = Table.IndexOfKey(name);
 
-            if (c < Table.Count)
+            if (index != -1)
             {
-                if (type != Table[c].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
-                Table[c].NumRefs++;
+                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
+                Table.Values[index].NumRefs++;
             }
             else
             {
-                Table.Add(new LDIVariable(name, type));
+                Table.Add(name, new LDIVariable(type));
             }
         }
 
@@ -63,18 +62,17 @@ namespace Core.Data
             if (value == null) throw new ArgumentException("Variable value must be provided", "value");
             if (value.GetType() != type) throw new ArgumentException("Type Mismatch", "type");
 
-            int c = 0;
-            for (; c < Table.Count && Table[c].Name != name; c++) ;
+            int index = Table.IndexOfKey(name);
 
-            if (c < Table.Count)
+            if (index != -1)
             {
-                if (type != Table[c].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
-                Table[c].NumRefs++;
-                Table[c].Value = value;
+                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
+                Table.Values[index].NumRefs++;
+                Table.Values[index].Value = value;
             }
             else
             {
-                Table.Add(new LDIVariable(name, type, value));
+                Table.Add(name, new LDIVariable(type, value));
             }
         }
 
@@ -87,13 +85,12 @@ namespace Core.Data
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
-            int c = 0;
-            for (; c < Table.Count && Table[c].Name != name; c++) ;
+            int index = Table.IndexOfKey(name);
 
-            if (c < Table.Count)
+            if (index != -1)
             {
-                Table[c].NumRefs--;
-                if (Table[c].NumRefs == 0) Table.RemoveAt(c);
+                Table.Values[index].NumRefs--;
+                if (Table.Values[index].NumRefs == 0) Table.RemoveAt(index);
             }
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -109,25 +106,24 @@ namespace Core.Data
             if (string.IsNullOrEmpty(oldName)) throw new ArgumentException("Variable old name must be provided", "oldName");
             if (string.IsNullOrEmpty(newName)) throw new ArgumentException("Variable new name must be provided", "newName");
 
-            int c = 0, i = 0 ;
-            for (; c < Table.Count && Table[c].Name != oldName; c++) ;
-            for (; i < Table.Count && Table[i].Name != newName; i++) ;
+            int indexO = Table.IndexOfKey(oldName), 
+                indexN = Table.IndexOfKey(newName);
 
-            if (c < Table.Count)
+            if (indexO != -1)
             {
-                if(Table[c].NumRefs == 1)
+                if(Table.Values[indexO].NumRefs == 1)
                 {
-                    if (i < Table.Count) //new name exists in list
+                    if (indexN != -1) //new name exists in list
                     {
-                        if (Table[c].Type != Table[i].Type) throw new ArgumentException("Name already used", "newName", new ArgumentException("Type Mismatch", "type"));
-                        else Table.RemoveAt(c);
+                        if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new ArgumentException("Type Mismatch", "type"));
+                        else Table.RemoveAt(indexO);
                     }
-                    else Table[c].Name = newName; //new name does not exist in list
+                    else Table.Keys[indexO] = newName; //new name does not exist in list
                 }
                 else
                 {
-                    Table[c].NumRefs--;
-                    Table.Add(new LDIVariable(newName, Table[c].Type));
+                    Table.Values[indexO].NumRefs--;
+                    Table.Add(newName, new LDIVariable(Table.Values[indexO].Type));
                 }
             }
             else throw new ArgumentException("Variable name not found", "oldName");
@@ -142,8 +138,8 @@ namespace Core.Data
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
-            for (int c=0; c < Table.Count; c++)
-                if (Table[c].Name == name) return c;
+            int index = Table.IndexOfKey(name);
+            if (index != -1) return index;
 
             throw new ArgumentException("Variable not found", "name");
         }
@@ -157,10 +153,7 @@ namespace Core.Data
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
-            for (int c = 0; c < Table.Count; c++)
-                if (Table[c].Name == name) return true;
-
-            return false;
+            return Table.ContainsKey(name);
         }
 
         /// <summary>
@@ -172,10 +165,9 @@ namespace Core.Data
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
-            for (int c = 0; c < Table.Count; c++)
-                if (Table[c].Name == name) return Table[c].Value;
-
-            throw new ArgumentException("Variable not found", "name");
+            int index = Table.IndexOfKey(name);
+            if (index != -1) return Table.Values[index].Value;
+            else throw new ArgumentException("Variable not found", "name");
         }
 
         /// <summary>
@@ -187,7 +179,7 @@ namespace Core.Data
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
 
-            return Table[index].Value;
+            return Table.Values[index].Value;
         }
 
         /// <summary>
@@ -197,17 +189,15 @@ namespace Core.Data
         /// <param name="value">Value to be set</param>
         public static void SetValue(string name, object value)
         {
-            for (int c = 0; c < Table.Count; c++)
-            {
-                if (Table[c].Name == name)
-                {
-                    if (value.GetType() != Table[c].Type) throw new ArgumentException("Type Mismatch", "value");
-                    Table[c].Value = value;
-                    return;
-                }
-            }
+            int index = Table.IndexOfKey(name);
 
-            throw new ArgumentException("Variable not found", "name");
+            if (index != -1)
+            {
+                if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
+                Table.Values[index].Value = value;
+                return;
+            }
+            else throw new ArgumentException("Variable not found", "name");
         }
 
         /// <summary>
@@ -218,9 +208,9 @@ namespace Core.Data
         public static void SetValueAt(int index, object value)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
-            if (value.GetType() != Table[index].Type) throw new ArgumentException("Type Mismatch", "value");
+            if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
 
-            Table[index].Value = value;
+            Table.Values[index].Value = value;
         }
         #endregion Functions
 
@@ -230,12 +220,12 @@ namespace Core.Data
         /// </summary>
         static LDIVariableTable()
         {
-            Table = new List<LDIVariable>();
+            Table = new SortedList<string, LDIVariable>();
         }
         #endregion Constructors
 
         #region Internal Data
-        static List<LDIVariable> Table { get; set; }
+        static SortedList<string, LDIVariable> Table { get; set; }
         #endregion Internal Data
 
         #region Classes
@@ -244,7 +234,6 @@ namespace Core.Data
         /// </summary>
         private class LDIVariable
         {
-            public string Name { get; set;}
             public object Value { get; set; }
             public int NumRefs { get; set; }
             public Type Type { get; set; }
@@ -252,13 +241,11 @@ namespace Core.Data
             /// <summary>
             /// Master builder 
             /// </summary>
-            /// <param name="name">Variable name</param>
             /// <param name="type">Variable type</param>
             /// <param name="numRefs">Number of references to this variable</param>
             /// <param name="value">Variable initial value</param>
-            public LDIVariable(string name, Type type, int numRefs, object value)
+            public LDIVariable(Type type, int numRefs, object value)
             {
-                Name = name;
                 Value = value;
                 NumRefs = numRefs;
                 Type = type;
@@ -267,10 +254,9 @@ namespace Core.Data
             /// <summary>
             /// Builder (sets type's default value)
             /// </summary>
-            /// <param name="name">Variable name</param>
             /// <param name="type">Variable type</param>
-            public LDIVariable(string name, Type type)
-                : this(name, type, 1, null)
+            public LDIVariable(Type type)
+                : this(type, 1, null)
             {
                 //get default value for the given type
                 Value = (type.IsValueType) ? Activator.CreateInstance(type) : null; 
@@ -279,11 +265,10 @@ namespace Core.Data
             /// <summary>
             /// Builder 
             /// </summary>
-            /// <param name="name">Variable name</param>
             /// <param name="type">Variable type</param>
             /// <param name="value">Variable initial value</param>
-            public LDIVariable(string name, Type type, object value)
-                : this(name, type, 1, value)
+            public LDIVariable(Type type, object value)
+                : this(type, 1, value)
             {
             }
         }
