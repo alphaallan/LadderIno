@@ -40,6 +40,20 @@ namespace Core.Components.Logical
                 if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("RungPower")); }
             }
         }
+
+        /// <summary>
+        /// Get or set Comment in Rung
+        /// </summary>
+        public string Comment
+        {
+            get { return _Comment; }
+            set
+            {
+                _Comment = value;
+                if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Comment")); }
+            }
+        }
+
         #endregion Properties
 
         #region Functions
@@ -77,10 +91,11 @@ namespace Core.Components.Logical
         /// <param name="anchor">Anchor component</param>
         private void CheckComponentPair(ComponentBase component, ComponentBase anchor)
         {
-            if (anchor == null || component == null) throw new Exception("Null component");
-            if (!_Components.Contains(anchor)) throw new Exception("Anchor component not inserted in current rung");
-            if (_Components.Contains(component)) throw new Exception("Component already inserted in current rung");
-            if (component == anchor) throw new Exception("Root components and inserter component are the same");
+            if (anchor == null) throw new ArgumentException("Null component", "anchor");
+            if (component == null) throw new ArgumentException("Null component", "component");
+            if (!_Components.Contains(anchor)) throw new ArgumentException("Anchor component not inserted in current rung", "anchor");
+            if (_Components.Contains(component)) throw new ArgumentException("Component already inserted in current rung", "component");
+            if (component == anchor) throw new ArgumentException("Root components and inserter component are the same", "anchor");
             CheckNodes(component);
         }
         #endregion Auxiliar
@@ -91,7 +106,7 @@ namespace Core.Components.Logical
         /// <param name="component">Component to be added</param>
         public void Add(ComponentBase component)
         {
-            if (component == null) throw new Exception("Null component");
+            if (component == null) throw new ArgumentException("Null component","component");
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -344,6 +359,8 @@ namespace Core.Components.Logical
         ObservableCollection<ComponentBase> _Components;
         Node PowerRail;
         Node GroundRail;
+
+        string _Comment;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
