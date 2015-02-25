@@ -61,15 +61,36 @@ namespace Core.Components.Logical
         /// <param name="newName">New Full Name</param>
         protected virtual void NameChangedHandler(string oldName, string newName)
         {
+            if (DataTable != null)
+            {
+                try
+                {
+                    DataTable.Rename(oldName, newName);
+                }
+                catch (ArgumentException ex)
+                {
+                    if (ex.ParamName == "oldName") DataTable.Add(newName, DataType);
+                    else throw ex;
+                }
+            }
+        }
+
+        protected override void DataTableRelease()
+        {
+            base.DataTableRelease();
+
             try
             {
-                Data.LDIVariableTable.Rename(oldName, newName);
+                if (DataTable != null) DataTable.Remove(FullName);
             }
-            catch (ArgumentException ex)
-            {
-                if (ex.ParamName == "oldName") Data.LDIVariableTable.Add(newName, DataType);
-                else throw ex;
-            }
+            catch (ArgumentException) { }
+        }
+
+        protected override void DataTableAlloc()
+        {
+            base.DataTableAlloc();
+
+            if (DataTable != null) DataTable.Add(FullName, DataType);
         }
 
         public override string ToString()
@@ -105,17 +126,6 @@ namespace Core.Components.Logical
         }
         #endregion Constructors
 
-        #region Destructor
-        ~NameableComponent()
-        {
-            try
-            {
-                Data.LDIVariableTable.Remove(FullName);
-            }
-            catch (ArgumentException) { }
-        }
-        #endregion Destructor
-
         #region Internal Data
         private ComponentPrefix _NamePrefix = ComponentPrefix.None;
 
@@ -135,6 +145,5 @@ namespace Core.Components.Logical
             None = ' '
         }
         #endregion Enums
-        
     }
 }

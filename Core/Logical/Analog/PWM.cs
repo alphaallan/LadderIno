@@ -23,29 +23,36 @@ namespace Core.Components.Logical
                 {
                     if (!byte.TryParse(_DudyCycle, out DudyCycleValue))
                     {
-                        try
+                        if (DataTable != null)
                         {
-                            Data.LDIVariableTable.Remove(_DudyCycle);
+                            try
+                            {
+                                DataTable.Remove(_DudyCycle);
+                            }
+                            catch (ArgumentException) { }
                         }
-                        catch (ArgumentException) {  }
+                        
                     }
                 }
                 else
                 {
                     if (byte.TryParse(_DudyCycle, out DudyCycleValue))
                     {
-                        Data.LDIVariableTable.Add(value, typeof(byte));
+                        if (DataTable != null) DataTable.Add(value, typeof(byte));
                     }
                     else
                     {
-                        try
+                        if (DataTable != null)
                         {
-                            Data.LDIVariableTable.Rename(_DudyCycle, value);
-                        }
-                        catch (ArgumentException ex)
-                        {
-                            if (ex.ParamName == "oldName") Data.LDIVariableTable.Add(value, typeof(byte));
-                            else throw ex;
+                            try
+                            {
+                                DataTable.Rename(_DudyCycle, value);
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                if (ex.ParamName == "oldName") DataTable.Add(value, typeof(byte));
+                                else throw ex;
+                            }
                         }
                     }
                 }
@@ -60,10 +67,26 @@ namespace Core.Components.Logical
         {
             if (!byte.TryParse(_DudyCycle, out DudyCycleValue) && !string.IsNullOrEmpty(_DudyCycle))
             {
-                DudyCycleValue = (byte)Data.LDIVariableTable.GetValue(_DudyCycle);
+                DudyCycleValue = (byte)((DataTable != null) ? DataTable.GetValue(_DudyCycle) : 0);
             }
 
             InternalState = (LeftLide.LogicLevel);
+        }
+
+        protected override void DataTableRelease()
+        {
+            if (DataTable != null)
+            {
+                DataTable.Remove(_DudyCycle);
+            }
+        }
+
+        protected override void DataTableAlloc()
+        {
+            if (!byte.TryParse(_DudyCycle, out DudyCycleValue) && !string.IsNullOrEmpty(_DudyCycle))
+            {
+                if (DataTable != null) DataTable.Add(_DudyCycle, typeof(byte));                
+            }
         }
         #endregion Functions
 
@@ -80,17 +103,6 @@ namespace Core.Components.Logical
             Class = ComponentClass.Output;
         }
         #endregion Constructors
-
-        #region Destructor
-        ~PWM()
-        {
-            try
-            {
-                Data.LDIVariableTable.Remove(_DudyCycle);
-            }
-            catch (ArgumentException) { }
-        }
-        #endregion Destructor
 
         #region Internal Data
         string _DudyCycle;

@@ -22,11 +22,11 @@ namespace Core.Components.Logical
             {
                 if (short.TryParse(value, out LimitValue) || string.IsNullOrEmpty(value))
                 {
-                    if (!short.TryParse(_Limit, out LimitValue))
+                    if (!short.TryParse(_Limit, out LimitValue) && DataTable != null)
                     {
                         try
                         {
-                            Data.LDIVariableTable.Remove(_Limit);
+                            DataTable.Remove(_Limit);
                         }
                         catch (ArgumentException)
                         {
@@ -34,21 +34,21 @@ namespace Core.Components.Logical
                         }
                     }
                 }
-                else
+                else if (DataTable != null) 
                 {
                     if (short.TryParse(_Limit, out LimitValue))
                     {
-                        Data.LDIVariableTable.Add(value, typeof(short));
+                        DataTable.Add(value, typeof(short));
                     }
                     else
                     {
                         try
                         {
-                            Data.LDIVariableTable.Rename(_Limit, value);
+                            DataTable.Rename(_Limit, value);
                         }
                         catch (ArgumentException ex)
                         {
-                            if (ex.ParamName == "oldName") Data.LDIVariableTable.Add(value, typeof(short));
+                            if (ex.ParamName == "oldName") DataTable.Add(value, typeof(short));
                             else throw ex;
                         }
                     }
@@ -63,12 +63,30 @@ namespace Core.Components.Logical
         #region Functions
         protected void RetrieveData()
         {
-            if (!short.TryParse(_Limit, out LimitValue) && !string.IsNullOrEmpty(_Limit))
+            if (!short.TryParse(_Limit, out LimitValue) && !string.IsNullOrEmpty(_Limit) && DataTable != null)
             {
-                LimitValue = (short)Data.LDIVariableTable.GetValue(_Limit);
+                LimitValue = (short) DataTable.GetValue(_Limit);
             }
 
-            CurrentValue = (short)Data.LDIVariableTable.GetValue(FullName);
+            CurrentValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : 0);
+        }
+
+        protected override void DataTableRelease()
+        {
+            base.DataTableRelease();
+
+            try
+            {
+                if (DataTable != null) DataTable.Remove(_Limit);
+            }
+            catch (ArgumentException) { }
+        }
+
+        protected override void DataTableAlloc()
+        {
+            base.DataTableAlloc();
+
+            if (DataTable != null) DataTable.Add(_Limit, typeof(short));
         }
         #endregion Functions
 
@@ -108,17 +126,6 @@ namespace Core.Components.Logical
             Class = ComponentClass.Mixed;
         }
         #endregion Constructors
-
-        #region Destructor
-        ~CounterComponent()
-        {
-            try
-            {
-                Data.LDIVariableTable.Remove(_Limit);
-            }
-            catch (ArgumentException) { }
-        }
-        #endregion Destructor
 
         #region Internal Data
         private string _Limit;

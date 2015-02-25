@@ -17,7 +17,7 @@ namespace Core.Components.Logical
         protected override void RunLogicalTest()
         {
             RetrieveData();
-            if (!LastInput && LeftLide.LogicLevel) Data.LDIVariableTable.SetValue(FullName, ++CurrentValue);
+            if (!LastInput && LeftLide.LogicLevel && DataTable != null) DataTable.SetValue(FullName, ++CurrentValue);
             LastInput = LeftLide.LogicLevel;
             InternalState = (CurrentValue >= LimitValue);
         }

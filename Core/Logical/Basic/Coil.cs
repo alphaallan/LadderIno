@@ -65,7 +65,7 @@ namespace Core.Components.Logical
                     break;
             }
 
-            Data.LDIVariableTable.SetValue(FullName, InternalState);
+            if(DataTable != null) DataTable.SetValue(FullName, InternalState);
         }
         #endregion Functions
 

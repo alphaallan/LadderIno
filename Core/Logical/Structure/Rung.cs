@@ -54,6 +54,19 @@ namespace Core.Components.Logical
             }
         }
 
+        /// <summary>
+        /// Rung datacontext
+        /// </summary>
+        public Data.LDIVariableTable DataTable
+        {
+            get { return _DataTable; }
+            set
+            {
+                _DataTable = value;
+                foreach (ComponentBase comp in _Components) comp.DataTable = value;
+                if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("DataTable")); }
+            }
+        }
         #endregion Properties
 
         #region Functions
@@ -107,6 +120,7 @@ namespace Core.Components.Logical
         public void Add(ComponentBase component)
         {
             if (component == null) throw new ArgumentException("Null component","component");
+            component.DataTable = DataTable;
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -192,6 +206,7 @@ namespace Core.Components.Logical
 
                 if (anchor is ShortCircuit) _Components.Remove(anchor);
             }
+            component.DataTable = DataTable;
         }
 
         /// <summary>
@@ -225,6 +240,7 @@ namespace Core.Components.Logical
                     _Components.Remove(anchor);
                 }
             }
+            component.DataTable = DataTable;
         }
 
         /// <summary>
@@ -255,6 +271,7 @@ namespace Core.Components.Logical
 
                 component.RightLide.Root = component;
             }
+            component.DataTable = DataTable;
         }
 
         /// <summary>
@@ -294,6 +311,7 @@ namespace Core.Components.Logical
                     _Components.Remove(anchor);
                 }
             }
+            component.DataTable = DataTable;
         }
 
         #endregion Insert Functions
@@ -361,6 +379,8 @@ namespace Core.Components.Logical
         Node GroundRail;
 
         string _Comment;
+
+        protected Data.LDIVariableTable _DataTable;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data

@@ -28,7 +28,7 @@ namespace Core.Components.Logical
         #region Functions
         protected override void RunLogicalTest()
         {
-            ReadValue = (short)Data.LDIVariableTable.GetValue(FullName);
+            ReadValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : 0);
             InternalState = (LeftLide.LogicLevel);
         }
         #endregion Functions

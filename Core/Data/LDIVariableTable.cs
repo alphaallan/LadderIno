@@ -12,13 +12,13 @@ namespace Core.Data
     /// LadderIno main core "RAM"
     /// this class manages the entire storage and manipulation of variables, including memory allocation 
     /// </summary>
-    public static class LDIVariableTable
+    public class LDIVariableTable
     {
         #region Properties
         /// <summary>
         /// Get how many variables are currently stored in core’s memory
         /// </summary>
-        public static int Count
+        public int Count
         {
             get { return Table.Count; }
         }
@@ -31,7 +31,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="type">Variable type</param>
-        public static void Add(string name, Type type)
+        public void Add(string name, Type type)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentException("Variable type must be provided", "type");
@@ -55,7 +55,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="type">Variable type</param>
-        public static void Add(string name, Type type, object value)
+        public void Add(string name, Type type, object value)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentException("Variable type must be provided", "type");
@@ -81,7 +81,7 @@ namespace Core.Data
         /// In case of a variable with multiple references it only decrease variable’s reference counter
         /// </summary>
         /// <param name="name">Variable name</param>
-        public static void Remove(string name)
+        public void Remove(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
@@ -101,7 +101,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="oldName">Variable old name</param>
         /// <param name="newName">Variable new name</param>
-        public static void Rename(string oldName, string newName)
+        public void Rename(string oldName, string newName)
         {
             if (string.IsNullOrEmpty(oldName)) throw new ArgumentException("Variable old name must be provided", "oldName");
             if (string.IsNullOrEmpty(newName)) throw new ArgumentException("Variable new name must be provided", "newName");
@@ -134,7 +134,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <returns>Variable index</returns>
-        public static int GetIndexOf(string name)
+        public int GetIndexOf(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
@@ -149,7 +149,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <returns>True for existing variable</returns>
-        public static bool Contains(string name)
+        public bool Contains(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
@@ -161,7 +161,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <returns>Variable value</returns>
-        public static object GetValue(string name)
+        public object GetValue(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
@@ -175,7 +175,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <returns>Variable value</returns>
-        public static object GetValueAt(int index)
+        public object GetValueAt(int index)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
 
@@ -187,7 +187,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="value">Value to be set</param>
-        public static void SetValue(string name, object value)
+        public void SetValue(string name, object value)
         {
             int index = Table.IndexOfKey(name);
 
@@ -205,7 +205,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="value">Value to be set</param>
-        public static void SetValueAt(int index, object value)
+        public void SetValueAt(int index, object value)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
             if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
@@ -218,14 +218,14 @@ namespace Core.Data
         /// <summary>
         /// Static class builder 
         /// </summary>
-        static LDIVariableTable()
+        LDIVariableTable()
         {
             Table = new SortedList<string, LDIVariable>();
         }
         #endregion Constructors
 
         #region Internal Data
-        static SortedList<string, LDIVariable> Table { get; set; }
+        SortedList<string, LDIVariable> Table { get; set; }
         #endregion Internal Data
 
         #region Classes

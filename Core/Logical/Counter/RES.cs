@@ -32,7 +32,7 @@ namespace Core.Components.Logical
         #region Functions
         protected override void RunLogicalTest()
         {
-            if (LeftLide.LogicLevel) Data.LDIVariableTable.SetValue(FullName, (short)0);
+            if (LeftLide.LogicLevel && DataTable != null) DataTable.SetValue(FullName, (short)0);
             InternalState = (LeftLide.LogicLevel);
         }
         #endregion Functions

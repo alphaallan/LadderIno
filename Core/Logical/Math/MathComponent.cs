@@ -22,14 +22,14 @@ namespace Core.Components.Logical
             {
                 try
                 {
-                    Data.LDIVariableTable.Rename(_Destination, value);
+                    if (DataTable != null) DataTable.Rename(_Destination, value);
                     _Destination = value;
                 }
                 catch (ArgumentException ex)
                 {
                     if (ex.ParamName == "oldName")
                     {
-                        Data.LDIVariableTable.Add(value, typeof(short));
+                        DataTable.Add(value, typeof(short));
                         _Destination = value;
                     }
                     else throw ex;
@@ -71,14 +71,14 @@ namespace Core.Components.Logical
         #region Functions
         protected void RetrieveData()
         {
-            if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA))
+            if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA) && DataTable != null)
             {
-                ValueA = (short)Data.LDIVariableTable.GetValue(_NameA);
+                ValueA = (short)DataTable.GetValue(_NameA);
             }
 
-            if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB))
+            if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB) && DataTable != null)
             {
-                ValueB = (short)Data.LDIVariableTable.GetValue(_NameB);
+                ValueB = (short)DataTable.GetValue(_NameB);
             }
         }
 
@@ -89,25 +89,62 @@ namespace Core.Components.Logical
 
             if (short.TryParse(oldName, out ValueA))
             {
-                if (!short.TryParse(newName, out ValueA)) Data.LDIVariableTable.Add(newName, typeof(short));
+                if (!short.TryParse(newName, out ValueA) && DataTable != null) DataTable.Add(newName, typeof(short));
             }
-            else
+            else if (DataTable != null) 
             {
                 if (!short.TryParse(newName, out ValueA))
                 {
                     try
                     {
-                        Data.LDIVariableTable.Rename(oldName, newName);
+                        DataTable.Rename(oldName, newName);
                     }
                     catch (ArgumentException ex)
                     {
-                        if (ex.ParamName == "oldName") Data.LDIVariableTable.Add(newName, typeof(short));
+                        if (ex.ParamName == "oldName") DataTable.Add(newName, typeof(short));
                         else throw ex;
                     }
                 }
-                else Data.LDIVariableTable.Remove(oldName);
+                else DataTable.Remove(oldName);
             }
+        }
 
+        protected override void DataTableRelease()
+        {
+            base.DataTableRelease();
+
+            if (DataTable != null)
+            {
+                try
+                {
+                    DataTable.Remove(_Destination);
+                }
+                catch (ArgumentException) { }
+
+                try
+                {
+                    DataTable.Remove(_NameA);
+                }
+                catch (ArgumentException) { }
+
+                try
+                {
+                    DataTable.Remove(_NameB);
+                }
+                catch (ArgumentException) { }
+            }
+        }
+
+        protected override void DataTableAlloc()
+        {
+            base.DataTableAlloc();
+            if (DataTable != null)
+            {
+                DataTable.Add(_Destination, typeof(short));
+
+                if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA)) DataTable.Add(_NameA, typeof(short));
+                if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB)) DataTable.Add(_NameB, typeof(short));
+            }
         }
         #endregion Functions
 
@@ -123,29 +160,6 @@ namespace Core.Components.Logical
             Class = ComponentClass.Output;
         }
         #endregion Constructors
-
-        #region Destructor
-        ~MathComponent()
-        {
-            try
-            {
-                Data.LDIVariableTable.Remove(_Destination);
-            }
-            catch (ArgumentException) { }
-
-            try
-            {
-                Data.LDIVariableTable.Remove(_NameA);
-            }
-            catch (ArgumentException) { }
-
-            try
-            {
-                Data.LDIVariableTable.Remove(_NameB);
-            }
-            catch (ArgumentException) { }
-        }
-        #endregion Destructor
 
         #region Internal Data
         string _Destination;

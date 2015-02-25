@@ -17,7 +17,7 @@ namespace Core.Components.Logical
         protected override void RunLogicalTest()
         {
             RetrieveData();
-            if (LeftLide.LogicLevel) Data.LDIVariableTable.SetValue(Destination, (short)(ValueA - ValueB));
+            if (LeftLide.LogicLevel && DataTable != null) DataTable.SetValue(Destination, (short)(ValueA - ValueB));
             InternalState = LeftLide.LogicLevel;
         }
         #endregion Functions

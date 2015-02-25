@@ -11,7 +11,7 @@ namespace Core.Logical
     /// <summary>
     /// Container class for the ladder diagram
     /// </summary>
-    public static class Diagram : INotifyPropertyChanged
+    public class Diagram : INotifyPropertyChanged
     {
         #region Properties
 

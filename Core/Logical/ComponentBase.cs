@@ -68,7 +68,7 @@ namespace Core.Components.Logical
         }
 
         /// <summary>
-        /// Compoenet class (output, input or mixed)
+        /// Component class (output, input or mixed)
         /// </summary>
         public ComponentClass Class
         {
@@ -77,6 +77,21 @@ namespace Core.Components.Logical
             {
                 _Class = value;
                 RaisePropertyChanged("Class");
+            }
+        }
+
+        /// <summary>
+        /// Component datacontext
+        /// </summary>
+        public Data.LDIVariableTable DataTable
+        {
+            get { return _DataTable; }
+            set
+            {
+                DataTableRelease();
+                _DataTable = value;
+                DataTableAlloc();
+                RaisePropertyChanged("DataTable");
             }
         }
         #endregion Properties
@@ -100,6 +115,16 @@ namespace Core.Components.Logical
         /// Must set internal state and retrieve data from core's data table
         /// </summary>
         protected abstract void RunLogicalTest();
+
+        /// <summary>
+        /// Actions to execute before set new datatable
+        /// </summary>
+        protected virtual void DataTableRelease() { }
+
+        /// <summary>
+        /// Actions to peform after set a new data table
+        /// </summary>
+        protected virtual void DataTableAlloc() { }
 
         /// <summary>
         /// Function to use INotifyPropertyChanged on inered classes
@@ -137,6 +162,17 @@ namespace Core.Components.Logical
         }
         #endregion Constructors
 
+        #region Destructor
+        ~ComponentBase()
+        {
+            try
+            {
+                DataTableRelease();
+            }
+            catch (ArgumentException) { }
+        }
+        #endregion Destructor
+
         #region Internal Data
         private string _Comment;
 
@@ -147,6 +183,8 @@ namespace Core.Components.Logical
 
         private ComponentClass _Class;
         
+        private Data.LDIVariableTable _DataTable;
+
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
 
