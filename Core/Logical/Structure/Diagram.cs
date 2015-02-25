@@ -11,7 +11,7 @@ namespace Core.Logical
     /// <summary>
     /// Container class for the ladder diagram
     /// </summary>
-    public class Diagram : INotifyPropertyChanged
+    public static class Diagram : INotifyPropertyChanged
     {
         #region Properties
 
@@ -25,6 +25,10 @@ namespace Core.Logical
             }
         }
 
+        /// <summary>
+        /// Master control relay, it is used to turn the hole program on and off. 
+        /// It can also be used to abort program’s execution
+        /// </summary>
         public bool MasterRelay
         {
             get { return _MasterRelay; }
@@ -35,6 +39,9 @@ namespace Core.Logical
             }
         }
 
+        /// <summary>
+        /// Get the current number of rows in diagram 
+        /// </summary>
         public int Count
         {
             get { return _Rungs.Count; }
@@ -42,7 +49,9 @@ namespace Core.Logical
         #endregion Properties
 
         #region Functions
-
+        /// <summary>
+        /// Execute a program cycle
+        /// </summary>
         public void Execute()
         {
             if (MasterRelay)
@@ -53,11 +62,18 @@ namespace Core.Logical
 
 
         #region Insert Functions
+        /// <summary>
+        /// Add a new rung in the bottom of the diagram
+        /// </summary>
         public void Add()
         {
             Add(new Rung());
         }
 
+        /// <summary>
+        /// Add an existing rung in the bottom of the diagram
+        /// </summary>
+        /// <param name="rung">Rung to be inserted</param>
         public void Add(Rung rung)
         {
             if (rung == null) throw new ArgumentException("Null rung", "rung");
@@ -65,6 +81,20 @@ namespace Core.Logical
             _Rungs.Add(rung);
         }
 
+        /// <summary>
+        /// Insert a new rung above the anchor rung
+        /// </summary>
+        /// <param name="anchor">Anchor rung</param>
+        public void InsertAbove(Rung anchor)
+        {
+            InsertAbove(new Rung(), anchor);
+        }
+
+        /// <summary>
+        /// Insert an existing rung above an anchor rung
+        /// </summary>
+        /// <param name="rung">Rung to be inserted</param>
+        /// <param name="anchor">Anchor rung</param>
         public void InsertAbove(Rung rung, Rung anchor)
         {
             if (rung == null) throw new ArgumentException("Null rung", "rung");
@@ -79,6 +109,20 @@ namespace Core.Logical
             else throw new ArgumentException("Anchor rung is not inserted in current diagram", "anchor");
         }
 
+        /// <summary>
+        /// Insert a new rung under the anchor rung
+        /// </summary>
+        /// <param name="anchor">Anchor rung</param>
+        public void InsertUnder(Rung anchor)
+        {
+            InsertUnder(new Rung(), anchor);
+        }
+
+        /// <summary>
+        /// Insert an existing rung under an anchor rung
+        /// </summary>
+        /// <param name="rung">Rung  to be inserted</param>
+        /// <param name="anchor">Anchor rung</param>
         public void InsertUnder(Rung rung, Rung anchor)
         {
             if (rung == null) throw new ArgumentException("Null rung", "rung");
@@ -96,7 +140,10 @@ namespace Core.Logical
         #endregion Insert Functions
 
         #region Delete Functions
-
+        /// <summary>
+        /// Remove a rung from the ladder diagram
+        /// </summary>
+        /// <param name="rung">Rung to be removed</param>
         public void Remove(Rung rung)
         {
             if (rung == null) throw new ArgumentException("Null rung", "rung");
@@ -105,10 +152,13 @@ namespace Core.Logical
             {
                 _Rungs.Remove(rung);
             }
-            else throw new ArgumentException("Rung is not inserted in current diagram", "anchor");
+            else throw new ArgumentException("Rung is not inserted in current diagram", "rung");
 
         }
 
+        /// <summary>
+        /// Remove all rungs from the diagram
+        /// </summary>
         public void Clear()
         {
             _Rungs.Clear();
