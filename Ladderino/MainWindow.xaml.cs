@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Core.Components;
+using Core.Data;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -13,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Core.Components.Logical;
 
 namespace Ladderino
 {
@@ -35,6 +36,10 @@ namespace Ladderino
             rung.Add(contact);
 
             DataContext = this;
+
+            LDIVariableTable TestTable = new LDIVariableTable();
+            TestTable.Add("Var1", typeof(int));
+            TestTable.Add("Var1", typeof(int), 10);
 
         }
 

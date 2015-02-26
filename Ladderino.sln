@@ -4,8 +4,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ladderino", "Ladderino\Ladderino.csproj", "{4C51407F-5EA9-4B73-8CFF-E4B18AB16ABF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AAE9FF4A-7A71-4750-9EE5-908A336F272D} = {AAE9FF4A-7A71-4750-9EE5-908A336F272D}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AAE9FF4A-7A71-4750-9EE5-908A336F272D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLogicalTest", "CoreLogicalTest\CoreLogicalTest.csproj", "{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,10 @@ Global
 		{AAE9FF4A-7A71-4750-9EE5-908A336F272D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAE9FF4A-7A71-4750-9EE5-908A336F272D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAE9FF4A-7A71-4750-9EE5-908A336F272D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

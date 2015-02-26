@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,10 +43,12 @@ namespace Core.Data
             {
                 if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
                 Table.Values[index].NumRefs++;
+                Trace.WriteLine("New reference to variable " + name + " |total number of references: " + Table.Values[index].NumRefs);
             }
             else
             {
                 Table.Add(name, new LDIVariable(type));
+                Trace.WriteLine("New Variable inserted: " + name + " |Type: " + type);
             }
         }
 
@@ -69,10 +72,12 @@ namespace Core.Data
                 if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
                 Table.Values[index].NumRefs++;
                 Table.Values[index].Value = value;
+                Trace.WriteLine("New reference to variable " + name + " |total number of references: " + Table.Values[index].NumRefs + "| Value set: " + value);
             }
             else
             {
                 Table.Add(name, new LDIVariable(type, value));
+                Trace.WriteLine("New Variable inserted: " + name + "| Type: " + type + "| Value set: " + value);
             }
         }
 
@@ -90,7 +95,10 @@ namespace Core.Data
             if (index != -1)
             {
                 Table.Values[index].NumRefs--;
+                Trace.WriteLine("Reference to variable " + name + " removed |total number of references: " + Table.Values[index].NumRefs);
+
                 if (Table.Values[index].NumRefs == 0) Table.RemoveAt(index);
+                Trace.WriteLineIf(Table.Values[index].NumRefs == 0, "Variable " + name + " removed from data table");
             }
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -117,11 +125,15 @@ namespace Core.Data
                     {
                         if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new ArgumentException("Type Mismatch", "type"));
                         else Table.RemoveAt(indexO);
+                        Trace.WriteLine("New variable name already exists, reference added");
                     }
                     else Table.Keys[indexO] = newName; //new name does not exist in list
+
+                    Trace.WriteLine(oldName + " Renamed to " + newName);
                 }
                 else
                 {
+                    Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName);
                     Table.Values[indexO].NumRefs--;
                     Table.Add(newName, new LDIVariable(Table.Values[indexO].Type));
                 }
@@ -139,6 +151,7 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
+            Trace.WriteLineIf(index != -1, "Variable found at index: " + index);
             if (index != -1) return index;
 
             throw new ArgumentException("Variable not found", "name");
@@ -166,6 +179,7 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
+            Trace.WriteLineIf(index != -1, "Variable found at index: " + index + " |Value: " + Table.Values[index].Value);
             if (index != -1) return Table.Values[index].Value;
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -178,7 +192,7 @@ namespace Core.Data
         public object GetValueAt(int index)
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
-
+            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] +  "): " + Table.Values[index].Value);
             return Table.Values[index].Value;
         }
 
@@ -194,6 +208,7 @@ namespace Core.Data
             if (index != -1)
             {
                 if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
+                Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value);
                 Table.Values[index].Value = value;
                 return;
             }
@@ -209,6 +224,7 @@ namespace Core.Data
         {
             if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
             if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
+            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value);
 
             Table.Values[index].Value = value;
         }
@@ -216,11 +232,12 @@ namespace Core.Data
 
         #region Constructors
         /// <summary>
-        /// Static class builder 
+        /// Default builder 
         /// </summary>
-        LDIVariableTable()
+        public LDIVariableTable()
         {
             Table = new SortedList<string, LDIVariable>();
+            Trace.WriteLine("New LDI Variable table started");
         }
         #endregion Constructors
 
@@ -232,7 +249,7 @@ namespace Core.Data
         /// <summary>
         /// Class that represents one memory entry
         /// </summary>
-        private class LDIVariable
+        private class LDIVariable : ICloneable
         {
             public object Value { get; set; }
             public int NumRefs { get; set; }
@@ -270,6 +287,11 @@ namespace Core.Data
             public LDIVariable(Type type, object value)
                 : this(type, 1, value)
             {
+            }
+
+            public object Clone()
+            {
+                return new LDIVariable(Type, NumRefs, Value);
             }
         }
         #endregion Classes
