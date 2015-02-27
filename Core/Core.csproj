@@ -40,7 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\LDIVariableTable.cs" />
+    <Compile Include="Data\LadderDataTable.cs" />
     <Compile Include="Components\Analog\ADC.cs" />
     <Compile Include="Components\Analog\PWM.cs" />
     <Compile Include="Components\Basic\Coil.cs" />

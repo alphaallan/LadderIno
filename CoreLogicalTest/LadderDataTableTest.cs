@@ -6,12 +6,12 @@ using Core.Data;
 namespace CoreLogicalTest
 {
     [TestClass]
-    public class LDIVariableTableTest
+    public class LadderDataTableTest
     {
         [TestMethod]
         public void BasicTests()
         {
-            LDIVariableTable TestTable = new LDIVariableTable();
+            LadderDataTable TestTable = new LadderDataTable();
 
             TestTable.Add("Var1", typeof(int));
             TestTable.Add("Var1", typeof(int), 10);
@@ -34,7 +34,7 @@ namespace CoreLogicalTest
         [TestMethod]
         public void WrongNameTests()
         {
-            LDIVariableTable TestTable = new LDIVariableTable();
+            LadderDataTable TestTable = new LadderDataTable();
             TestTable.Add("Var1", typeof(int));
 
             try
@@ -52,7 +52,7 @@ namespace CoreLogicalTest
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void IndexOfRangeTest()
         {
-            LDIVariableTable TestTable = new LDIVariableTable();
+            LadderDataTable TestTable = new LadderDataTable();
 
             TestTable.GetValue(2);
         }

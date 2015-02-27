@@ -13,7 +13,7 @@ namespace Core.Data
     /// LadderIno main core "RAM"
     /// this class manages the entire storage and manipulation of variables, including memory allocation 
     /// </summary>
-    public class LDIVariableTable
+    public class LadderDataTable
     {
         #region Properties
         /// <summary>
@@ -43,12 +43,12 @@ namespace Core.Data
             {
                 if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
-                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs);
+                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs, "Ladder Data Table");
             }
             else
             {
                 Table.Add(name, new LDIVariable(type));
-                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type);
+                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type, "Ladder Data Table");
             }
         }
 
@@ -72,12 +72,12 @@ namespace Core.Data
                 if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
                 Table.Values[index].Value = value;
-                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs + "| Value set: " + value);
+                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs + ", Value set: " + value, "Ladder Data Table");
             }
             else
             {
                 Table.Add(name, new LDIVariable(type, value));
-                Trace.WriteLine("New Variable inserted: " + name + "| Type: " + type + "| Value set: " + value);
+                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type + ", Value set: " + value, "Ladder Data Table");
             }
         }
 
@@ -95,10 +95,10 @@ namespace Core.Data
             if (index != -1)
             {
                 Table.Values[index].NumRefs--;
-                Trace.WriteLine("Reference to variable " + name + " removed, total number of references: " + Table.Values[index].NumRefs);
+                Trace.WriteLine("Reference to variable " + name + " removed, total number of references: " + Table.Values[index].NumRefs, "Ladder Data Table");
 
                 if (Table.Values[index].NumRefs == 0) Table.RemoveAt(index);
-                Trace.WriteLineIf(Table.Values[index].NumRefs == 0, "Variable " + name + " removed from data table");
+                Trace.WriteLineIf(Table.Values[index].NumRefs == 0, "Variable " + name + " removed from data table", "Ladder Data Table");
             }
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -125,19 +125,19 @@ namespace Core.Data
                     {
                         if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new FormatException("Value Type Mismatch"));
                         else Table.RemoveAt(indexO);
-                        Trace.WriteLine("New variable name already exists, reference added");
+                        Trace.WriteLine("New variable name already exists, reference added", "Ladder Data Table");
                     }
                     else //new name does not exist in list
                     {
                         var temp = new LDIVariable(Table.Values[indexO].Type, Table.Values[indexO].Value);
                         Table.RemoveAt(indexO);
                         Table.Add(newName, temp);
-                        Trace.WriteLine(oldName + " Renamed to " + newName);
+                        Trace.WriteLine(oldName + " Renamed to " + newName, "Ladder Data Table");
                     }
                 }
                 else
                 {
-                    Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName);
+                    Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName, "Ladder Data Table");
                     Table.Values[indexO].NumRefs--;
                     Table.Add(newName, new LDIVariable(Table.Values[indexO].Type));
                 }
@@ -155,7 +155,7 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
-            Trace.WriteLineIf(index != -1, "Variable found at index: " + index);
+            Trace.WriteLineIf(index != -1, "Variable found at index: " + index, "Ladder Data Table");
             if (index != -1) return index;
 
             throw new ArgumentException("Variable not found", "name");
@@ -183,7 +183,7 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
-            Trace.WriteLineIf(index != -1, "Variable " + name + " found at index: " + index + ", Value: " + Table.Values[index].Value);
+            Trace.WriteLineIf(index != -1, "Variable " + name + " found at index: " + index + ", Value: " + Table.Values[index].Value, "Ladder Data Table");
             if (index != -1) return Table.Values[index].Value;
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -196,7 +196,7 @@ namespace Core.Data
         public object GetValue(int index)
         {
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
-            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] +  "): " + Table.Values[index].Value);
+            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): " + Table.Values[index].Value, "Ladder Data Table");
             return Table.Values[index].Value;
         }
 
@@ -212,7 +212,7 @@ namespace Core.Data
             if (index != -1)
             {
                 if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
-                Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value);
+                Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
                 Table.Values[index].Value = value;
                 return;
             }
@@ -228,7 +228,7 @@ namespace Core.Data
         {
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
             if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
-            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value);
+            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
 
             Table.Values[index].Value = value;
         }
@@ -238,10 +238,10 @@ namespace Core.Data
         /// <summary>
         /// Default builder 
         /// </summary>
-        public LDIVariableTable()
+        public LadderDataTable()
         {
             Table = new SortedList<string, LDIVariable>();
-            Trace.WriteLine("New LDI Variable table started");
+            Trace.WriteLine("New LDI Variable table started", "Ladder Data Table");
         }
         #endregion Constructors
 

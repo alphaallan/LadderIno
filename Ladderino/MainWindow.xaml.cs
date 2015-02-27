@@ -37,10 +37,6 @@ namespace Ladderino
 
             DataContext = this;
 
-            LDIVariableTable TestTable = new LDIVariableTable();
-            TestTable.Add("Var1", typeof(int));
-            TestTable.Add("Var1", typeof(int), 10);
-
         }
 
         public Coil coil { get; set; }

@@ -12,7 +12,7 @@ namespace CoreLogicalTest
         public void RungTest1()
         {
             Rung TestRung = new Rung();
-            TestRung.DataTable = new Core.Data.LDIVariableTable();
+            TestRung.DataTable = new Core.Data.LadderDataTable();
 
             Coil temp = new Coil();
             temp.Name = "1";

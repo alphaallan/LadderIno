@@ -58,7 +58,7 @@ namespace Core.Components
         /// <summary>
         /// Rung datacontext
         /// </summary>
-        public Data.LDIVariableTable DataTable
+        public Data.LadderDataTable DataTable
         {
             get { return _DataTable; }
             set
@@ -77,7 +77,8 @@ namespace Core.Components
         /// </summary>
         public void Execute()
         {
-            Trace.WriteLine("RungTest Started");
+            if (_DataTable == null) throw new NullReferenceException("No data table associated to the Rung");
+            Trace.WriteLine("RungTest Started " + _Components.Count + " elements in rung", "Rung");
             if (RungPower)
             {
                 foreach (ComponentBase comp in _Components) comp.Execute();
@@ -121,7 +122,7 @@ namespace Core.Components
         /// <param name="component">Component to be added</param>
         public void Add(ComponentBase component)
         {
-            Trace.Write("Rung Auto insert called -> ");
+            Trace.Write("Auto insert called -> ", "Rung");
             if (component == null) throw new ArgumentNullException("Null component","component");
             component.DataTable = DataTable;
 
@@ -138,7 +139,7 @@ namespace Core.Components
                     _Components.Add(SC);
                     _Components.Add(component);
 
-                    Trace.WriteLine(component.GetType() + " inserted at the empty rung");
+                    Trace.WriteLine(component.GetType() + " inserted at the empty rung", "Rung");
                 }
                 else
                 {
@@ -148,7 +149,7 @@ namespace Core.Components
                     component.RightLide = GroundRail;
 
                     _Components.Add(component);
-                    Trace.WriteLine(component.GetType() + " inserted");
+                    Trace.WriteLine(component.GetType() + " inserted", "Rung");
                 }
             }
             else
@@ -159,7 +160,7 @@ namespace Core.Components
                     component.RightLide.Root = component;
 
                     _Components.Add(component);
-                    Trace.WriteLine(component.GetType() + " inserted at the empty rung");
+                    Trace.WriteLine(component.GetType() + " inserted at the empty rung", "Rung");
                 }
                 else 
                 {
@@ -172,7 +173,7 @@ namespace Core.Components
                         component.RightLide = FC.RightLide;
                         component.RightLide.Root = component;
                         _Components.Remove(FC);
-                        Trace.Write(" Short Circuit removed -> ");
+                        Trace.Write(" Short Circuit removed -> ", "Rung");
                     }
                     else
                     {
@@ -182,9 +183,10 @@ namespace Core.Components
 
                     _Components.Insert(0, component);
 
-                    Trace.WriteLine(component.GetType() + " inserted");
+                    Trace.WriteLine(component.GetType() + " inserted", "Rung");
                 }
             }
+            component.DataTable = DataTable;
         }
 
         /// <summary>
@@ -194,7 +196,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAbove(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert above called with anchor: " + anchor.GetType() + " -> ");
+            Trace.Write("Insert above called with anchor: " + anchor.GetType() + " -> ", "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -217,9 +219,9 @@ namespace Core.Components
 
                 if (anchor is ShortCircuit) _Components.Remove(anchor);
             }
-            component.DataTable = DataTable;
 
-            Trace.WriteLine(component.GetType() + " inserted");
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
+            component.DataTable = DataTable;
         }
 
         /// <summary>
@@ -229,7 +231,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertUnder(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ");
+            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ", "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -254,8 +256,8 @@ namespace Core.Components
                     _Components.Remove(anchor);
                 }
             }
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
-            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         /// <summary>
@@ -265,7 +267,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertBefore(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert before called with anchor: " + anchor.GetType() + " -> ");
+            Trace.Write("Insert before called with anchor: " + anchor.GetType() + " -> ", "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -287,8 +289,8 @@ namespace Core.Components
 
                 component.RightLide.Root = component;
             }
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
-            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         /// <summary>
@@ -298,7 +300,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAfter(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ");
+            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ", "Rung");
             CheckComponentPair(component, anchor);
 
             if (anchor.RightLide.Root == null) anchor.RightLide.Root = anchor;
@@ -329,8 +331,8 @@ namespace Core.Components
                     _Components.Remove(anchor);
                 }
             }
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
-            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         #endregion Insert Functions
@@ -342,7 +344,7 @@ namespace Core.Components
         /// <param name="component">Component to be deleted</param>
         public void Remove(ComponentBase component)
         {
-            Trace.Write("Insert under called with component: " + component.GetType() + " -> ");
+            Trace.Write("Insert under called with component: " + component.GetType() + " -> ", "Rung");
             if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
 
             int nextComponentIndex = _Components.IndexOf(component) + 1;
@@ -366,8 +368,8 @@ namespace Core.Components
                 }
             }
 
+            Trace.WriteLine(component.GetType() + " removed", "Rung");
             _Components.Remove(component);
-            Trace.WriteLine(component.GetType() + " removed");
         }
 
         /// <summary>
@@ -376,7 +378,7 @@ namespace Core.Components
         public void Clear()
         {
             _Components.Clear();
-            Trace.Write("Rung Cleared");
+            Trace.Write("Rung Cleared", "Rung");
         }
         #endregion Delete Functions
 
@@ -392,7 +394,7 @@ namespace Core.Components
             PowerRail = new Node();
             GroundRail = new Node();
             PowerRail.LogicLevel = true;
-            Trace.WriteLine("New rung created");
+            Trace.WriteLine("New rung created", "Rung");
         }
         #endregion Constructors
 
@@ -403,7 +405,7 @@ namespace Core.Components
 
         string _Comment;
 
-        protected Data.LDIVariableTable _DataTable;
+        private Data.LadderDataTable _DataTable;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data

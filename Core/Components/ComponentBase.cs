@@ -84,7 +84,7 @@ namespace Core.Components
         /// <summary>
         /// Component datacontext
         /// </summary>
-        public Data.LDIVariableTable DataTable
+        public Data.LadderDataTable DataTable
         {
             get { return _DataTable; }
             set
@@ -185,7 +185,7 @@ namespace Core.Components
 
         private ComponentClass _Class;
         
-        private Data.LDIVariableTable _DataTable;
+        private Data.LadderDataTable _DataTable;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data

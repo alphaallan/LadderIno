@@ -27,6 +27,21 @@ namespace Core.Components
         }
 
         /// <summary>
+        /// Rung datacontext
+        /// </summary>
+        public Data.LadderDataTable DataTable
+        {
+            get { return _DataTable; }
+            set
+            {
+                if (value.Count != 0) throw new ArgumentException("Cannot use a non-empty data table", "DataTable");
+                _DataTable = value;
+                foreach (Rung rung in _Rungs) rung.DataTable = value;
+                if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("DataTable")); }
+            }
+        }
+
+        /// <summary>
         /// Master control relay, it is used to turn the hole program on and off. 
         /// It can also be used to abort program’s execution
         /// </summary>
@@ -36,7 +51,7 @@ namespace Core.Components
             set
             {
                 _MasterRelay = value;
-                Trace.WriteLine("MasterRelay seted to: " + value);
+                Trace.WriteLine("MasterRelay seted to: " + value, "Diagram");
                 if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("MasterRelay")); }
             }
         }
@@ -56,9 +71,10 @@ namespace Core.Components
         /// </summary>
         public void Execute()
         {
+            if (_DataTable == null) throw new NullReferenceException("No data table associated to the diagram");
             if (MasterRelay)
             {
-                Trace.WriteLine("Diagram execution started");
+                Trace.WriteLine("Diagram execution started", "Diagram");
                 foreach (Rung rung in _Rungs) rung.Execute();
             }
         }
@@ -79,10 +95,12 @@ namespace Core.Components
         /// <param name="rung">Rung to be inserted</param>
         public void Add(Rung rung)
         {
+            Trace.Write("Auto insert called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
 
             _Rungs.Add(rung);
-            Trace.WriteLine("Rung inserted");
+            Trace.WriteLine("Rung inserted", "Diagram");
+            rung.DataTable = DataTable;
         }
 
         /// <summary>
@@ -101,6 +119,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor rung</param>
         public void InsertAbove(Rung rung, Rung anchor)
         {
+            Trace.Write("Insert above called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
             if (anchor == null) throw new ArgumentException("Null rung", "anchor");
             if (anchor == rung) throw new ArgumentException("Anchor rung and new rung are the same", "anchor");
@@ -109,7 +128,8 @@ namespace Core.Components
             if (anchorIndex != -1)
             {
                 _Rungs.Insert(anchorIndex, rung);
-                Trace.WriteLine("Rung inserted");
+                Trace.WriteLine("Rung inserted", "Diagram");
+                rung.DataTable = DataTable;
             }
             else throw new ArgumentException("Anchor rung is not inserted in current diagram", "anchor");
         }
@@ -130,6 +150,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor rung</param>
         public void InsertUnder(Rung rung, Rung anchor)
         {
+            Trace.Write("Insert under called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
             if (anchor == null) throw new ArgumentException("Null rung", "anchor");
             if (anchor == rung) throw new ArgumentException("Anchor rung and new rung are the same", "anchor");
@@ -138,7 +159,8 @@ namespace Core.Components
             if (anchorIndex != -1)
             {
                 _Rungs.Insert(anchorIndex + 1, rung);
-                Trace.WriteLine("Rung inserted");
+                Trace.WriteLine("Rung inserted", "Diagram");
+                rung.DataTable = DataTable;
             }
             else throw new ArgumentException("Anchor rung is not inserted in current diagram", "anchor");
         }
@@ -152,12 +174,14 @@ namespace Core.Components
         /// <param name="rung">Rung to be removed</param>
         public void Remove(Rung rung)
         {
+            Trace.Write("Remove called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
 
             if (_Rungs.Contains(rung))
             {
                 _Rungs.Remove(rung);
-                Trace.WriteLine("Rung removed");
+                Trace.WriteLine("Rung removed", "Diagram");
+                //rung.DataTable = null;
             }
             else throw new ArgumentException("Rung is not inserted in current diagram", "rung");
 
@@ -169,7 +193,7 @@ namespace Core.Components
         public void Clear()
         {
             _Rungs.Clear();
-            Trace.WriteLine("Diagram cleared");
+            Trace.WriteLine("Diagram cleared", "Diagram");
         }
         #endregion Delete Functions
 
@@ -182,13 +206,15 @@ namespace Core.Components
         public Diagram()
         {
             Rungs = new ObservableCollection<Rung>();
-            Trace.WriteLine("New diagram created");
+            Trace.WriteLine("New diagram created", "Diagram");
         }
         #endregion Constructors
 
         #region Internal Data
         ObservableCollection<Rung> _Rungs;
         bool _MasterRelay;
+
+        private Data.LadderDataTable _DataTable;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
