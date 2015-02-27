@@ -122,9 +122,8 @@ namespace Core.Components
         /// <param name="component">Component to be added</param>
         public void Add(ComponentBase component)
         {
-            Trace.Write("Auto insert called -> ", "Rung");
+            Trace.WriteLine("Auto insert called", "Rung");
             if (component == null) throw new ArgumentNullException("Null component","component");
-            component.DataTable = DataTable;
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -196,7 +195,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAbove(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert above called with anchor: " + anchor.GetType() + " -> ", "Rung");
+            Trace.WriteLine("Insert above called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -231,7 +230,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertUnder(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ", "Rung");
+            Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -267,7 +266,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertBefore(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert before called with anchor: " + anchor.GetType() + " -> ", "Rung");
+            Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -300,7 +299,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAfter(ComponentBase component, ComponentBase anchor)
         {
-            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ", "Rung");
+            Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
 
             if (anchor.RightLide.Root == null) anchor.RightLide.Root = anchor;
@@ -344,7 +343,7 @@ namespace Core.Components
         /// <param name="component">Component to be deleted</param>
         public void Remove(ComponentBase component)
         {
-            Trace.Write("Insert under called with component: " + component.GetType() + " -> ", "Rung");
+            Trace.WriteLine("Insert under called with component: " + component.GetType(), "Rung");
             if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
 
             int nextComponentIndex = _Components.IndexOf(component) + 1;
@@ -370,6 +369,7 @@ namespace Core.Components
 
             Trace.WriteLine(component.GetType() + " removed", "Rung");
             _Components.Remove(component);
+            GC.Collect(); // Call gabarge collector
         }
 
         /// <summary>
@@ -397,6 +397,15 @@ namespace Core.Components
             Trace.WriteLine("New rung created", "Rung");
         }
         #endregion Constructors
+
+        #region Destructor
+        ~Rung()
+        {
+            Trace.WriteLine("Rung Destructor Called", "Rung");
+            DataTable = null; //This will force memory deallocate by all components to avoid another call to the garbage collector
+            _Components.Clear();
+        }
+        #endregion Destructor
 
         #region Internal Data
         ObservableCollection<ComponentBase> _Components;

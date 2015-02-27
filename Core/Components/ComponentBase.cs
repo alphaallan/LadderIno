@@ -166,7 +166,9 @@ namespace Core.Components
         #region Destructor
         ~ComponentBase()
         {
-            Trace.WriteLine("Destructor called from an " + this.GetType());
+            Trace.WriteLine("Destructor called from an " + this.GetType(), "Component");
+            _LeftLide = null;
+            _RightLide = null;
             try
             {
                 DataTableRelease();

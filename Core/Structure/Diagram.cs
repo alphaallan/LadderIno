@@ -181,7 +181,7 @@ namespace Core.Components
             {
                 _Rungs.Remove(rung);
                 Trace.WriteLine("Rung removed", "Diagram");
-                //rung.DataTable = null;
+                GC.Collect(); // Call gabarge collector
             }
             else throw new ArgumentException("Rung is not inserted in current diagram", "rung");
 
@@ -205,8 +205,9 @@ namespace Core.Components
         /// </summary>
         public Diagram()
         {
-            Rungs = new ObservableCollection<Rung>();
             Trace.WriteLine("New diagram created", "Diagram");
+            Rungs = new ObservableCollection<Rung>();
+            DataTable = new Data.LadderDataTable();
         }
         #endregion Constructors
 

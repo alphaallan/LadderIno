@@ -97,8 +97,11 @@ namespace Core.Data
                 Table.Values[index].NumRefs--;
                 Trace.WriteLine("Reference to variable " + name + " removed, total number of references: " + Table.Values[index].NumRefs, "Ladder Data Table");
 
-                if (Table.Values[index].NumRefs == 0) Table.RemoveAt(index);
-                Trace.WriteLineIf(Table.Values[index].NumRefs == 0, "Variable " + name + " removed from data table", "Ladder Data Table");
+                if (Table.Values[index].NumRefs == 0)
+                {
+                    Table.RemoveAt(index);
+                    Trace.WriteLine("Variable " + name + " removed from data table", "Ladder Data Table");
+                }
             }
             else throw new ArgumentException("Variable not found", "name");
         }
