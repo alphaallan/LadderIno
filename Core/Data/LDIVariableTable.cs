@@ -34,21 +34,21 @@ namespace Core.Data
         /// <param name="type">Variable type</param>
         public void Add(string name, Type type)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
-            if (type == null) throw new ArgumentException("Variable type must be provided", "type");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
+            if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
 
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
-                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
+                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
-                Trace.WriteLine("New reference to variable " + name + " |total number of references: " + Table.Values[index].NumRefs);
+                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs);
             }
             else
             {
                 Table.Add(name, new LDIVariable(type));
-                Trace.WriteLine("New Variable inserted: " + name + " |Type: " + type);
+                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type);
             }
         }
 
@@ -60,19 +60,19 @@ namespace Core.Data
         /// <param name="type">Variable type</param>
         public void Add(string name, Type type, object value)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
-            if (type == null) throw new ArgumentException("Variable type must be provided", "type");
-            if (value == null) throw new ArgumentException("Variable value must be provided", "value");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
+            if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
+            if (value == null) throw new ArgumentNullException("Variable value must be provided", "value");
             if (value.GetType() != type) throw new ArgumentException("Type Mismatch", "type");
 
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
-                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new ArgumentException("Type Mismatch", "type"));
+                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
                 Table.Values[index].Value = value;
-                Trace.WriteLine("New reference to variable " + name + " |total number of references: " + Table.Values[index].NumRefs + "| Value set: " + value);
+                Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs + "| Value set: " + value);
             }
             else
             {
@@ -88,14 +88,14 @@ namespace Core.Data
         /// <param name="name">Variable name</param>
         public void Remove(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
                 Table.Values[index].NumRefs--;
-                Trace.WriteLine("Reference to variable " + name + " removed |total number of references: " + Table.Values[index].NumRefs);
+                Trace.WriteLine("Reference to variable " + name + " removed, total number of references: " + Table.Values[index].NumRefs);
 
                 if (Table.Values[index].NumRefs == 0) Table.RemoveAt(index);
                 Trace.WriteLineIf(Table.Values[index].NumRefs == 0, "Variable " + name + " removed from data table");
@@ -111,8 +111,8 @@ namespace Core.Data
         /// <param name="newName">Variable new name</param>
         public void Rename(string oldName, string newName)
         {
-            if (string.IsNullOrEmpty(oldName)) throw new ArgumentException("Variable old name must be provided", "oldName");
-            if (string.IsNullOrEmpty(newName)) throw new ArgumentException("Variable new name must be provided", "newName");
+            if (string.IsNullOrEmpty(oldName)) throw new ArgumentNullException("Variable old name must be provided", "oldName");
+            if (string.IsNullOrEmpty(newName)) throw new ArgumentNullException("Variable new name must be provided", "newName");
 
             int indexO = Table.IndexOfKey(oldName), 
                 indexN = Table.IndexOfKey(newName);
@@ -123,13 +123,17 @@ namespace Core.Data
                 {
                     if (indexN != -1) //new name exists in list
                     {
-                        if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new ArgumentException("Type Mismatch", "type"));
+                        if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new FormatException("Value Type Mismatch"));
                         else Table.RemoveAt(indexO);
                         Trace.WriteLine("New variable name already exists, reference added");
                     }
-                    else Table.Keys[indexO] = newName; //new name does not exist in list
-
-                    Trace.WriteLine(oldName + " Renamed to " + newName);
+                    else //new name does not exist in list
+                    {
+                        var temp = new LDIVariable(Table.Values[indexO].Type, Table.Values[indexO].Value);
+                        Table.RemoveAt(indexO);
+                        Table.Add(newName, temp);
+                        Trace.WriteLine(oldName + " Renamed to " + newName);
+                    }
                 }
                 else
                 {
@@ -148,7 +152,7 @@ namespace Core.Data
         /// <returns>Variable index</returns>
         public int GetIndexOf(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
             Trace.WriteLineIf(index != -1, "Variable found at index: " + index);
@@ -176,10 +180,10 @@ namespace Core.Data
         /// <returns>Variable value</returns>
         public object GetValue(string name)
         {
-            if (string.IsNullOrEmpty(name)) throw new ArgumentException("Variable name must be provided", "name");
+            if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
-            Trace.WriteLineIf(index != -1, "Variable found at index: " + index + " |Value: " + Table.Values[index].Value);
+            Trace.WriteLineIf(index != -1, "Variable " + name + " found at index: " + index + ", Value: " + Table.Values[index].Value);
             if (index != -1) return Table.Values[index].Value;
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -187,11 +191,11 @@ namespace Core.Data
         /// <summary>
         /// Get a variable value by index
         /// </summary>
-        /// <param name="name">Variable name</param>
+        /// <param name="index">Variable index</param>
         /// <returns>Variable value</returns>
-        public object GetValueAt(int index)
+        public object GetValue(int index)
         {
-            if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
+            if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
             Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] +  "): " + Table.Values[index].Value);
             return Table.Values[index].Value;
         }
@@ -207,7 +211,7 @@ namespace Core.Data
 
             if (index != -1)
             {
-                if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
+                if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
                 Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value);
                 Table.Values[index].Value = value;
                 return;
@@ -218,12 +222,12 @@ namespace Core.Data
         /// <summary>
         /// Set variable value by index
         /// </summary>
-        /// <param name="name">Variable name</param>
+        /// <param name="index">Variable index</param>
         /// <param name="value">Value to be set</param>
-        public void SetValueAt(int index, object value)
+        public void SetValue(int index, object value)
         {
-            if (index < 0 || index >= Table.Count) throw new IndexOutOfRangeException("Index is not inside table limits");
-            if (value.GetType() != Table.Values[index].Type) throw new ArgumentException("Type Mismatch", "value");
+            if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
+            if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
             Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value);
 
             Table.Values[index].Value = value;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -76,6 +77,7 @@ namespace Core.Components
         /// </summary>
         public void Execute()
         {
+            Trace.WriteLine("RungTest Started");
             if (RungPower)
             {
                 foreach (ComponentBase comp in _Components) comp.Execute();
@@ -104,8 +106,8 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         private void CheckComponentPair(ComponentBase component, ComponentBase anchor)
         {
-            if (anchor == null) throw new ArgumentException("Null component", "anchor");
-            if (component == null) throw new ArgumentException("Null component", "component");
+            if (anchor == null) throw new ArgumentNullException("Null component", "anchor");
+            if (component == null) throw new ArgumentNullException("Null component", "component");
             if (!_Components.Contains(anchor)) throw new ArgumentException("Anchor component not inserted in current rung", "anchor");
             if (_Components.Contains(component)) throw new ArgumentException("Component already inserted in current rung", "component");
             if (component == anchor) throw new ArgumentException("Root components and inserter component are the same", "anchor");
@@ -119,7 +121,8 @@ namespace Core.Components
         /// <param name="component">Component to be added</param>
         public void Add(ComponentBase component)
         {
-            if (component == null) throw new ArgumentException("Null component","component");
+            Trace.Write("Rung Auto insert called -> ");
+            if (component == null) throw new ArgumentNullException("Null component","component");
             component.DataTable = DataTable;
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -134,6 +137,8 @@ namespace Core.Components
 
                     _Components.Add(SC);
                     _Components.Add(component);
+
+                    Trace.WriteLine(component.GetType() + " inserted at the empty rung");
                 }
                 else
                 {
@@ -143,6 +148,7 @@ namespace Core.Components
                     component.RightLide = GroundRail;
 
                     _Components.Add(component);
+                    Trace.WriteLine(component.GetType() + " inserted");
                 }
             }
             else
@@ -153,6 +159,7 @@ namespace Core.Components
                     component.RightLide.Root = component;
 
                     _Components.Add(component);
+                    Trace.WriteLine(component.GetType() + " inserted at the empty rung");
                 }
                 else 
                 {
@@ -165,6 +172,7 @@ namespace Core.Components
                         component.RightLide = FC.RightLide;
                         component.RightLide.Root = component;
                         _Components.Remove(FC);
+                        Trace.Write(" Short Circuit removed -> ");
                     }
                     else
                     {
@@ -173,6 +181,8 @@ namespace Core.Components
                     }
 
                     _Components.Insert(0, component);
+
+                    Trace.WriteLine(component.GetType() + " inserted");
                 }
             }
         }
@@ -184,6 +194,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAbove(ComponentBase component, ComponentBase anchor)
         {
+            Trace.Write("Insert above called with anchor: " + anchor.GetType() + " -> ");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -207,6 +218,8 @@ namespace Core.Components
                 if (anchor is ShortCircuit) _Components.Remove(anchor);
             }
             component.DataTable = DataTable;
+
+            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         /// <summary>
@@ -216,6 +229,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertUnder(ComponentBase component, ComponentBase anchor)
         {
+            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -241,6 +255,7 @@ namespace Core.Components
                 }
             }
             component.DataTable = DataTable;
+            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         /// <summary>
@@ -250,6 +265,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertBefore(ComponentBase component, ComponentBase anchor)
         {
+            Trace.Write("Insert before called with anchor: " + anchor.GetType() + " -> ");
             CheckComponentPair(component, anchor);
 
             if (component.Class == ComponentBase.ComponentClass.Output)
@@ -272,6 +288,7 @@ namespace Core.Components
                 component.RightLide.Root = component;
             }
             component.DataTable = DataTable;
+            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         /// <summary>
@@ -281,6 +298,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAfter(ComponentBase component, ComponentBase anchor)
         {
+            Trace.Write("Insert under called with anchor: " + anchor.GetType() + " -> ");
             CheckComponentPair(component, anchor);
 
             if (anchor.RightLide.Root == null) anchor.RightLide.Root = anchor;
@@ -312,6 +330,7 @@ namespace Core.Components
                 }
             }
             component.DataTable = DataTable;
+            Trace.WriteLine(component.GetType() + " inserted");
         }
 
         #endregion Insert Functions
@@ -323,7 +342,8 @@ namespace Core.Components
         /// <param name="component">Component to be deleted</param>
         public void Remove(ComponentBase component)
         {
-            if (!_Components.Contains(component)) throw new Exception("Component not inserted in current Rung");
+            Trace.Write("Insert under called with component: " + component.GetType() + " -> ");
+            if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
 
             int nextComponentIndex = _Components.IndexOf(component) + 1;
 
@@ -347,6 +367,7 @@ namespace Core.Components
             }
 
             _Components.Remove(component);
+            Trace.WriteLine(component.GetType() + " removed");
         }
 
         /// <summary>
@@ -355,6 +376,7 @@ namespace Core.Components
         public void Clear()
         {
             _Components.Clear();
+            Trace.Write("Rung Cleared");
         }
         #endregion Delete Functions
 
@@ -370,6 +392,7 @@ namespace Core.Components
             PowerRail = new Node();
             GroundRail = new Node();
             PowerRail.LogicLevel = true;
+            Trace.WriteLine("New rung created");
         }
         #endregion Constructors
 

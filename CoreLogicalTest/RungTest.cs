@@ -9,10 +9,23 @@ namespace CoreLogicalTest
     public class RungTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void RungTest1()
         {
             Rung TestRung = new Rung();
+            TestRung.DataTable = new Core.Data.LDIVariableTable();
 
+            Coil temp = new Coil();
+            temp.Name = "1";
+            TestRung.Add(temp);
+            TestRung.Add(new Coil());
+            TestRung.Add(new OSR());
+            TestRung.Add(new Contact());
+            temp.Name = "2";
+
+            TestRung.DataTable.SetValue("XNEW", true);
+            TestRung.Execute();
+            TestRung.Execute();
+            TestRung.Execute();
         }
     }
 }
