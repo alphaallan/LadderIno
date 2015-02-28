@@ -62,7 +62,7 @@ namespace Core.Data
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
-            if (value == null) throw new ArgumentNullException("Variable value must be provided", "value");
+            if (value == null && Nullable.GetUnderlyingType(type) == null) throw new ArgumentNullException("Variable value must be provided for non-nullable types", "value");
             if (value.GetType() != type) throw new ArgumentException("Type Mismatch", "type");
 
             int index = Table.IndexOfKey(name);
@@ -114,6 +114,7 @@ namespace Core.Data
         /// <param name="newName">Variable new name</param>
         public void Rename(string oldName, string newName)
         {
+            Trace.WriteLine("Rename invoked", "Ladder Data Table");
             if (string.IsNullOrEmpty(oldName)) throw new ArgumentNullException("Variable old name must be provided", "oldName");
             if (string.IsNullOrEmpty(newName)) throw new ArgumentNullException("Variable new name must be provided", "newName");
 
@@ -142,7 +143,8 @@ namespace Core.Data
                 {
                     Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName, "Ladder Data Table");
                     Table.Values[indexO].NumRefs--;
-                    Table.Add(newName, new LDIVariable(Table.Values[indexO].Type));
+                    Table.Add(newName, new LDIVariable(Table.Values[indexO].Type, Table.Values[indexO].Value));
+                    Trace.WriteLine("New Variable inserted: " + newName + ", Type: " + Table.Values[indexO].Type + ", Value set: " + Table.Values[indexO].Value, "Ladder Data Table");
                 }
             }
             else throw new ArgumentException("Variable name not found", "oldName");
@@ -158,7 +160,7 @@ namespace Core.Data
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
             int index = Table.IndexOfKey(name);
-            Trace.WriteLineIf(index != -1, "Variable found at index: " + index, "Ladder Data Table");
+            Trace.WriteLineIf(index != -1, "Variable '" + name + "' found at index: " + index, "Ladder Data Table");
             if (index != -1) return index;
 
             throw new ArgumentException("Variable not found", "name");

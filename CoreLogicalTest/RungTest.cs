@@ -10,7 +10,7 @@ namespace CoreLogicalTest
     public class RungTest
     {
         [TestMethod]
-        public void RungTest1()
+        public void BasicTest()
         {
             Rung TestRung = new Rung();
             TestRung.DataTable = new Core.Data.LadderDataTable();
