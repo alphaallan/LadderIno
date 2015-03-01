@@ -24,6 +24,7 @@ namespace Core.Components
             set 
             { 
                 _IsClosed = value;
+                if (DataTable != null && _Type == ContactType.InputPin) DataTable.SetValue(FullName, value);
                 RaisePropertyChanged("IsClosed");
             }
         }

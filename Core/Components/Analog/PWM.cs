@@ -14,14 +14,17 @@ namespace Core.Components
     public class PWM : ComponentBase
     {
         #region Properties
+        /// <summary>
+        /// Dudy Cycle variable
+        /// </summary>
         public string DudyCycle 
         {
             get { return _DudyCycle; }
             set
             {
-                if (byte.TryParse(value, out DudyCycleValue) || string.IsNullOrEmpty(value))
+                if (byte.TryParse(value, out _DudyCycleValue) || string.IsNullOrEmpty(value))
                 {
-                    if (!byte.TryParse(_DudyCycle, out DudyCycleValue))
+                    if (!byte.TryParse(_DudyCycle, out _DudyCycleValue))
                     {
                         if (DataTable != null)
                         {
@@ -36,7 +39,7 @@ namespace Core.Components
                 }
                 else
                 {
-                    if (byte.TryParse(_DudyCycle, out DudyCycleValue))
+                    if (byte.TryParse(_DudyCycle, out _DudyCycleValue))
                     {
                         if (DataTable != null) DataTable.Add(value, typeof(byte));
                     }
@@ -60,15 +63,36 @@ namespace Core.Components
                 RaisePropertyChanged("DudyCycle");
             } 
         }
+
+        /// <summary>
+        /// DudyCycle current Value
+        /// </summary>
+        public byte DudyCycleValue
+        {
+            get { return _DudyCycleValue; }
+            set 
+            { 
+                if(byte.TryParse(_DudyCycle, out temp))
+                {
+                    _DudyCycle = value.ToString();
+                    RaisePropertyChanged("DudyCycle");
+                }
+                else if (DataTable != null) DataTable.SetValue(_DudyCycle, value);
+
+                _DudyCycleValue = value;
+                RaisePropertyChanged("DudyCycleValue");
+            }
+        }
         #endregion Properties
 
         #region Functions
         protected override void RunLogicalTest()
         {
-            if (!byte.TryParse(_DudyCycle, out DudyCycleValue) && !string.IsNullOrEmpty(_DudyCycle))
+            if (!byte.TryParse(_DudyCycle, out temp) && !string.IsNullOrEmpty(_DudyCycle))
             {
-                DudyCycleValue = (byte)((DataTable != null) ? DataTable.GetValue(_DudyCycle) : 0);
+                _DudyCycleValue = (byte)((DataTable != null) ? DataTable.GetValue(_DudyCycle) : _DudyCycleValue);
             }
+            else _DudyCycleValue = temp;
 
             InternalState = (LeftLide.LogicLevel);
         }
@@ -83,7 +107,7 @@ namespace Core.Components
 
         protected override void DataTableAlloc()
         {
-            if (!byte.TryParse(_DudyCycle, out DudyCycleValue) && !string.IsNullOrEmpty(_DudyCycle))
+            if (!byte.TryParse(_DudyCycle, out temp) && !string.IsNullOrEmpty(_DudyCycle))
             {
                 if (DataTable != null) DataTable.Add(_DudyCycle, typeof(byte));                
             }
@@ -107,7 +131,8 @@ namespace Core.Components
         #region Internal Data
         string _DudyCycle;
 
-        byte DudyCycleValue;
+        byte _DudyCycleValue;
+        byte temp;
         #endregion Internal Data
     }
 }

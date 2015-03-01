@@ -13,30 +13,27 @@ namespace Core.Components
     {
         #region Properties
         /// <summary>
-        /// Counter limit value
+        /// Counter limit variable
         /// </summary>
         public string Limit
         {
             get { return _Limit; }
             set
             {
-                if (short.TryParse(value, out LimitValue) || string.IsNullOrEmpty(value))
+                if (short.TryParse(value, out _LimitValue) || string.IsNullOrEmpty(value))
                 {
-                    if (!short.TryParse(_Limit, out LimitValue) && DataTable != null)
+                    if (!short.TryParse(_Limit, out _LimitValue) && DataTable != null)
                     {
                         try
                         {
                             DataTable.Remove(_Limit);
                         }
-                        catch (ArgumentException)
-                        {
-
-                        }
+                        catch (ArgumentException){ }
                     }
                 }
                 else if (DataTable != null) 
                 {
-                    if (short.TryParse(_Limit, out LimitValue))
+                    if (short.TryParse(_Limit, out _LimitValue))
                     {
                         DataTable.Add(value, typeof(short));
                     }
@@ -58,17 +55,51 @@ namespace Core.Components
                 RaisePropertyChanged("Limit");
             }
         }
+
+        /// <summary>
+        /// Counter limit current value
+        /// </summary>
+        public short LimitValue
+        {
+            get { return _LimitValue; }
+            set 
+            {
+                if (short.TryParse(_Limit, out _LimitValue))
+                {
+                    _Limit = value.ToString();
+                    RaisePropertyChanged("Limit");
+                }
+                else if (DataTable != null) DataTable.SetValue(_Limit, value);
+
+                _LimitValue = value;
+                RaisePropertyChanged("LimitValue");
+            }
+        }
+
+        /// <summary>
+        /// Counter Current Value
+        /// </summary>
+        public short CurrentValue
+        {
+            get { return _CurrentValue; }
+            set 
+            { 
+                _CurrentValue = value;
+                if (DataTable != null) DataTable.SetValue(FullName, value);
+                RaisePropertyChanged("CurrentValue");
+            }
+        }
         #endregion Properties
 
         #region Functions
         protected void RetrieveData()
         {
-            if (!short.TryParse(_Limit, out LimitValue) && !string.IsNullOrEmpty(_Limit) && DataTable != null)
+            if (!short.TryParse(_Limit, out _LimitValue) && !string.IsNullOrEmpty(_Limit) && DataTable != null)
             {
                 LimitValue = (short) DataTable.GetValue(_Limit);
             }
 
-            CurrentValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : 0);
+            _CurrentValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : _CurrentValue);
         }
 
         protected override void DataTableRelease()
@@ -108,7 +139,7 @@ namespace Core.Components
         public CounterComponent(short startValue, Node Left, Node Right)
             : this(Left, Right)
         {
-            CurrentValue = startValue;
+            _CurrentValue = startValue;
         }
 
         public CounterComponent(string name, Node Left, Node Right)
@@ -121,7 +152,7 @@ namespace Core.Components
         public CounterComponent(string name, short startValue, Node Left, Node Right)
             : base(typeof(short), name, Left, Right)
         {
-            CurrentValue = startValue;
+            _CurrentValue = startValue;
             NamePerfix = ComponentPrefix.Conter;
             Class = ComponentClass.Mixed;
         }
@@ -131,8 +162,8 @@ namespace Core.Components
         private string _Limit;
 
         protected bool LastInput;
-        protected short LimitValue;
-        protected short CurrentValue;
+        private short _LimitValue;
+        private short _CurrentValue;
         #endregion Internal Data
     }
 }

@@ -71,14 +71,14 @@ namespace Core.Components
         #region Functions
         protected void RetrieveData()
         {
-            if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA) && DataTable != null)
+            if (!short.TryParse(_NameA, out _ValueA) && !string.IsNullOrEmpty(_NameA) && DataTable != null)
             {
-                ValueA = (short)DataTable.GetValue(_NameA);
+                _ValueA = (short)DataTable.GetValue(_NameA);
             }
 
-            if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB) && DataTable != null)
+            if (!short.TryParse(_NameB, out _ValueB) && !string.IsNullOrEmpty(_NameB) && DataTable != null)
             {
-                ValueB = (short)DataTable.GetValue(_NameB);
+                _ValueB = (short)DataTable.GetValue(_NameB);
             }
         }
 
@@ -87,13 +87,13 @@ namespace Core.Components
             if (string.IsNullOrEmpty(oldName)) oldName = "0";
             if (string.IsNullOrEmpty(newName)) newName = "0";
 
-            if (short.TryParse(oldName, out ValueA))
+            if (short.TryParse(oldName, out _ValueA))
             {
-                if (!short.TryParse(newName, out ValueA) && DataTable != null) DataTable.Add(newName, typeof(short));
+                if (!short.TryParse(newName, out _ValueA) && DataTable != null) DataTable.Add(newName, typeof(short));
             }
             else if (DataTable != null) 
             {
-                if (!short.TryParse(newName, out ValueA))
+                if (!short.TryParse(newName, out _ValueA))
                 {
                     try
                     {
@@ -142,8 +142,8 @@ namespace Core.Components
             {
                 DataTable.Add(_Destination, typeof(short));
 
-                if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA)) DataTable.Add(_NameA, typeof(short));
-                if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB)) DataTable.Add(_NameB, typeof(short));
+                if (!short.TryParse(_NameA, out _ValueA) && !string.IsNullOrEmpty(_NameA)) DataTable.Add(_NameA, typeof(short));
+                if (!short.TryParse(_NameB, out _ValueB) && !string.IsNullOrEmpty(_NameB)) DataTable.Add(_NameB, typeof(short));
             }
         }
         #endregion Functions
@@ -166,8 +166,8 @@ namespace Core.Components
         private string _NameA;
         private string _NameB;
 
-        protected short ValueA;
-        protected short ValueB;
+        protected short _ValueA;
+        protected short _ValueB;
         #endregion Internal Data
     }
 }

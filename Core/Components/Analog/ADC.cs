@@ -14,13 +14,31 @@ namespace Core.Components
     public class ADC : NameableComponent
     {
         #region Properties
+        /// <summary>
+        /// Last value Reded by the ADC
+        /// </summary>
         public short ReadValue
         {
             get { return _ReadValue; }
             set
             {
                 _ReadValue = (short)((value > 1023) ? 1023 : (value < 0) ? 0 : value);
+                if (DataTable != null) DataTable.SetValue(FullName, _ReadValue);
                 RaisePropertyChanged("ReadValue");
+            }
+        }
+
+        /// <summary>
+        /// Input value in ADC
+        /// </summary>
+        public short InputValue
+        {
+            get { return _InputValue; }
+            set
+            {
+                _InputValue = (short)((value > 1023) ? 1023 : (value < 0) ? 0 : value);
+                if (DataTable != null) DataTable.SetValue(FullName + "_INPUT", _InputValue);
+                RaisePropertyChanged("InputValue");
             }
         }
         #endregion Properties
@@ -28,8 +46,8 @@ namespace Core.Components
         #region Functions
         protected override void RunLogicalTest()
         {
-            ReadValue = (short)((DataTable != null) ? DataTable.GetValue(FullName + "_INPUT") : 0);
-            if (DataTable != null) DataTable.SetValue(FullName, ReadValue);
+            _InputValue = (short)((DataTable != null) ? DataTable.GetValue(FullName + "_INPUT") : _InputValue);
+            ReadValue = InputValue;
             InternalState = (LeftLide.LogicLevel);
         }
 
@@ -94,6 +112,7 @@ namespace Core.Components
 
         #region Internal Data
         short _ReadValue;
+        short _InputValue;
         #endregion Internal Data
     }
 }

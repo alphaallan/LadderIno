@@ -76,24 +76,5 @@ namespace CoreLogicalTest
             TestRung = null;
             GC.Collect();
         }
-
-        [TestMethod]
-        public void ComponentSelfAllocDealoc()
-        {
-            var DataTable = new Core.Data.LadderDataTable();
-
-            ComponentAlloc(DataTable);
-            GC.Collect();
-            Trace.WriteLine(DataTable.Count);
-        }
-
-        private void ComponentAlloc(Core.Data.LadderDataTable table)
-        {
-            var t = new Coil();
-            t.DataTable = table;
-            t.Name = "TEST";
-            t.Type = Coil.CoilType.InternalRelay;
-            //t.DataTable = null;
-        }
     }
 }
