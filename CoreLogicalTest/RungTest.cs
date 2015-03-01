@@ -38,26 +38,38 @@ namespace CoreLogicalTest
             TestRung.InsertUnder(Y1C, X1);
             TestRung.InsertAfter(new OSR(),X1);
 
-
+            Trace.WriteLine("Memory alloc");
+            Trace.Indent();
             TestRung.DataTable = new Core.Data.LadderDataTable();
+            Trace.Unindent();
 
             Trace.WriteLine("Cycle 1", "Unit Test");
+            Trace.Indent();
             TestRung.Execute();
+            Trace.Unindent();
 
             Trace.WriteLine("Cycle 2", "Unit Test");
+            Trace.Indent();
             TestRung.DataTable.SetValue("X1", true);
             TestRung.Execute();
+            Trace.Unindent();
 
             Trace.WriteLine("Cycle 3", "Unit Test");
+            Trace.Indent();
             TestRung.DataTable.SetValue("X1", false);
             TestRung.Execute();
+            Trace.Unindent();
 
             Trace.WriteLine("Cycle 4", "Unit Test");
+            Trace.Indent();
             TestRung.Execute();
+            Trace.Unindent();
 
             Trace.WriteLine("Cycle 5", "Unit Test");
+            Trace.Indent();
             TestRung.DataTable.SetValue("X2", true);
             TestRung.Execute();
+            Trace.Unindent();
 
             Trace.WriteLine("END", "Unit Test");
             TestRung.Clear();

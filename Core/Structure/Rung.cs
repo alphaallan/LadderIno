@@ -79,10 +79,12 @@ namespace Core.Components
         {
             if (_DataTable == null) throw new NullReferenceException("No data table associated to the Rung");
             Trace.WriteLine("RungTest Started " + _Components.Count + " elements in rung", "Rung");
+            Trace.Indent();
             if (RungPower)
             {
                 foreach (ComponentBase comp in _Components) comp.Execute();
             }
+            Trace.Unindent();
         }
 
 
@@ -124,6 +126,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Auto insert called", "Rung");
             if (component == null) throw new ArgumentNullException("Null component","component");
+            Trace.Indent();
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -186,6 +189,7 @@ namespace Core.Components
                 }
             }
             component.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         /// <summary>
@@ -197,6 +201,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Insert above called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
+            Trace.Indent();
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -221,6 +226,7 @@ namespace Core.Components
 
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         /// <summary>
@@ -232,6 +238,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
+            Trace.Indent();
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -257,6 +264,7 @@ namespace Core.Components
             }
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         /// <summary>
@@ -268,6 +276,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
+            Trace.Indent();
 
             if (component.Class == ComponentBase.ComponentClass.Output)
             {
@@ -290,6 +299,7 @@ namespace Core.Components
             }
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         /// <summary>
@@ -301,6 +311,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
+            Trace.Indent();
 
             if (anchor.RightLide.Root == null) anchor.RightLide.Root = anchor;
 
@@ -332,6 +343,7 @@ namespace Core.Components
             }
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         #endregion Insert Functions
@@ -345,6 +357,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Insert under called with component: " + component.GetType(), "Rung");
             if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
+            Trace.Indent();
 
             int nextComponentIndex = _Components.IndexOf(component) + 1;
 
@@ -370,6 +383,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " removed", "Rung");
             _Components.Remove(component);
             GC.Collect(); // Call gabarge collector
+            Trace.Unindent();
         }
 
         /// <summary>

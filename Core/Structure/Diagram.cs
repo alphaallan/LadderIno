@@ -75,7 +75,9 @@ namespace Core.Components
             if (MasterRelay)
             {
                 Trace.WriteLine("Diagram execution started", "Diagram");
+                Trace.Indent();
                 foreach (Rung rung in _Rungs) rung.Execute();
+                Trace.Unindent();
             }
         }
 
@@ -95,12 +97,14 @@ namespace Core.Components
         /// <param name="rung">Rung to be inserted</param>
         public void Add(Rung rung)
         {
-            Trace.Write("Auto insert called -> ", "Diagram");
+            Trace.WriteLine("Auto insert called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
 
+            Trace.Indent();
             _Rungs.Add(rung);
             Trace.WriteLine("Rung inserted", "Diagram");
             rung.DataTable = DataTable;
+            Trace.Unindent();
         }
 
         /// <summary>
@@ -119,7 +123,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor rung</param>
         public void InsertAbove(Rung rung, Rung anchor)
         {
-            Trace.Write("Insert above called -> ", "Diagram");
+            Trace.WriteLine("Insert above called", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
             if (anchor == null) throw new ArgumentException("Null rung", "anchor");
             if (anchor == rung) throw new ArgumentException("Anchor rung and new rung are the same", "anchor");
@@ -127,9 +131,11 @@ namespace Core.Components
             int anchorIndex = _Rungs.IndexOf(anchor);
             if (anchorIndex != -1)
             {
+                Trace.Indent();
                 _Rungs.Insert(anchorIndex, rung);
                 Trace.WriteLine("Rung inserted", "Diagram");
                 rung.DataTable = DataTable;
+                Trace.Unindent();
             }
             else throw new ArgumentException("Anchor rung is not inserted in current diagram", "anchor");
         }
@@ -150,7 +156,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor rung</param>
         public void InsertUnder(Rung rung, Rung anchor)
         {
-            Trace.Write("Insert under called -> ", "Diagram");
+            Trace.WriteLine("Insert under called -> ", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
             if (anchor == null) throw new ArgumentException("Null rung", "anchor");
             if (anchor == rung) throw new ArgumentException("Anchor rung and new rung are the same", "anchor");
@@ -158,9 +164,11 @@ namespace Core.Components
             int anchorIndex = _Rungs.IndexOf(anchor);
             if (anchorIndex != -1)
             {
+                Trace.Indent();
                 _Rungs.Insert(anchorIndex + 1, rung);
                 Trace.WriteLine("Rung inserted", "Diagram");
                 rung.DataTable = DataTable;
+                Trace.Unindent();
             }
             else throw new ArgumentException("Anchor rung is not inserted in current diagram", "anchor");
         }
@@ -174,14 +182,16 @@ namespace Core.Components
         /// <param name="rung">Rung to be removed</param>
         public void Remove(Rung rung)
         {
-            Trace.Write("Remove called -> ", "Diagram");
+            Trace.WriteLine("Remove called", "Diagram");
             if (rung == null) throw new ArgumentException("Null rung", "rung");
 
             if (_Rungs.Contains(rung))
             {
+                Trace.Indent();
                 _Rungs.Remove(rung);
                 Trace.WriteLine("Rung removed", "Diagram");
                 GC.Collect(); // Call gabarge collector
+                Trace.Unindent();
             }
             else throw new ArgumentException("Rung is not inserted in current diagram", "rung");
 
@@ -192,7 +202,11 @@ namespace Core.Components
         /// </summary>
         public void Clear()
         {
+            Trace.WriteLine("Diagram Clear invoked", "Diagram");
             _Rungs.Clear();
+            Trace.Indent();
+            GC.Collect();
+            Trace.Unindent();
             Trace.WriteLine("Diagram cleared", "Diagram");
         }
         #endregion Delete Functions
