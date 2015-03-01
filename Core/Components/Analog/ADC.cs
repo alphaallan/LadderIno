@@ -28,8 +28,44 @@ namespace Core.Components
         #region Functions
         protected override void RunLogicalTest()
         {
-            ReadValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : 0);
+            ReadValue = (short)((DataTable != null) ? DataTable.GetValue(FullName + "_INPUT") : 0);
+            if (DataTable != null) DataTable.SetValue(FullName, ReadValue);
             InternalState = (LeftLide.LogicLevel);
+        }
+
+        protected override void NameChangedHandler(string oldName, string newName)
+        {
+            if (DataTable != null)
+            {
+                base.NameChangedHandler(oldName, newName);
+                try
+                {
+                    DataTable.Rename(oldName + "_INPUT", newName + "_INPUT");
+                }
+                catch (ArgumentException ex)
+                {
+                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_INPUT", typeof(Int16));
+                    else throw ex;
+                }
+            }
+        }
+
+        protected override void DataTableRelease()
+        {
+            base.DataTableRelease();
+
+            try
+            {
+                if (DataTable != null) DataTable.Remove(FullName + "_INPUT");
+            }
+            catch (ArgumentException) { }
+        }
+
+        protected override void DataTableAlloc()
+        {
+            base.DataTableAlloc();
+
+            if (DataTable != null) DataTable.Add(FullName + "_INPUT", typeof(Int16));
         }
         #endregion Functions
 

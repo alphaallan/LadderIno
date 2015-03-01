@@ -64,7 +64,7 @@ namespace Core.Components
         protected override void RunLogicalTest()
         {
             IsClosed = (bool)((DataTable != null)? DataTable.GetValue(FullName) : false);
-            InternalState = (_IsInverted ^ _IsClosed);
+            InternalState = ((_IsInverted ^ _IsClosed) && LeftLide.LogicLevel);
         }
         #endregion Functions
 
