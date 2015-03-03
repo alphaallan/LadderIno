@@ -189,5 +189,303 @@ namespace CoreLogicalTest
             Assert.IsTrue(adc.InternalState);
             #endregion ADC
         }
+
+        [TestMethod]
+        [TestCategory("Component")]
+        public void Compare()
+        {
+            var TestTable = new LadderDataTable();
+            Node PowerRail = new Node();
+
+            #region Declarações
+            EQU equ = new EQU();
+            equ.LeftLide = PowerRail;
+            equ.NameA = "VarA";
+            equ.NameB = "VarB";
+            equ.DataTable = TestTable;
+
+            GEQ geq = new GEQ();
+            geq.LeftLide = PowerRail;
+            geq.NameA = "VarA";
+            geq.NameB = "VarB";
+            geq.DataTable = TestTable;
+
+            GRT grt = new GRT();
+            grt.LeftLide = PowerRail;
+            grt.NameA = "VarA";
+            grt.NameB = "VarB";
+            grt.DataTable = TestTable;
+
+            LEG leg = new LEG();
+            leg.LeftLide = PowerRail;
+            leg.NameA = "VarA";
+            leg.NameB = "VarB";
+            leg.DataTable = TestTable;
+
+            LES les = new LES();
+            les.LeftLide = PowerRail;
+            les.NameA = "VarA";
+            les.NameB = "VarB";
+            les.DataTable = TestTable;
+
+            NEQ neq = new NEQ();
+            neq.LeftLide = PowerRail;
+            neq.NameA = "VarA";
+            neq.NameB = "VarB";
+            neq.DataTable = TestTable;
+            #endregion Declarações
+
+            #region EQU
+            Trace.WriteLine("EQU", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "EQU");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(equ.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(equ.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(equ.Execute());
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "EQU");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsTrue(equ.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(equ.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(equ.Execute());
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion EQU
+
+            #region GEQ
+            Trace.WriteLine("GEQ", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "GEQ");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(geq.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(geq.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(geq.Execute());
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "GEQ");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsTrue(geq.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(geq.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsTrue(geq.Execute());
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion GEQ
+
+            #region GRT
+            Trace.WriteLine("GRT", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "GRT");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            grt.Execute();
+            Assert.IsFalse(grt.InternalState);
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            grt.Execute();
+            Assert.IsFalse(grt.InternalState);
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            grt.Execute();
+            Assert.IsFalse(grt.InternalState);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "GRT");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            grt.Execute();
+            Assert.IsFalse(grt.InternalState);
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            grt.Execute();
+            Assert.IsFalse(grt.InternalState);
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            grt.Execute();
+            Assert.IsTrue(grt.InternalState);
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion GRT
+
+            #region LEG
+            Trace.WriteLine("LEG", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "LEG");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            leg.Execute();
+            Assert.IsFalse(leg.InternalState);
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            leg.Execute();
+            Assert.IsFalse(leg.InternalState);
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            leg.Execute();
+            Assert.IsFalse(leg.InternalState);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "LEG");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            leg.Execute();
+            Assert.IsTrue(leg.InternalState);
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            leg.Execute();
+            Assert.IsTrue(leg.InternalState);
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            leg.Execute();
+            Assert.IsFalse(leg.InternalState);
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion LEG
+
+            #region LES
+            Trace.WriteLine("LES", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "LES");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(les.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(les.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(les.Execute());
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "LES");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(les.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsTrue(les.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(les.Execute());
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion LES
+
+            #region NEQ
+            Trace.WriteLine("NEQ", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("Input False", "NEQ");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(neq.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(neq.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsFalse(neq.Execute());
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "NEQ");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsFalse(neq.Execute());
+
+            TestTable.SetValue(0, (short)0);
+            TestTable.SetValue(1, (short)1);
+            Assert.IsTrue(neq.Execute());
+
+            TestTable.SetValue(0, (short)1);
+            TestTable.SetValue(1, (short)0);
+            Assert.IsTrue(neq.Execute());
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion NEQ
+        }
     }
 }
