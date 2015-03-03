@@ -9,6 +9,7 @@ namespace CoreLogicalTest
     public class LadderDataTableTest
     {
         [TestMethod]
+        [TestCategory("DataTable")]
         public void BasicTests()
         {
             LadderDataTable TestTable = new LadderDataTable();
@@ -35,6 +36,7 @@ namespace CoreLogicalTest
         }
 
         [TestMethod]
+        [TestCategory("DataTable")]
         public void WrongArgsTests()
         {
             LadderDataTable TestTable = new LadderDataTable();
@@ -155,6 +157,7 @@ namespace CoreLogicalTest
         }
 
         [TestMethod]
+        [TestCategory("DataTable")]
         public void TypeSafetyTests()
         {
             LadderDataTable TestTable = new LadderDataTable();
@@ -227,6 +230,7 @@ namespace CoreLogicalTest
         }
 
         [TestMethod]
+        [TestCategory("DataTable")]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void IndexOfRangeTest()
         {

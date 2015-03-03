@@ -10,7 +10,8 @@ namespace CoreLogicalTest
     public class ComponentTests
     {
         [TestMethod]
-        public void BasicComponents()
+        [TestCategory("Component")]
+        public void Basic()
         {
             Node PowerRail = new Node();
             PowerRail.LogicLevel = false;
@@ -140,6 +141,53 @@ namespace CoreLogicalTest
             osr.Execute();
             Assert.IsFalse(osr.InternalState);
             #endregion OSR
+        }
+
+        [TestMethod]
+        [TestCategory("Component")]
+        public void Analog()
+        {
+            var TestTable = new LadderDataTable();
+            Node PowerRail = new Node();
+            PowerRail.LogicLevel = false;
+
+            PWM pwm = new PWM(PowerRail);
+            pwm.DataTable = TestTable;
+            ADC adc = new ADC("1",PowerRail);
+            adc.DataTable = TestTable;
+
+            #region PWM
+            pwm.DudyCycle = "255";
+            pwm.Execute();
+            Assert.IsFalse(pwm.InternalState);
+
+            PowerRail.LogicLevel = true;
+            pwm.Execute();
+            Assert.IsTrue(pwm.InternalState);
+
+            PowerRail.LogicLevel = false;
+            pwm.DudyCycle = "DudyCycle";
+            pwm.DudyCycleValue = (byte)128;
+            pwm.Execute();
+            Assert.IsFalse(pwm.InternalState);
+
+            PowerRail.LogicLevel = true;
+            pwm.Execute();
+            Assert.IsTrue(pwm.InternalState);
+            #endregion PWM
+
+            #region ADC
+            PowerRail.LogicLevel = false;
+            adc.Execute();
+            Assert.IsFalse(adc.InternalState);
+            adc.InputValue = (short)1023;
+            adc.Execute();
+            Assert.IsFalse(adc.InternalState);
+
+            PowerRail.LogicLevel = true;
+            adc.Execute();
+            Assert.IsTrue(adc.InternalState);
+            #endregion ADC
         }
     }
 }

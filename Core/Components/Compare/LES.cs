@@ -16,8 +16,8 @@ namespace Core.Components
         #region Functions
         protected override void RunLogicalTest()
         {
-            RetrieveData();
-            InternalState = (ValueA < ValueB);
+            if (LeftLide.LogicLevel) RetrieveData();
+            InternalState = (LeftLide.LogicLevel && (ValueA < ValueB));
         }
         #endregion Functions
 

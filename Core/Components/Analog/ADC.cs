@@ -46,8 +46,11 @@ namespace Core.Components
         #region Functions
         protected override void RunLogicalTest()
         {
-            _InputValue = (short)((DataTable != null) ? DataTable.GetValue(FullName + "_INPUT") : _InputValue);
-            ReadValue = InputValue;
+            if (LeftLide.LogicLevel)
+            {
+                _InputValue = (short)((DataTable != null) ? DataTable.GetValue(FullName + "_INPUT") : _InputValue);
+                ReadValue = InputValue;
+            }
             InternalState = (LeftLide.LogicLevel);
         }
 

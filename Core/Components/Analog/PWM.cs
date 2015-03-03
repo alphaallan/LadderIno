@@ -88,12 +88,15 @@ namespace Core.Components
         #region Functions
         protected override void RunLogicalTest()
         {
-            if (!byte.TryParse(_DudyCycle, out temp) && !string.IsNullOrEmpty(_DudyCycle))
+            if (LeftLide.LogicLevel)
             {
-                _DudyCycleValue = (byte)((DataTable != null) ? DataTable.GetValue(_DudyCycle) : _DudyCycleValue);
+                if (!byte.TryParse(_DudyCycle, out temp) && !string.IsNullOrEmpty(_DudyCycle))
+                {
+                    _DudyCycleValue = (byte)((DataTable != null) ? DataTable.GetValue(_DudyCycle) : _DudyCycleValue);
+                }
+                else _DudyCycleValue = temp;
             }
-            else _DudyCycleValue = temp;
-
+            
             InternalState = (LeftLide.LogicLevel);
         }
 

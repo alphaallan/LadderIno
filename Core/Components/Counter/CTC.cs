@@ -16,11 +16,14 @@ namespace Core.Components.Counter
         #region Functions
         protected override void RunLogicalTest()
         {
-            RetrieveData();
-            if (!LastInput && LeftLide.LogicLevel && DataTable != null) DataTable.SetValue(FullName, (++CurrentValue > LimitValue) ? (short)0 : CurrentValue);
+            if (!LastInput && LeftLide.LogicLevel)
+            {
+                RetrieveData();
+                if (DataTable != null) DataTable.SetValue(FullName, (++CurrentValue > LimitValue) ? (short)0 : CurrentValue);
+            }
 
             LastInput = LeftLide.LogicLevel;
-            InternalState = (CurrentValue == LimitValue);
+            InternalState = (LeftLide.LogicLevel && (CurrentValue == LimitValue));
         }
         #endregion Functions
 

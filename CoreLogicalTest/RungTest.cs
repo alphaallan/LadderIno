@@ -10,6 +10,7 @@ namespace CoreLogicalTest
     public class RungTest
     {
         [TestMethod]
+        [TestCategory("Rung")]
         public void BasicTest()
         {
             //|     x1             x2     y1   |
