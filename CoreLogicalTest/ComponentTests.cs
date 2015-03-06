@@ -573,6 +573,54 @@ namespace CoreLogicalTest
             #endregion CTC
 
             #region CTD
+            Trace.WriteLine("CTD", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "CTD");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            ctc.CurrentValue = 3;
+            ctc.LimitValue = 1;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "CTD");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            ctd.Execute();
+            ctd.Execute();
+            ctd.Execute();
+            Assert.IsFalse(ctc.InternalState);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "CTD");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = false;
+            ctd.Execute();
+            PowerRail.LogicLevel = true;
+            ctd.Execute();
+            Assert.IsTrue(ctd.InternalState, "Fail First Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctd.Execute();
+            PowerRail.LogicLevel = true;
+            ctd.Execute();
+            Assert.IsTrue(ctd.InternalState, "Fail Second Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctd.Execute();
+            PowerRail.LogicLevel = true;
+            ctd.Execute();
+            Assert.IsFalse(ctd.InternalState, "Fail Third Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctd.Execute();
+            PowerRail.LogicLevel = true;
+            ctd.Execute();
+            Assert.IsFalse(ctd.InternalState, "Fail Fourth Cycle");
+
+            Trace.Unindent();
+            Trace.Unindent();
             #endregion CTD
 
             #region CTU
