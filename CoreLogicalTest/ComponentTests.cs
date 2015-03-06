@@ -194,10 +194,10 @@ namespace CoreLogicalTest
         [TestCategory("Component")]
         public void Compare()
         {
+            #region Startup
             var TestTable = new LadderDataTable();
             Node PowerRail = new Node();
 
-            #region Declarações
             EQU equ = new EQU();
             equ.LeftLide = PowerRail;
             equ.NameA = "VarA";
@@ -233,7 +233,7 @@ namespace CoreLogicalTest
             neq.NameA = "VarA";
             neq.NameB = "VarB";
             neq.DataTable = TestTable;
-            #endregion Declarações
+            #endregion Startup
 
             #region EQU
             Trace.WriteLine("EQU", "Unit Test");
@@ -486,6 +486,97 @@ namespace CoreLogicalTest
             Trace.Unindent();
             Trace.Unindent();
             #endregion NEQ
+        }
+
+        [TestMethod]
+        [TestCategory("Component")]
+        public void Counter()
+        {
+            #region Startup
+            var TestTable = new LadderDataTable();
+            Node PowerRail = new Node();
+
+            CTC ctc = new CTC();
+            ctc.Name = "1";
+            ctc.Limit = "Limit";
+            ctc.LeftLide = PowerRail;
+            ctc.DataTable = TestTable;
+
+            CTD ctd = new CTD();
+            ctd.Name = "1";
+            ctd.Limit = "Limit";
+            ctd.LeftLide = PowerRail;
+            ctd.DataTable = TestTable;
+
+            CTU ctu = new CTU();
+            ctu.Name = "1";
+            ctu.Limit = "Limit";
+            ctu.LeftLide = PowerRail;
+            ctu.DataTable = TestTable;
+
+            RES res = new RES();
+            res.Name = "1";
+            res.LeftLide = PowerRail;
+            res.DataTable = TestTable;
+            #endregion Startup
+
+            #region CTC
+            Trace.WriteLine("CTC", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "CTC");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            ctc.CurrentValue = 1;
+            ctc.LimitValue = 2;
+            res.Execute();
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "CTC");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            ctc.Execute();
+            ctc.Execute();
+            ctc.Execute();
+            Assert.IsFalse(ctc.InternalState);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "CTC");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = false;
+            ctc.Execute();
+            PowerRail.LogicLevel = true;
+            ctc.Execute();
+            Assert.IsFalse(ctc.InternalState, "Fail First Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctc.Execute();
+            PowerRail.LogicLevel = true;
+            ctc.Execute();
+            Assert.IsTrue(ctc.InternalState, "Fail Second Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctc.Execute();
+            PowerRail.LogicLevel = true;
+            ctc.Execute();
+            Assert.IsFalse(ctc.InternalState, "Fail Third Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctc.Execute();
+            PowerRail.LogicLevel = true;
+            ctc.Execute();
+            Assert.IsFalse(ctc.InternalState, "Fail Fourth Cycle");
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion CTC
+
+            #region CTD
+            #endregion CTD
+
+            #region CTU
+            #endregion CTU
         }
     }
 }

@@ -96,7 +96,7 @@ namespace Core.Components
         {
             if (!short.TryParse(_Limit, out _LimitValue) && !string.IsNullOrEmpty(_Limit) && DataTable != null)
             {
-                LimitValue = (short) DataTable.GetValue(_Limit);
+                _LimitValue = (short) DataTable.GetValue(_Limit);
             }
 
             _CurrentValue = (short)((DataTable != null) ? DataTable.GetValue(FullName) : _CurrentValue);

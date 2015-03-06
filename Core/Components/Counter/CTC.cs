@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Components.Counter
+namespace Core.Components
 {
     /// <summary>
     /// Component: Circular Couter
@@ -19,7 +19,7 @@ namespace Core.Components.Counter
             if (!LastInput && LeftLide.LogicLevel)
             {
                 RetrieveData();
-                if (DataTable != null) DataTable.SetValue(FullName, (++CurrentValue > LimitValue) ? (short)0 : CurrentValue);
+                CurrentValue = (short)((CurrentValue >= LimitValue) ? 0 : CurrentValue + 1);
             }
 
             LastInput = LeftLide.LogicLevel;
