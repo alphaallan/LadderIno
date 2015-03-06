@@ -13,6 +13,7 @@ namespace CoreLogicalTest
         [TestCategory("Component")]
         public void Basic()
         {
+            #region Startup
             Node PowerRail = new Node();
             PowerRail.LogicLevel = false;
 
@@ -24,6 +25,7 @@ namespace CoreLogicalTest
             OSR osr = new OSR();
             osr.LeftLide = PowerRail;
             ShortCircuit sc = new ShortCircuit(PowerRail);
+            #endregion Startup
 
             #region Coil
             coil.Execute();
@@ -147,6 +149,7 @@ namespace CoreLogicalTest
         [TestCategory("Component")]
         public void Analog()
         {
+            #region Startup
             var TestTable = new LadderDataTable();
             Node PowerRail = new Node();
             PowerRail.LogicLevel = false;
@@ -155,6 +158,7 @@ namespace CoreLogicalTest
             pwm.DataTable = TestTable;
             ADC adc = new ADC("1",PowerRail);
             adc.DataTable = TestTable;
+            #endregion Startup
 
             #region PWM
             pwm.DudyCycle = "255";
@@ -624,6 +628,56 @@ namespace CoreLogicalTest
             #endregion CTD
 
             #region CTU
+            Trace.WriteLine("CTU", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "CTU");
+            Trace.Indent();
+            PowerRail.LogicLevel = true;
+            ctu.CurrentValue = 1;
+            ctu.LimitValue = 3;
+            res.Execute();
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "CTU");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            ctu.Execute();
+            ctu.Execute();
+            ctu.Execute();
+            Assert.IsFalse(ctu.InternalState);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "CTU");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = false;
+            ctu.Execute();
+            PowerRail.LogicLevel = true;
+            ctu.Execute();
+            Assert.IsFalse(ctu.InternalState, "Fail First Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctu.Execute();
+            PowerRail.LogicLevel = true;
+            ctu.Execute();
+            Assert.IsFalse(ctu.InternalState, "Fail Second Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctu.Execute();
+            PowerRail.LogicLevel = true;
+            ctu.Execute();
+            Assert.IsTrue(ctu.InternalState, "Fail Third Cycle");
+
+            PowerRail.LogicLevel = false;
+            ctu.Execute();
+            Assert.IsFalse(ctu.InternalState, "Fail Fourth Cycle");
+            PowerRail.LogicLevel = true;
+            ctu.Execute();
+            Assert.IsTrue(ctu.InternalState, "Fail Fourth Cycle");
+
+            Trace.Unindent();
+            Trace.Unindent();
             #endregion CTU
         }
     }
