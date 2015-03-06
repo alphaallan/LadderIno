@@ -19,7 +19,7 @@ namespace Core.Components
             if (!LastInput && LeftLide.LogicLevel)
             {
                 RetrieveData();
-                if (DataTable != null) DataTable.SetValue(FullName, --CurrentValue);
+                CurrentValue--;
             }
             LastInput = LeftLide.LogicLevel;
             InternalState = (LeftLide.LogicLevel && (CurrentValue >= LimitValue));
