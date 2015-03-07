@@ -680,5 +680,203 @@ namespace CoreLogicalTest
             Trace.Unindent();
             #endregion CTU
         }
+
+        [TestMethod]
+        [TestCategory("Component")]
+        public void Math()
+        {
+            #region Startup
+            var TestTable = new LadderDataTable();
+            Node PowerRail = new Node();
+
+            ADD add = new ADD();
+            add.LeftLide = PowerRail;
+            add.Destination = "Dest";
+            add.VarA = "VarA";
+            add.VarB = "VarB";
+            add.DataTable = TestTable;
+
+            DIV div = new DIV();
+            div.LeftLide = PowerRail;
+            div.Destination = "Dest";
+            div.VarA = "VarA";
+            div.VarB = "VarB";
+            div.DataTable = TestTable;
+
+            MOV mov = new MOV();
+            mov.LeftLide = PowerRail;
+            mov.Destination = "Dest";
+            mov.VarA = "VarA";
+            mov.DataTable = TestTable;
+
+            MUL mul = new MUL();
+            mul.LeftLide = PowerRail;
+            mul.Destination = "Dest";
+            mul.VarA = "VarA";
+            mul.VarB = "VarB";
+            mul.DataTable = TestTable;
+
+            SUB sub = new SUB();
+            sub.LeftLide = PowerRail;
+            sub.Destination = "Dest";
+            sub.VarA = "VarA";
+            sub.VarB = "VarB";
+            sub.DataTable = TestTable;
+            #endregion Startup
+
+            #region ADD
+            Trace.WriteLine("ADD", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "ADD");
+            Trace.Indent();
+            TestTable.SetValue("Dest", (short)0);
+            add.ValueA = 1;
+            add.ValueB = 2;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "ADD");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            add.Execute();
+            Assert.IsFalse(add.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)0);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "ADD");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = true;
+            add.Execute();
+            Assert.IsTrue(add.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)3);
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion ADD
+
+            #region DIV
+            Trace.WriteLine("DIV", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "DIV");
+            Trace.Indent();
+            TestTable.SetValue("Dest", (short)0);
+            div.ValueA = 10;
+            div.ValueB = 2;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "DIV");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            div.Execute();
+            Assert.IsFalse(div.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)0);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "DIV");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = true;
+            div.Execute();
+            Assert.IsTrue(div.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)5);
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion DIV
+
+            #region MOV
+            Trace.WriteLine("MOV", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "MOV");
+            Trace.Indent();
+            TestTable.SetValue("Dest", (short)0);
+            mov.ValueA = 10;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "MOV");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            mov.Execute();
+            Assert.IsFalse(mov.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)0);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "MOV");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = true;
+            mov.Execute();
+            Assert.IsTrue(mov.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)10);
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion MOV
+
+            #region MUL
+            Trace.WriteLine("MUL", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "MUL");
+            Trace.Indent();
+            TestTable.SetValue("Dest", (short)0);
+            mul.ValueA = 3;
+            mul.ValueB = 6;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "MUL");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            mul.Execute();
+            Assert.IsFalse(mul.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)0);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "MUL");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = true;
+            mul.Execute();
+            Assert.IsTrue(mul.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)18);
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion MUL
+
+            #region SUB
+            Trace.WriteLine("SUB", "Unit Test");
+            Trace.Indent();
+
+            Trace.WriteLine("StartUP", "SUB");
+            Trace.Indent();
+            TestTable.SetValue("Dest", (short)0);
+            sub.ValueA = 4;
+            sub.ValueB = 6;
+            Trace.Unindent();
+
+            Trace.WriteLine("Input False", "SUB");
+            Trace.Indent();
+            PowerRail.LogicLevel = false;
+            sub.Execute();
+            Assert.IsFalse(sub.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)0);
+            Trace.Unindent();
+
+            Trace.WriteLine("Input True", "SUB");
+            Trace.Indent();
+
+            PowerRail.LogicLevel = true;
+            sub.Execute();
+            Assert.IsTrue(sub.InternalState);
+            Assert.AreEqual(TestTable.GetValue("Dest"), (short)-2);
+
+            Trace.Unindent();
+            Trace.Unindent();
+            #endregion SUB
+        }
     }
 }
