@@ -20,7 +20,9 @@ namespace Core.Components
             get { return _Limit; }
             set
             {
-                if (short.TryParse(value, out _LimitValue) || string.IsNullOrEmpty(value))
+                if (string.IsNullOrEmpty(value)) value = "0"; 
+
+                if (short.TryParse(value, out _LimitValue))
                 {
                     if (!short.TryParse(_Limit, out _LimitValue) && DataTable != null)
                     {
@@ -117,7 +119,7 @@ namespace Core.Components
         {
             base.DataTableAlloc();
 
-            if (DataTable != null) DataTable.Add(_Limit, typeof(short));
+            if (DataTable != null && !string.IsNullOrEmpty(_Limit)) DataTable.Add(_Limit, typeof(short));
         }
         #endregion Functions
 

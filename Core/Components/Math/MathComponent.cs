@@ -20,19 +20,27 @@ namespace Core.Components
             get { return _Destination; }
             set
             {
-                try
+                if(!string.IsNullOrEmpty(_Destination))
                 {
-                    if (DataTable != null) DataTable.Rename(_Destination, value);
-                    _Destination = value;
-                }
-                catch (ArgumentException ex)
-                {
-                    if (ex.ParamName == "oldName")
+                    try
                     {
-                        DataTable.Add(value, typeof(short));
+                        if (DataTable != null) DataTable.Rename(_Destination, value);
                         _Destination = value;
                     }
-                    else throw ex;
+                    catch (ArgumentException ex)
+                    {
+                        if (ex.ParamName == "oldName")
+                        {
+                            DataTable.Add(value, typeof(short));
+                            _Destination = value;
+                        }
+                        else throw ex;
+                    }
+                }
+                else 
+                {
+                    if (!string.IsNullOrEmpty(value) && DataTable != null) DataTable.Add(value, typeof(short));
+                    _Destination = value;
                 }
 
                 RaisePropertyChanged("Destination");
@@ -111,6 +119,8 @@ namespace Core.Components
         #region Functions
         protected void RetrieveData()
         {
+            if (string.IsNullOrEmpty(_Destination)) throw new NullReferenceException("Destination variable not set");
+
             if (!short.TryParse(_VarA, out _ValueA) && !string.IsNullOrEmpty(_VarA) && DataTable != null)
             {
                 _ValueA = (short)DataTable.GetValue(_VarA);
@@ -180,7 +190,7 @@ namespace Core.Components
             base.DataTableAlloc();
             if (DataTable != null)
             {
-                DataTable.Add(_Destination, typeof(short));
+                if (!string.IsNullOrEmpty(_Destination)) DataTable.Add(_Destination, typeof(short));
 
                 if (!short.TryParse(_VarA, out _ValueA) && !string.IsNullOrEmpty(_VarA)) DataTable.Add(_VarA, typeof(short));
                 if (!short.TryParse(_VarB, out _ValueB) && !string.IsNullOrEmpty(_VarB)) DataTable.Add(_VarB, typeof(short));

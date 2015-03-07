@@ -878,5 +878,80 @@ namespace CoreLogicalTest
             Trace.Unindent();
             #endregion SUB
         }
+
+        [TestMethod]
+        [TestCategory("Component")]
+        public void Constants()
+        {
+            var TestTable = new LadderDataTable();
+            Node PowerRail = new Node();
+            PowerRail.LogicLevel = true;
+
+            Trace.WriteLine("Math", "Unit Test");
+            Trace.Indent();
+            Trace.WriteLine("StartUP", "ADD");
+            Trace.Indent();
+            ADD add = new ADD();
+            add.DataTable = TestTable;
+            add.LeftLide = PowerRail;
+            add.Destination = "Dest";
+            add.VarA = "1";
+            add.ValueA = 3;
+            add.VarB = "2";
+            add.ValueB = 1;
+            add.Execute();
+            Trace.Unindent();
+
+            Trace.WriteLine("StartUP", "MOV");
+            Trace.Indent();
+            MOV mov = new MOV();
+            mov.DataTable = TestTable;
+            mov.LeftLide = PowerRail;
+            mov.Destination = "Dest";
+            mov.VarA = "0";
+            mov.ValueA = 1;
+            mov.Execute();
+            Trace.Unindent();
+            Trace.Unindent();
+
+            Trace.WriteLine("Counter", "Unit Test");
+            Trace.Indent();
+            Trace.WriteLine("StartUP", "CTC");
+            Trace.Indent();
+            CTC ctc = new CTC();
+            ctc.DataTable = TestTable;
+            ctc.Name = "1";
+            ctc.Limit = "2";
+            ctc.LimitValue = 3;
+            ctc.LeftLide = PowerRail;
+            ctc.Execute();
+            Trace.Unindent();
+
+            Trace.WriteLine("StartUP", "CTU");
+            Trace.Indent();
+            CTU ctu = new CTU();
+            ctu.DataTable = TestTable;
+            ctu.Name = "1";
+            ctu.Limit = "3";
+            ctu.LimitValue = 4;
+            ctu.LeftLide = PowerRail;
+            ctu.Execute();
+            Trace.Unindent();
+            Trace.Unindent();
+
+            Trace.WriteLine("Compare", "Unit Test");
+            Trace.Indent();
+            EQU equ = new EQU();
+            equ.DataTable = TestTable;
+            equ.LeftLide = PowerRail;
+            equ.VarA = "3";
+            equ.ValueA = 4;
+            equ.VarB = "4";
+            equ.ValueB = 5;
+            equ.Execute();
+            Trace.Unindent();
+            
+            Assert.AreEqual(2, TestTable.Count);
+        }
     }
 }
