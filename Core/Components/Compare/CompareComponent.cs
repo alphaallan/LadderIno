@@ -15,28 +15,68 @@ namespace Core.Components
         /// <summary>
         /// Variable A
         /// </summary>
-        public string NameA
+        public string VarA
         {
-            get { return _NameA; }
+            get { return _VarA; }
             set
             {
-                ParameterChangedHandler(NameA, value);
-                _NameA = (string.IsNullOrEmpty(value)) ? "0" : value;
-                RaisePropertyChanged("NameA");
+                ParameterChangedHandler(VarA, value);
+                _VarA = (string.IsNullOrEmpty(value)) ? "0" : value;
+                RaisePropertyChanged("VarA");
+            }
+        }
+
+        /// <summary>
+        /// Variable A current value
+        /// </summary>
+        public short ValueA
+        {
+            get { return _ValueA; }
+            set
+            {
+                if (short.TryParse(_VarA, out _ValueA) || string.IsNullOrEmpty(_VarA))
+                {
+                    _VarA = value.ToString();
+                    RaisePropertyChanged("VarA");
+                }
+                else if (DataTable != null) DataTable.SetValue(_VarA, value);
+
+                _ValueA = value;
+                RaisePropertyChanged("ValueA");
             }
         }
 
         /// <summary>
         /// Variable B (can be a constant)
         /// </summary>
-        public string NameB
+        public string VarB
         {
-            get { return _NameB; }
+            get { return _VarB; }
             set
             {
-                ParameterChangedHandler(NameB, value);
-                _NameB = (string.IsNullOrEmpty(value)) ? "0" : value;
-                RaisePropertyChanged("NameB");
+                ParameterChangedHandler(VarB, value);
+                _VarB = (string.IsNullOrEmpty(value)) ? "0" : value;
+                RaisePropertyChanged("VarB");
+            }
+        }
+
+        /// <summary>
+        /// Variable B current value
+        /// </summary>
+        public short ValueB
+        {
+            get { return _ValueB; }
+            set
+            {
+                if (short.TryParse(_VarB, out _ValueB) || string.IsNullOrEmpty(_VarA))
+                {
+                    _VarB = value.ToString();
+                    RaisePropertyChanged("VarB");
+                }
+                else if (DataTable != null) DataTable.SetValue(_VarB, value);
+
+                _ValueB = value;
+                RaisePropertyChanged("ValueB");
             }
         }
         #endregion Properties
@@ -44,14 +84,14 @@ namespace Core.Components
         #region Functions
         protected void RetrieveData()
         {
-            if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA))
+            if (!short.TryParse(_VarA, out _ValueA) && !string.IsNullOrEmpty(_VarA))
             {
-                ValueA = (short)((DataTable != null) ? DataTable.GetValue(_NameA) : 0);
+                _ValueA = (short)((DataTable != null) ? DataTable.GetValue(_VarA) : 0);
             }
 
-            if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB))
+            if (!short.TryParse(_VarB, out _ValueB) && !string.IsNullOrEmpty(_VarB))
             {
-                ValueB = (short)((DataTable != null) ? DataTable.GetValue(_NameB) : 0);
+                _ValueB = (short)((DataTable != null) ? DataTable.GetValue(_VarB) : 0);
             }
         }
 
@@ -60,15 +100,15 @@ namespace Core.Components
             if (string.IsNullOrEmpty(oldName)) oldName = "0";
             if (string.IsNullOrEmpty(newName)) newName = "0";
 
-            if (short.TryParse(oldName, out ValueA))
+            if (short.TryParse(oldName, out _ValueA))
             {
-                if (!short.TryParse(newName, out ValueA) && DataTable != null) DataTable.Add(newName, typeof(short));
+                if (!short.TryParse(newName, out _ValueA) && DataTable != null) DataTable.Add(newName, typeof(short));
             }
             else
             {
                 if (DataTable != null)
                 {
-                    if (!short.TryParse(newName, out ValueA))
+                    if (!short.TryParse(newName, out _ValueA))
                     {
                         try
                         {
@@ -92,13 +132,13 @@ namespace Core.Components
             {
                 try
                 {
-                    DataTable.Remove(_NameA);
+                    DataTable.Remove(_VarA);
                 }
                 catch (ArgumentException) { }
 
                 try
                 {
-                    DataTable.Remove(_NameB);
+                    DataTable.Remove(_VarB);
                 }
                 catch (ArgumentException) { }
             }
@@ -108,9 +148,9 @@ namespace Core.Components
         {
             if (DataTable != null)
             {
-                if (!short.TryParse(_NameA, out ValueA) && !string.IsNullOrEmpty(_NameA)) DataTable.Add(_NameA, typeof(short));
+                if (!short.TryParse(_VarA, out _ValueA) && !string.IsNullOrEmpty(_VarA)) DataTable.Add(_VarA, typeof(short));
 
-                if (!short.TryParse(_NameB, out ValueB) && !string.IsNullOrEmpty(_NameB)) DataTable.Add(_NameB, typeof(short));
+                if (!short.TryParse(_VarB, out _ValueB) && !string.IsNullOrEmpty(_VarB)) DataTable.Add(_VarB, typeof(short));
                 
             }
         }
@@ -130,11 +170,11 @@ namespace Core.Components
         #endregion Constructors
 
         #region Internal Data
-        private string _NameA;
-        private string _NameB;
+        private string _VarA;
+        private string _VarB;
 
-        protected short ValueA;
-        protected short ValueB;
+        private short _ValueA;
+        private short _ValueB;
         #endregion Internal Data
     }
 }

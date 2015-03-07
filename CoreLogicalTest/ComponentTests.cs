@@ -204,38 +204,38 @@ namespace CoreLogicalTest
 
             EQU equ = new EQU();
             equ.LeftLide = PowerRail;
-            equ.NameA = "VarA";
-            equ.NameB = "VarB";
+            equ.VarA = "VarA";
+            equ.VarB = "VarB";
             equ.DataTable = TestTable;
 
             GEQ geq = new GEQ();
             geq.LeftLide = PowerRail;
-            geq.NameA = "VarA";
-            geq.NameB = "VarB";
+            geq.VarA = "VarA";
+            geq.VarB = "VarB";
             geq.DataTable = TestTable;
 
             GRT grt = new GRT();
             grt.LeftLide = PowerRail;
-            grt.NameA = "VarA";
-            grt.NameB = "VarB";
+            grt.VarA = "VarA";
+            grt.VarB = "VarB";
             grt.DataTable = TestTable;
 
             LEG leg = new LEG();
             leg.LeftLide = PowerRail;
-            leg.NameA = "VarA";
-            leg.NameB = "VarB";
+            leg.VarA = "VarA";
+            leg.VarB = "VarB";
             leg.DataTable = TestTable;
 
             LES les = new LES();
             les.LeftLide = PowerRail;
-            les.NameA = "VarA";
-            les.NameB = "VarB";
+            les.VarA = "VarA";
+            les.VarB = "VarB";
             les.DataTable = TestTable;
 
             NEQ neq = new NEQ();
             neq.LeftLide = PowerRail;
-            neq.NameA = "VarA";
-            neq.NameB = "VarB";
+            neq.VarA = "VarA";
+            neq.VarB = "VarB";
             neq.DataTable = TestTable;
             #endregion Startup
 

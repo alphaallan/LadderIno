@@ -71,8 +71,8 @@ namespace Core.Components
         {
             get { return _DudyCycleValue; }
             set 
-            { 
-                if(byte.TryParse(_DudyCycle, out temp))
+            {
+                if (byte.TryParse(_DudyCycle, out temp) || string.IsNullOrEmpty(_DudyCycle))
                 {
                     _DudyCycle = value.ToString();
                     RaisePropertyChanged("DudyCycle");
