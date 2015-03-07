@@ -20,7 +20,7 @@ namespace Core.Components
             if (LeftLide.LogicLevel)
             {
                 RetrieveData();
-                if (DataTable != null) DataTable.SetValue(Destination, _ValueA);
+                if (DataTable != null) DataTable.SetValue(Destination, ValueA);
             }
             InternalState = LeftLide.LogicLevel;
         }

@@ -64,7 +64,7 @@ namespace Core.Components
             get { return _LimitValue; }
             set 
             {
-                if (short.TryParse(_Limit, out _LimitValue))
+                if (short.TryParse(_Limit, out _LimitValue) || string.IsNullOrEmpty(_Limit))
                 {
                     _Limit = value.ToString();
                     RaisePropertyChanged("Limit");
