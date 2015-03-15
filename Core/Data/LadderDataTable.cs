@@ -167,6 +167,18 @@ namespace Core.Data
         }
 
         /// <summary>
+        /// Get a variable's name by index
+        /// </summary>
+        /// <param name="index">Variable index</param>
+        /// <returns>Variable value</returns>
+        public string GetName(int index)
+        {
+            if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
+            Trace.WriteLine("Name at [" + index + "]: " + Table.Keys[index], "Ladder Data Table");
+            return Table.Keys[index];
+        }
+
+        /// <summary>
         /// Get if an variable name exists in data table
         /// </summary>
         /// <param name="name">Variable name</param>

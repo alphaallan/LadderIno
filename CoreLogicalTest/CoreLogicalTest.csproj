@@ -61,6 +61,10 @@
       <Project>{aae9ff4a-7a71-4750-9ee5-908a336f272d}</Project>
       <Name>Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\File\LDFile.csproj">
+      <Project>{4c53c7dc-8966-4f0a-9bff-bd8d222f6ade}</Project>
+      <Name>LDFile</Name>
+    </ProjectReference>
   </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">

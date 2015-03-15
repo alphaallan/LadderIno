@@ -216,6 +216,8 @@ namespace CoreLogicalTest
             Assert.IsFalse(Y2CI.InternalState, "Y2CI Fail");
             Trace.Unindent();
             #endregion Cycle 7
+
+            LDFile.DiagramWriter.WriteDiagram(TestDiagram, "test.xml");
         }
     }
 }
