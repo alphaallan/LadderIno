@@ -48,7 +48,7 @@ namespace LDFile
 
             #region Rungs
             writer.WriteStartElement("Rungs");
-            writer.WriteStartAttribute("NumRungs");
+            writer.WriteStartAttribute("Count");
             writer.WriteValue(diagram.Rungs.Count);
             writer.WriteEndAttribute();
 
@@ -95,7 +95,7 @@ namespace LDFile
                 #endregion Node Analisys
 
                 writer.WriteStartElement("Rung");
-                writer.WriteStartAttribute("NumComponents");
+                writer.WriteStartAttribute("Count");
                 writer.WriteValue(rung.Components.Count);
                 writer.WriteEndAttribute();
                 writer.WriteStartAttribute("Comment");
@@ -161,7 +161,7 @@ namespace LDFile
             Trace.WriteLine("Data Table Started");
             Trace.Indent();
             writer.WriteStartElement("DataTable");
-            writer.WriteStartAttribute("NumVariable");
+            writer.WriteStartAttribute("Count");
             writer.WriteValue(diagram.DataTable.Count);
             writer.WriteEndAttribute();
 

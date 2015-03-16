@@ -6,11 +6,15 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ladderino", "Ladderino\Ladderino.csproj", "{4C51407F-5EA9-4B73-8CFF-E4B18AB16ABF}"
 	ProjectSection(ProjectDependencies) = postProject
 		{AAE9FF4A-7A71-4750-9EE5-908A336F272D} = {AAE9FF4A-7A71-4750-9EE5-908A336F272D}
+		{4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE} = {4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AAE9FF4A-7A71-4750-9EE5-908A336F272D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLogicalTest", "CoreLogicalTest\CoreLogicalTest.csproj", "{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE} = {4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDFile", "File\LDFile.csproj", "{4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE}"
 EndProject
