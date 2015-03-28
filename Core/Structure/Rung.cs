@@ -116,6 +116,21 @@ namespace Core.Components
             if (component == anchor) throw new ArgumentException("Root components and inserter component are the same", "anchor");
             CheckNodes(component);
         }
+
+        /// <summary>
+        /// Verify component-node pair to be sure the insertion can happen 
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor node</param>
+        private void CheckComponentPair(ComponentBase component, Node anchor)
+        {
+            if (anchor == null) throw new ArgumentNullException("Null node", "anchor");
+            if (component == null) throw new ArgumentNullException("Null component", "component");
+            if (_Components.Contains(component)) throw new ArgumentException("Component already inserted in current rung", "component");
+            CheckNodes(component);
+            foreach (ComponentBase comp in _Components) if (comp.LeftLide == anchor || comp.RightLide == anchor) return;
+            throw new ArgumentException("Anchor node not inserted in current rung", "anchor");
+        }
         #endregion Auxiliar
 
         /// <summary>
@@ -303,6 +318,36 @@ namespace Core.Components
         }
 
         /// <summary>
+        /// Insert before anchor node
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor Node</param>
+        public void InsertBefore(ComponentBase component, Node anchor)
+        {
+            Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
+            CheckComponentPair(component, anchor);
+            Trace.Indent();
+
+            if (component.Class == ComponentBase.ComponentClass.Output)
+            {
+                throw new Exception("Output components can only be inserted with straight connection to the power rail");
+            }
+            else
+            {
+                component.LeftLide.Root = anchor.Root;
+                component.RightLide = anchor;
+                component.RightLide.Root = component;
+
+                foreach (ComponentBase comp in _Components) if (comp.RightLide == anchor) comp.RightLide = component.LeftLide;
+
+                _Components.Insert(_Components.IndexOf(component.LeftLide.Root) + 1, component);
+            }
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
+            component.DataTable = DataTable;
+            Trace.Unindent();
+        }
+
+        /// <summary>
         /// Insert after anchor component
         /// </summary>
         /// <param name="component">New component</param>
@@ -346,6 +391,34 @@ namespace Core.Components
             Trace.Unindent();
         }
 
+        /// <summary>
+        /// Insert before anchor node
+        /// </summary>
+        /// <param name="component">New component</param>
+        /// <param name="anchor">Anchor node</param>
+        public void InsertAfter(ComponentBase component, Node anchor)
+        {
+            Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
+            CheckComponentPair(component, anchor);
+            Trace.Indent();
+
+            if (component.Class == ComponentBase.ComponentClass.Output)
+            {
+                throw new Exception("Output components can only be inserted with straight connection to the power rail");
+            }
+            else
+            {
+                component.LeftLide = anchor;
+                component.RightLide.Root = component;
+
+                foreach (ComponentBase comp in _Components) if (comp.LeftLide == anchor) comp.LeftLide = component.RightLide;
+
+                _Components.Insert(_Components.IndexOf(component.LeftLide.Root) + 1, component);
+            }
+            Trace.WriteLine(component.GetType() + " inserted", "Rung");
+            component.DataTable = DataTable;
+            Trace.Unindent();
+        }
         #endregion Insert Functions
 
         #region Delete Functions
