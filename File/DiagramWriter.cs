@@ -102,6 +102,7 @@ namespace LDFile
                 writer.WriteValue(rung.Comment);
                 writer.WriteEndAttribute();
 
+                #region Component Write
                 Stack<int> Mode = new Stack<int>();
                 Mode.Push(-1);
 
@@ -147,6 +148,7 @@ namespace LDFile
                     }
                 }
                 Trace.Unindent();
+                #endregion Component Write
 
                 writer.WriteEndElement();
                 Trace.WriteLine("Rung Ended");
@@ -227,6 +229,7 @@ namespace LDFile
 
             switch (componentTypeName)
             {
+                #region Basic
                 case "Coil":
                     writer.WriteStartAttribute("Mode");
                     writer.WriteValue((component as Coil).Mode.ToString());
@@ -247,6 +250,7 @@ namespace LDFile
                     writer.WriteValue((component as Contact).Type.ToString());
                     writer.WriteEndAttribute();
                     break;
+                #endregion Basic
 
                 #region Compare Components
                 case "EQU":
@@ -254,7 +258,7 @@ namespace LDFile
                 case "GRT":
                 case "LEG":
                 case "LES":
-                case "NEG":
+                case "NEQ":
                     writer.WriteStartAttribute("VarA");
                     writer.WriteValue((component as CompareComponent).VarA);
                     writer.WriteEndAttribute();

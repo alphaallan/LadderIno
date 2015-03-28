@@ -221,7 +221,7 @@ namespace CoreLogicalTest
 
         [TestMethod]
         [TestCategory("Diagram")]
-        public void FileTest()
+        public void FileSave()
         {
             //|     x1          y2      x2     y1   |
             //|--+--[ ]--[OSR]--[/]--+--[/]----( )--|
@@ -332,6 +332,13 @@ namespace CoreLogicalTest
             #endregion Build Circuit
 
             LDFile.DiagramWriter.WriteDiagram(TestDiagram, "test.xml");
+        }
+
+        [TestMethod]
+        [TestCategory("Diagram")]
+        public void FileLoad()
+        {
+            LDFile.DiagramReader.ReadDiagram("test.xml");
         }
     }
 }

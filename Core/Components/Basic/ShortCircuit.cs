@@ -28,5 +28,11 @@ namespace Core.Components
         {
             Class = ComponentClass.Input;
         }
+
+        public ShortCircuit() 
+            : base()
+        {
+
+        }
     }
 }
