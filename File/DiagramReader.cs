@@ -11,25 +11,33 @@ using System.Diagnostics;
 
 namespace LDFile
 {
-    public static class DiagramReader
+    public static partial class LDFile
     {
-        public static Diagram ReadDiagram(string filePath)
+        /// <summary>
+        /// Load a LD diagram from file
+        /// </summary>
+        /// <param name="filePath">File to load From</param>
+        /// <returns>Loaded Diagram</returns>
+        public static Diagram LoadDiagram(string filePath)
         {
-
             Trace.WriteLine("Load process started", "LD File");
             Trace.Indent();
 
             Diagram diagram = new Diagram();
 
+            #region File Load
             XmlDocument file = new XmlDocument();
             file.Load(filePath);
             Trace.WriteLine("Document loaded", "LD File");
 
             XmlNodeList rungs = file.SelectNodes("/Diagram/Rungs/Rung");
             Trace.WriteLine("Rungs Loaded", "LD File");
+
             XmlNodeList variables = file.SelectSingleNode("/Diagram/DataTable").ChildNodes;
             Trace.WriteLine("Variables Loaded", "LD File");
+            #endregion File Load
 
+            #region Rung Rebuild
             foreach (XmlNode xRung in rungs)
             {
                 Trace.WriteLine("Rung Started");
@@ -37,7 +45,6 @@ namespace LDFile
 
                 Rung rung = new Rung();
                 rung.Comment = xRung.Attributes["Comment"].Value;
-                int componentCount = xRung.Attributes["Count"].Value.ToInt();
                 List<ComponentBase> components = new List<ComponentBase>();
                 List<List<string>> dRung = new List<List<string>>();//Decomposed stringRung
 
@@ -46,7 +53,9 @@ namespace LDFile
                 Trace.Indent();
 
                 string sRung = xRung.InnerXml; //Rung as string
-                
+                Stack<bool> SerialMode = new Stack<bool>();
+                SerialMode.Push(true);
+
                 dRung.Add(new List<string>());
 
                 //Decompose loop
@@ -54,12 +63,20 @@ namespace LDFile
                 {
                     if (sRung[pos] == '<') 
                     {
-                        if ((sRung.Substring(pos + 1, 6) == "Serial") || (sRung.Substring(pos + 1, 8) == "Parallel"))
+                        if (sRung.Substring(pos + 1, 6) == "Serial")
                         {
-                            int lenght = 0;
-                            while (sRung[pos + lenght] != '>') lenght++;
-                            dRung[CurrLevel].Add(sRung.Substring(pos, lenght + 1) + ((CurrLevel + 2 > dRung.Count) ? "0" : dRung[CurrLevel + 1].Count.ToString()));
-                            pos += lenght;
+                            dRung[CurrLevel].Add("SS" + ((CurrLevel + 2 > dRung.Count) ? 0 : dRung[CurrLevel + 1].Count));
+                            pos += 7;
+                            SerialMode.Push(true);
+
+                            CurrLevel++;
+                            if (CurrLevel + 1 > dRung.Count) dRung.Add(new List<string>());
+                        }
+                        else if (sRung.Substring(pos + 1, 8) == "Parallel")
+                        {
+                            dRung[CurrLevel].Add("SP" + ((CurrLevel + 2 > dRung.Count) ? 0 : dRung[CurrLevel + 1].Count));
+                            pos += 9;
+                            SerialMode.Push(false);
 
                             CurrLevel++;
                             if (CurrLevel + 1 > dRung.Count) dRung.Add(new List<string>());
@@ -68,8 +85,9 @@ namespace LDFile
                         {
                             int lenght = 0;
                             while (sRung[pos + lenght] != '>') lenght++;
-                            dRung[CurrLevel].Add(sRung.Substring(pos, lenght + 1));
+                            dRung[CurrLevel].Add((sRung.Substring(pos, lenght + 1).Contains('S')) ? "ES" : "EP");
                             pos += lenght;
+                            SerialMode.Pop();
 
                             CurrLevel--;
                         }
@@ -79,119 +97,167 @@ namespace LDFile
                             while (sRung[pos + lenght] != '/' && sRung[pos + lenght + 1] != '>') lenght++;
 
                             components.Add(CreateComponent(sRung.Substring(pos, ++lenght + 1)));
-                            dRung[CurrLevel].Add((components.Count - 1).ToString() + ((components.Count == 1) ? "*" : string.Empty));
+                            dRung[CurrLevel].Add(((components.Count == 1) ? "I" : "N") + ((SerialMode.Peek()) ? "S" : "P") + (components.Count - 1).ToString());
                             pos += lenght;
                         }
                     }
                 }
+
+                dRung[0].Add("ES");
+
                 Trace.WriteLine("Decomposition ended, rung deepness " + dRung.Count.ToString() + " levels", "Rung");
                 Trace.Unindent();
                 #endregion Decompose Loop
 
+                if (xRung.Attributes["Count"].Value.ToInt() != components.Count) throw new System.IO.FileLoadException("Corrupted File. Wrong number of components in a rung", filePath);
+
                 #region Rebuild Loop
-                Trace.WriteLine("Starting rung rebuild", "Rung");
+                Trace.WriteLine("Starting Rung Rebuild", "Rebuild");
                 Trace.Indent();
 
                 int lastComponent = 0;
-                Stack<int> Mode = new Stack<int>();
-                Mode.Push(-1);
-
                 rung.Add(components[0]);
 
                 for (int level = 0; level < dRung.Count; level++)
                 {
                     for (int pos = 0; pos < dRung[level].Count; pos++ )
                     {
-                        if (dRung[level][pos].Contains("<Serial>"))
+                        switch(dRung[level][pos][0])
                         {
-                            int slA = level, spA = pos;
-                            while (dRung[slA][spA].Contains("<Parallel>") || dRung[slA][spA].Contains("<Serial>"))
-                            {
-                                spA = dRung[slA][spA].Replace("<Parallel>", string.Empty).Replace("<Serial>", string.Empty).ToInt();
-                                slA++;
-                            }
+                            #region Hit Sub-Circuit
+                            case 'S': 
+                                int m = pos;
+                                while (dRung[level][m][0] != 'E') m++;
 
-                            int slB = level, spB = pos + 1;
-                            while (dRung[slB][spB].Contains("<Parallel>") || dRung[slB][spB].Contains("<Serial>"))
-                            {
-                                spB = dRung[slB][spB].Replace("<Parallel>", string.Empty).Replace("<Serial>", string.Empty).ToInt();
-                                slB++;
-                            }
-                            dRung[slB][spB].ToString();
-
-                            if (!dRung[slA][spA].Contains('*'))
-                            {
-                                if (Mode.Peek() == -1)
+                                if (m > pos + 1)
                                 {
-                                    rung.InsertAfter(components[dRung[slA][spA].ToInt()], components[lastComponent]);
+                                    int slA = level, //Selected level A
+                                    spA = pos;   //Selected Position A
+
+                                    while (dRung[slA][spA][0] == 'S')
+                                    {
+                                        spA = dRung[slA][spA].Substring(2).ToInt();
+                                        slA++;
+                                    }
+
+                                    int slB = level,  //Selected level B
+                                        spB = pos + 1;//Selected Position B
+
+                                    while (dRung[slB][spB][0] == 'S')
+                                    {
+                                        spB = dRung[slB][spB].Substring(2).ToInt();
+                                        slB++;
+                                    }
+
+                                    Trace.WriteLine("Component pair -> " + dRung[slA][spA].Substring(2) + " | " + dRung[slB][spB].Substring(2), "Rebuild");
+
+                                    //if (dRung[slA][spA][0] == 'N')
+                                    //{
+                                    //    if (dRung[level][m][1] == 'S') rung.InsertAfter(components[dRung[slA][spA].Substring(2).ToInt()], components[lastComponent]);
+                                    //    else rung.InsertUnder(components[dRung[slA][spA].Substring(2).ToInt()], components[lastComponent]);
+                                    //    dRung[slA][spA] = dRung[slA][spA].Replace("N", "I");
+                                    //    Trace.WriteLine("Component A inserted ", "Rebuild");
+                                    //}
+
+                                    lastComponent = dRung[slA][spA].Substring(2).ToInt();
+
+                                    if (dRung[slB][spB][0] == 'N')
+                                    {
+                                        if (dRung[level][m][1] == 'S') rung.InsertAfter(components[dRung[slB][spB].Substring(2).ToInt()], components[lastComponent]);
+                                        else rung.InsertUnder(components[dRung[slB][spB].Substring(2).ToInt()], components[lastComponent]);
+                                        dRung[slB][spB] = dRung[slB][spB].Replace("N", "I");
+                                        Trace.WriteLine("Component " + dRung[slB][spB].Substring(2) + " inserted ", "Rebuild");
+                                    }
+
+                                    lastComponent = dRung[slB][spB].Substring(2).ToInt();
                                 }
                                 else
                                 {
-                                    rung.InsertUnder(components[dRung[slA][spA].ToInt()], components[lastComponent]);
+                                    int sl = level, //Selected level
+                                    sp = pos;   //Selected Position
+
+                                    while (dRung[sl][sp][0] == 'S')
+                                    {
+                                        sp = dRung[sl][sp].Substring(2).ToInt();
+                                        sl++;
+                                    }
+
+                                    if (dRung[sl][sp][0] == 'N')
+                                    {
+                                        if (dRung[level][m][1] == 'S') rung.InsertAfter(components[dRung[sl][sp].Substring(2).ToInt()], components[lastComponent]);
+                                        else rung.InsertUnder(components[dRung[sl][sp].Substring(2).ToInt()], components[lastComponent]);
+                                        dRung[sl][sp] = dRung[sl][sp].Replace("N", "I");
+                                        Trace.WriteLine("Component " + dRung[sl][sp].Substring(2) + " inserted ", "Rebuild");
+                                    }
                                 }
+                                break;
+                            #endregion Hit Sub-Circuit
 
-                                lastComponent = dRung[slA][spA].ToInt();
-                                dRung[level][pos] += "*";
-                            }
-                            else lastComponent = dRung[slA][spA].Replace("*", string.Empty).ToInt();
+                            #region Hit End of Sub-Circuit
+                            case 'E': //End Sub-Circuit
+                                Trace.WriteLine("End sub-circuit", "Rebuild");
+                                break;
+                            #endregion Hit End of Sub-Circuit
 
-                            if (!dRung[slA][spA].Contains('*')) dRung[slA][spA].ToString();
-                            else lastComponent = dRung[slA][spA].Replace("*", string.Empty).ToInt();
+                            #region Hit Not Inserted Component
+                            case 'N': //New component
+                                if (dRung[level][pos][1] == 'S') rung.InsertAfter(components[dRung[level][pos].Substring(2).ToInt()], components[lastComponent]);
+                                else rung.InsertUnder(components[dRung[level][pos].Substring(2).ToInt()], components[lastComponent]);
 
-                        }
-                        else if (dRung[level][pos].Contains("<Parallel>"))
-                        {
-                            int sl = level, sp = pos;
-                            while (dRung[sl][sp].Contains("<Parallel>") || dRung[sl][sp].Contains("<Serial>"))
-                            {
-                                sp = dRung[sl][sp].Replace("<Parallel>", string.Empty).Replace("<Serial>", string.Empty).ToInt();
-                                sl++;
-                            }
-                            dRung[sl][sp].ToString();
+                                dRung[level][pos] = dRung[level][pos].Replace("N","I");
 
-                            int slB = level, spB = pos + 1;
-                            while (dRung[slB][spB].Contains("<Parallel>") || dRung[slB][spB].Contains("<Serial>"))
-                            {
-                                spB = dRung[slB][spB].Replace("<Parallel>", string.Empty).Replace("<Serial>", string.Empty).ToInt();
-                                slB++;
-                            }
-                            dRung[slB][spB].ToString();
-                        }
-                        else if (dRung[level][pos].Contains(@"</Serial>"))
-                        {
+                                lastComponent = dRung[level][pos].Substring(2).ToInt();
 
-                        }
-                        else if (dRung[level][pos].Contains(@"</Parallel>"))
-                        {
+                                Trace.WriteLine("Component " + dRung[level][pos].Substring(2) + " inserted", "Rebuild");
+                                break;
+                            #endregion Hit Not Inserted Component
 
-                        }
-                        else
-                        {
-                            if (!dRung[level][pos].Contains('*'))
-                            {
-                                if (Mode.Peek() == -1)
-                                {
-                                    rung.InsertAfter(components[dRung[level][pos].ToInt()], components[lastComponent]);
-                                }
-                                else
-                                {
-                                    rung.InsertUnder(components[dRung[level][pos].ToInt()], components[lastComponent]);
-                                }
-
-                                lastComponent = dRung[level][pos].ToInt();
-                                dRung[level][pos] += "*";
-                            }
-                            else lastComponent = dRung[level][pos].Replace("*", string.Empty).ToInt();
+                            #region Hit Inserted Component
+                            case 'I': //Inserted Component
+                                lastComponent = dRung[level][pos].Substring(2).ToInt();
+                                Trace.WriteLine("Last component index -> " + lastComponent, "Rebuild");
+                                break;
+                            #endregion Hit Inserted Component
                         }
                     }
                 }
 
                 Trace.Unindent();
+                Trace.WriteLine("Rung Rebuild Ended");
                 #endregion Rebuild Loop
 
                 diagram.Add(rung);
                 Trace.Unindent();
+                Trace.WriteLine("Rung Ended");
             }
+            #endregion Rung Rebuild
+
+            #region Data Load
+            Trace.WriteLine("Data Load Started");
+            Trace.Indent();
+            foreach (XmlNode xVar in variables)
+            {
+                switch (xVar.LocalName)
+                {
+                    case "Boolean":
+                        diagram.DataTable.SetValue(xVar.Attributes["Name"].Value, xVar.Attributes["Value"].Value.ToBool());
+                        break;
+
+                    case "Int16":
+                        diagram.DataTable.SetValue(xVar.Attributes["Name"].Value, xVar.Attributes["Value"].Value.ToShort());
+                        break;
+
+                    case "Byte":
+                        diagram.DataTable.SetValue(xVar.Attributes["Name"].Value, xVar.Attributes["Value"].Value.ToByte());
+                        break;
+
+                    default:
+                        throw new System.IO.FileLoadException("Corrupted File. Unrecognized variable type", filePath);
+                }
+            }
+            Trace.Unindent();
+            Trace.WriteLine("Data Load Ended");
+            #endregion Data Load
 
             Trace.Unindent();
             Trace.WriteLine("Load process ended successful");
@@ -199,6 +265,11 @@ namespace LDFile
             return diagram;
         }
 
+        /// <summary>
+        /// Create a single component from XML string
+        /// </summary>
+        /// <param name="xml">string containing component XML data</param>
+        /// <returns>Created Component</returns>
         private static ComponentBase CreateComponent(string xml)
         {
             XmlDocument temp = new XmlDocument();
@@ -206,6 +277,11 @@ namespace LDFile
             return CreateComponent(temp.DocumentElement);
         }
 
+        /// <summary>
+        /// Create a single component from XML data
+        /// </summary>
+        /// <param name="node">XML node containing component data</param>
+        /// <returns>Created Component</returns>
         private static ComponentBase CreateComponent(XmlNode node)
         {
             ComponentBase component;

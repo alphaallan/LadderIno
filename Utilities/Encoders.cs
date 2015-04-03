@@ -91,6 +91,14 @@ namespace Utilities.Encoders
             return buff;
         }
 
+        public static Byte ToByte(this string input)
+        {
+            Byte buff;
+            if (!string.IsNullOrEmpty(input)) Byte.TryParse(input.Trim(), out buff);
+            else buff = 0;
+            return buff;
+        }
+
         public static Int16 ToShort(this string input)
         {
             short buff;

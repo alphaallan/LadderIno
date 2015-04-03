@@ -354,7 +354,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor component</param>
         public void InsertAfter(ComponentBase component, ComponentBase anchor)
         {
-            Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
+            Trace.WriteLine("Insert after called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
             Trace.Indent();
 

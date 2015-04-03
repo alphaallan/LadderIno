@@ -10,9 +10,14 @@ using System.Diagnostics;
 
 namespace LDFile
 {
-    public static class DiagramWriter
+    public static partial class LDFile
     {
-        public static void WriteDiagram(Diagram diagram, string filePath)
+        /// <summary>
+        /// Write a LD Diagram to File
+        /// </summary>
+        /// <param name="diagram">Diagram to be written</param>
+        /// <param name="filePath">File path</param>
+        public static void SaveDiagram(Diagram diagram, string filePath)
         {
             if (diagram == null) throw new ArgumentNullException("diagram", "Null Diagram");
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException("filePath", "Empty File Path");
@@ -326,66 +331,5 @@ namespace LDFile
 
             writer.WriteEndElement();
         } 
-    }
-
-    /// <summary>
-    /// Store a node and the components conented to it
-    /// </summary>
-    class NodeConnections : IEquatable<NodeConnections>
-    {
-        /// <summary>
-        /// Node Reference
-        /// </summary>
-        public Node Node { get; set; }
-
-        /// <summary>
-        /// Components coming to the node
-        /// </summary>
-        public List<ComponentBase> InComponents { get; set; }
-
-        /// <summary>
-        /// Components coming from the node 
-        /// </summary>
-        public List<ComponentBase> OutComponents { get; set; }
-
-        public NodeConnections(Node node)
-        {
-            Node = node;
-            InComponents = new List<ComponentBase>();
-            OutComponents = new List<ComponentBase>();
-        }
-
-        public override bool Equals(object obj)
-        {
-            if (obj == null || !(obj is NodeConnections)) return false;
-            return (this.Node == (obj as NodeConnections).Node);
-        }
-
-        public override int GetHashCode()
-        {
-            return Node.GetHashCode();
-        }
-
-        public bool Equals(NodeConnections other)
-        {
-            if (other == null) return false;
-            return (this.Node == other.Node);
-        }
-    }
-
-    /// <summary>
-    /// Extention Metods to a List<NodeConnections>
-    /// </summary>
-    static class NodeConnectionsListExtentions
-    {
-        public static int FindNodeConnections(this List<NodeConnections> list, Node node)
-        {
-            return list.IndexOf(new NodeConnections(node));
-        }
-
-        public static NodeConnections GetNodeConnections(this List<NodeConnections> list, Node node)
-        {
-            return list[list.IndexOf(new NodeConnections(node))];
-        }
     }
 }

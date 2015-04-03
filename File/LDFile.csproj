@@ -41,6 +41,7 @@
   <ItemGroup>
     <Compile Include="DiagramReader.cs" />
     <Compile Include="DiagramWriter.cs" />
+    <Compile Include="NodeConnections.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
