@@ -398,7 +398,7 @@ namespace Core.Components
         /// <param name="anchor">Anchor node</param>
         public void InsertAfter(ComponentBase component, Node anchor)
         {
-            Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
+            Trace.WriteLine("Insert after called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
             Trace.Indent();
 
@@ -411,9 +411,16 @@ namespace Core.Components
                 component.LeftLide = anchor;
                 component.RightLide.Root = component;
 
-                foreach (ComponentBase comp in _Components) if (comp.LeftLide == anchor) comp.LeftLide = component.RightLide;
+                ComponentBase FirstConnection = null;
 
-                _Components.Insert(_Components.IndexOf(component.LeftLide.Root) + 1, component);
+                foreach (ComponentBase comp in _Components) 
+                    if (comp.LeftLide == anchor) 
+                    { 
+                        comp.LeftLide = component.RightLide;
+                        if (FirstConnection == null) FirstConnection = comp;
+                    }
+
+                _Components.Insert(_Components.IndexOf(FirstConnection), component);
             }
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
