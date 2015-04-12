@@ -24,7 +24,7 @@ namespace CoreLogicalTest
             osf.LeftLide = PowerRail;
             OSR osr = new OSR();
             osr.LeftLide = PowerRail;
-            ShortCircuit sc = new ShortCircuit(PowerRail);
+            SC sc = new SC(PowerRail);
             #endregion Startup
 
             #region Coil

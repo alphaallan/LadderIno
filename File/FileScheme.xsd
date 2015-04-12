@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="FileScheme"
+    targetNamespace="http://tempuri.org/FileScheme.xsd"
+    elementFormDefault="unqualified"
+    attributeFormDefault="unqualified"
+    xmlns="http://tempuri.org/FileScheme.xsd"
+    xmlns:mstns="http://tempuri.org/FileScheme.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+
+  <!-- Components -->
+  <xs:group name="Components">
+    <xs:choice>
+      <!-- Analog -->
+      <xs:element name="ADC">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="InputValue" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="PWM">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="DudyCycle" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <!-- Basic -->
+      <xs:element name="Coil">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="Mode" type="xs:string"/>
+          <xs:attribute name="Type" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="Contact">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="IsClosed" type="xs:string"/>
+          <xs:attribute name="IsInverted" type="xs:string"/>
+          <xs:attribute name="Type" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>  
+      </xs:element>
+  
+      <xs:element name="OSF">
+        <xs:complexType>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>  
+      </xs:element>
+  
+      <xs:element name="OSR">
+        <xs:complexType>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>  
+      </xs:element>
+  
+      <xs:element name="SC">
+        <xs:complexType>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>  
+      </xs:element>
+
+      <!-- Compare -->
+      <xs:element name="EQU">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="GEQ">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="GRT">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="LEG">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="LES">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="NEG">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <!-- Counter -->
+      <xs:element name="CTC">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="Limit" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="CTD">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="Limit" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="CTU">
+        <xs:complexType>
+          <xs:attribute name="Name" type="xs:string"/>
+          <xs:attribute name="Limit" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="RES">
+        <xs:complexType>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>  
+      </xs:element>
+  
+      <!-- Math -->
+      <xs:element name="ADD">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="DIV">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="MOV">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+
+      <xs:element name="MUL">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+  
+      <xs:element name="SUB">
+        <xs:complexType>
+          <xs:attribute name="VarA" type="xs:string"/>
+          <xs:attribute name="VarB" type="xs:string"/>
+          <xs:attribute name="Comment" type="xs:string"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:group>
+  
+  <!-- End Components -->
+    
+  <xs:complexType name="Parallel">
+    <xs:all>
+      <xs:element name="Parallel" type="Parallel"/>
+      <xs:element name="Serial" type="Parallel"/>
+    </xs:all>
+  </xs:complexType>
+    
+  <xs:group name="SubCircuit">
+    <xs:choice>
+      <xs:element name="Parallel">
+        <xs:complexType>
+          <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:group ref="SubCircuit"/>
+            <xs:group ref="Components"/>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Serial">
+        <xs:complexType>
+          <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:group ref="SubCircuit"/>
+            <xs:group ref="Components"/>
+          </xs:choice>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:group>
+  
+  <xs:complexType name="Rung">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="SubCircuit"/>
+      <xs:group ref="Components"/>
+    </xs:choice>
+    <xs:attribute name="Count" type="xs:int"/>
+    <xs:attribute name="Comment" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:element name="Diagram">
+    <xs:complexType>
+      <xs:sequence>
+        
+        <xs:element name="Rungs">
+          <xs:complexType>
+            
+            <xs:sequence>
+              <xs:element name="Rung" type="Rung" maxOccurs="unbounded"/>
+            </xs:sequence>
+            
+            <xs:attribute name="Count" type="xs:int"/>
+            <xs:attribute name="Comment" type="xs:string"/>
+            
+          </xs:complexType>
+        </xs:element>
+        
+        <xs:element name="DataTable">
+          <!--<xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element name="Boolean" type="xs:boolean"/>
+            </xs:choice>
+          </xs:complexType>-->
+        </xs:element>
+        
+      </xs:sequence>
+      <xs:attribute name="Date" type="xs:dateTime"/>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

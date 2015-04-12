@@ -147,7 +147,7 @@ namespace Core.Components
             {
                 if (_Components.Count == 0)
                 {
-                    ShortCircuit SC = new ShortCircuit(PowerRail);
+                    SC SC = new SC(PowerRail);
                     SC.RightLide = new Node(SC);
 
                     component.RightLide = GroundRail;
@@ -185,7 +185,7 @@ namespace Core.Components
 
                     component.LeftLide = PowerRail;
 
-                    if (FC is ShortCircuit)
+                    if (FC is SC)
                     {
                         component.RightLide = FC.RightLide;
                         component.RightLide.Root = component;
@@ -236,7 +236,7 @@ namespace Core.Components
                 component.RightLide = anchor.RightLide;
                 _Components.Insert(_Components.IndexOf(anchor), component);
 
-                if (anchor is ShortCircuit) _Components.Remove(anchor);
+                if (anchor is SC) _Components.Remove(anchor);
             }
 
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
@@ -271,7 +271,7 @@ namespace Core.Components
                 component.RightLide = anchor.RightLide;
                 _Components.Insert(_Components.IndexOf(anchor) + 1, component);
 
-                if (anchor is ShortCircuit)
+                if (anchor is SC)
                 {
                     component.RightLide.Root = component;
                     _Components.Remove(anchor);
@@ -304,7 +304,7 @@ namespace Core.Components
 
                 _Components.Insert(_Components.IndexOf(anchor), component);
 
-                if (anchor is ShortCircuit)
+                if (anchor is SC)
                 {
                     component.RightLide = anchor.RightLide;
                     _Components.Remove(anchor);
@@ -380,7 +380,7 @@ namespace Core.Components
 
                 _Components.Insert(_Components.IndexOf(anchor) + 1, component);
 
-                if (anchor is ShortCircuit)
+                if (anchor is SC)
                 {
                     component.LeftLide = anchor.LeftLide;
                     _Components.Remove(anchor);
@@ -497,7 +497,6 @@ namespace Core.Components
         {
             Trace.WriteLine("Rung Destructor Called", "Rung");
             DataTable = null; //This will force memory deallocate by all components to avoid another call to the garbage collector
-            _Components.Clear();
         }
         #endregion Destructor
 

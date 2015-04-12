@@ -315,7 +315,7 @@ namespace LDFile
                 #region Components that do not require any extra processing
                 case "OSF":
                 case "OSR":
-                case "ShortCircuit":
+                case "SC":
                 case "RES":
                     //Nothing to do were
                     break;

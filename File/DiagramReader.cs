@@ -304,7 +304,7 @@ namespace LDFile
                     component = contact;
                     break;
 
-                case "ShortCircuit": component = new ShortCircuit(); break;
+                case "SC": component = new SC(); break;
                 case "OSF": component = new OSF(); break;
                 case "OSR": component = new OSR(); break;
                 #endregion Basic

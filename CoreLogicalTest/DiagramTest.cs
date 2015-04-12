@@ -2,6 +2,8 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Core.Components;
 using System.Diagnostics;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace CoreLogicalTest
 {

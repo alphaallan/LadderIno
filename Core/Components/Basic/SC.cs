@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 namespace Core.Components
 {
     /// <summary>
-    /// Auxiliar structure component.
+    /// Auxiliar structure component Short Circuit.
     /// This always will be deleted
     /// </summary>
-    public class ShortCircuit : ComponentBase
+    public class SC : ComponentBase
     {
         protected override void RunLogicalTest()
         {
             InternalState = LeftLide.LogicLevel;
         }
 
-        public ShortCircuit(Node Left, Node Right) 
+        public SC(Node Left, Node Right) 
             : base(Left, Right)
         {
             Class = ComponentClass.Input;
         }
 
-        public ShortCircuit(Node Left)
+        public SC(Node Left)
             : base(Left, null)
         {
             Class = ComponentClass.Input;
         }
 
-        public ShortCircuit() 
+        public SC() 
             : base()
         {
 
