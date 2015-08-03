@@ -20,6 +20,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDFile", "File\LDFile.cspro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{9D3E6EBD-94A5-4692-9878-F24998299A98}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentUI", "ComponentUI\ComponentUI.csproj", "{63FABC02-2AD3-4500-85D6-4016C799FE91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,6 +48,10 @@ Global
 		{9D3E6EBD-94A5-4692-9878-F24998299A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D3E6EBD-94A5-4692-9878-F24998299A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D3E6EBD-94A5-4692-9878-F24998299A98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
