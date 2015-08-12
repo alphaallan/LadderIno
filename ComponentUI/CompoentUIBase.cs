@@ -32,16 +32,7 @@ namespace ComponentUI
         {
             
         }
-
-        public SolidColorBrush ActiveBrush
-        {
-            get { return (SolidColorBrush)GetValue(ActiveBrushProperty); }
-            set { SetValue(ActiveBrushProperty, value); }
-        }
-        public static readonly DependencyProperty ActiveBrushProperty =
-            DependencyProperty.Register("ActiveBrush", typeof(SolidColorBrush), typeof(ComponentUIBase), new PropertyMetadata(Brushes.Red));
-
-
+        
         public Core.Components.ComponentBase LogicComponent
         {
             get { return (Core.Components.ComponentBase)GetValue(LogicComponentProperty); }

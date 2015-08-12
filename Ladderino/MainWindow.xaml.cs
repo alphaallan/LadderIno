@@ -34,6 +34,11 @@ namespace Ladderino
             rung1.Children.Add(contact);
             rung1.Children.Add(coil);
 
+            var line = new ComponentUI.Node();
+            line.LogicNode = coil.LogicComponent.LeftLide;
+
+            RungStack.Children.Add(line);
+
             RungStack.Background = Brushes.Green;
             coil.LogicComponent.RightLide = new Core.Components.Node(coil.LogicComponent);
             coil.LogicComponent.RightLide.LogicLevel = true;

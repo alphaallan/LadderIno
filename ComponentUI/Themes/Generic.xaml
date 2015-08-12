@@ -1,12 +1,86 @@
-﻿<ResourceDictionary
+<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:ComponentUI">
 
     <SolidColorBrush x:Key="FocusedBrush" Color="#66CCCCCC" />
     <SolidColorBrush x:Key="MouseOverBrush" Color="#665050FF" />
+    <SolidColorBrush x:Key="HighLevelBrush" Color="Red"/>
+    <local:HalfConverter x:Key="HalfConverter" />
 
+    <!-- Region Vertical Wire -->
+    <Style TargetType="{x:Type local:VerticalWire}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Stretch"/>
 
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:VerticalWire}">
+                    <Viewbox Stretch="Fill">
+                        <Viewbox.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Viewbox.LayoutTransform>
+                        <TextBlock x:Name="Body" Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" Text="──"/>
+                    </Viewbox>
+                    
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding LogicNode.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
+                            <Setter TargetName="Body" Property="Foreground" Value="{StaticResource HighLevelBrush}"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- EndRegion Vertical Wire -->
+
+    <!-- Region Horizontal Wire -->
+    <Style TargetType="{x:Type local:HorizontalWire}">
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:HorizontalWire}">
+                    <Viewbox Stretch="Fill" Height="{TemplateBinding FontSize}">
+                        <TextBlock x:Name="Body" Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" Text="──"/>
+                    </Viewbox>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding LogicNode.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
+                            <Setter TargetName="Body" Property="Foreground" Value="{StaticResource HighLevelBrush}"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- EndRegion Horizontal Wire -->
+
+    <!-- Region Node -->
+    <Style TargetType="{x:Type local:Node}">
+        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="Width" Value="Auto"/>
+        <Setter Property="Height" Value="Auto"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Node}">
+                    <Ellipse x:Name="Body" 
+                             Height="{TemplateBinding FontSize, Converter={StaticResource HalfConverter}}" 
+                             Width="{TemplateBinding FontSize, Converter={StaticResource HalfConverter}}"
+                             Stroke="{TemplateBinding Foreground}" Fill="{TemplateBinding Foreground}"/>
+                    <ControlTemplate.Triggers>
+                        <DataTrigger Binding="{Binding LogicNode.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
+                            <Setter TargetName="Body" Property="Stroke" Value="{StaticResource HighLevelBrush}"/>
+                            <Setter TargetName="Body" Property="Fill" Value="{StaticResource HighLevelBrush}"/>
+                        </DataTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <!-- EndRegion Node -->
+
+    <!-- Region Component Base -->
     <Style TargetType="{x:Type local:ComponentUIBase}">
         <Setter Property="HorizontalAlignment" Value="Center"/>
         
@@ -24,9 +98,7 @@
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Viewbox Grid.Row="1" Grid.Column="0" Stretch="Fill">
-                            <TextBlock x:Name="LeftLide"  Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" Text="──"/>
-                        </Viewbox>
+                        <local:HorizontalWire Grid.Row="1" Grid.Column="0" LogicNode="{Binding LogicComponent.LeftLide, RelativeSource={RelativeSource TemplatedParent}}"/>
 
                         <TextBlock x:Name="Line1" Grid.Row="0" Grid.Column="0" 
                                    Grid.ColumnSpan="3" Padding="0" 
@@ -41,23 +113,15 @@
                                    LineHeight="{TemplateBinding FontSize}" 
                                    Text="{TemplateBinding Line2}"/>
 
-                        <Viewbox Grid.Row="1" Grid.Column="2" Stretch="Fill">
-                            <TextBlock x:Name="RightLide" Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" Text="──"/>
-                        </Viewbox>
+                        <local:HorizontalWire Grid.Row="1" Grid.Column="2" LogicNode="{Binding LogicComponent.RightLide, RelativeSource={RelativeSource TemplatedParent}}"/>
                         
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}"/>
                     </Grid>
                     
                     <ControlTemplate.Triggers>
-                        <DataTrigger Binding="{Binding LogicComponent.LeftLide.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
-                            <Setter TargetName="LeftLide" Property="Foreground" Value="{Binding ActiveBrush, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        </DataTrigger>
                         <DataTrigger Binding="{Binding LogicComponent.InternalState, RelativeSource={RelativeSource Self}}" Value="True">
-                            <Setter TargetName="Line1" Property="Foreground" Value="{Binding ActiveBrush, RelativeSource={RelativeSource TemplatedParent}}"/>
-                            <Setter TargetName="Line2" Property="Foreground" Value="{Binding ActiveBrush, RelativeSource={RelativeSource TemplatedParent}}"/>
-                        </DataTrigger>
-                        <DataTrigger Binding="{Binding LogicComponent.RightLide.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
-                            <Setter TargetName="RightLide" Property="Foreground" Value="{Binding ActiveBrush, RelativeSource={RelativeSource TemplatedParent}}"/>
+                            <Setter TargetName="Line1" Property="Foreground" Value="{StaticResource HighLevelBrush}"/>
+                            <Setter TargetName="Line2" Property="Foreground" Value="{StaticResource HighLevelBrush}"/>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -73,4 +137,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    <!-- EndRegion Component Base -->
+
+
+
 </ResourceDictionary>
