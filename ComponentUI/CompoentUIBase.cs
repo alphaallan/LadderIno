@@ -15,15 +15,22 @@ using System.Windows.Shapes;
 
 namespace ComponentUI
 {
-    /// <summary>
-    /// Interaction logic for UserControl1.xaml
-    /// </summary>
-    public partial class ComponentUIBase : UserControl
+    public class ComponentUIBase : Button
     {
-        public ComponentUIBase()
+        static ComponentUIBase()
         {
-            InitializeComponent();
-            DataContext = this;
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(ComponentUIBase), new FrameworkPropertyMetadata(typeof(ComponentUIBase)));
+        }
+
+        public ComponentUIBase(Core.Components.ComponentBase component)
+        {
+            LogicComponent = component;
+            LogicComponent.PropertyChanged += LogicComponent_PropertyChanged;
+        }
+
+        protected virtual void LogicComponent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            
         }
 
         public SolidColorBrush ActiveBrush
@@ -43,15 +50,20 @@ namespace ComponentUI
         public static readonly DependencyProperty LogicComponentProperty =
             DependencyProperty.Register("LogicComponent", typeof(Core.Components.ComponentBase), typeof(ComponentUIBase), new PropertyMetadata(null));
 
-
-        public string UIString
+        public string Line1
         {
-            get { return (string)GetValue(UIStringProperty); }
-            set { SetValue(UIStringProperty, value); }
+            get { return (string)GetValue(Line1Property); }
+            set { SetValue(Line1Property, value); }
         }
-        public static readonly DependencyProperty UIStringProperty =
-            DependencyProperty.Register("UIString", typeof(string), typeof(ComponentUIBase), new PropertyMetadata(string.Empty));
+        public static readonly DependencyProperty Line1Property =
+            DependencyProperty.Register("Line1", typeof(string), typeof(ComponentUIBase), new PropertyMetadata(string.Empty));
 
-        
+        public string Line2
+        {
+            get { return (string)GetValue(Line2Property); }
+            set { SetValue(Line2Property, value); }
+        }
+        public static readonly DependencyProperty Line2Property =
+            DependencyProperty.Register("Line2", typeof(string), typeof(ComponentUIBase), new PropertyMetadata(string.Empty));
     }
 }

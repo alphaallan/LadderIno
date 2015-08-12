@@ -12,7 +12,7 @@
         
         <Menu>
             <MenuItem Header="File">
-                <MenuItem Header="_New"/>
+                <MenuItem Header="_New" Click="New_Click"/>
                 <MenuItem Header="_Open"/>
                 <MenuItem Header="_Save"/>
                 <MenuItem Header="Save As"/>
@@ -34,17 +34,9 @@
             </MenuItem>
         </Menu>
 
-        <StackPanel Grid.Row="1">
-            <StackPanel Orientation="Horizontal">
-                <LDComponents:ComponentUIBase x:Name="comp" ActiveBrush="Red"/>
-                <LDComponents:ComponentUIBase x:Name="comp2" ActiveBrush="Red"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <LDComponents:ComponentUIBase ActiveBrush="Red"/>
-                <LDComponents:ComponentUIBase ActiveBrush="Red"/>
-                <LDComponents:VerticalWire />
-            </StackPanel>
-        </StackPanel>
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto">
+            <StackPanel x:Name="RungStack"/>
+        </ScrollViewer>
         
         
     </Grid>

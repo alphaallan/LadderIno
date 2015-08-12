@@ -47,17 +47,17 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Basic\Coil.cs" />
+    <Compile Include="Basic\Contact.cs" />
+    <Compile Include="Basic\SC.cs" />
+    <Compile Include="CompoentUIBase.cs" />
     <Compile Include="VerticalWire.xaml.cs">
       <DependentUpon>VerticalWire.xaml</DependentUpon>
     </Compile>
-    <Page Include="ComponentUIBase.xaml">
+    <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="ComponentUIBase.xaml.cs">
-      <DependentUpon>ComponentUIBase.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Page Include="VerticalWire.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -92,6 +92,15 @@
       <Project>{aae9ff4a-7a71-4750-9ee5-908a336f272d}</Project>
       <Name>Core</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Analog\" />
+    <Folder Include="Compare\" />
+    <Folder Include="Counter\" />
+    <Folder Include="Delay\" />
+    <Folder Include="Math\" />
+    <Folder Include="Timer\" />
+    <Folder Include="UART\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

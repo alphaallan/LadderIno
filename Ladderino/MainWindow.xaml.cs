@@ -1,6 +1,4 @@
-﻿using Core.Components;
-using Core.Data;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -26,13 +24,50 @@ namespace Ladderino
         public MainWindow()
         {
             InitializeComponent();
-            Contact cont = new Contact();
-            cont.Name = "1";
-            cont.IsClosed = false;
-            cont.LeftLide.LogicLevel = true;
-            comp.LogicComponent = cont;
-            comp.UIString = cont.FullName + "\r\n]  [";
-            cont.Execute();
+            //RungStack;
+            Canvas rung1 = CreateRung();
+            var coil = new ComponentUI.Coil();
+            var contact = new ComponentUI.Contact();
+            var but1 = new Button();
+            but1.Content = "Asda";
+            RungStack.Children.Add(rung1);
+            rung1.Children.Add(contact);
+            rung1.Children.Add(coil);
+
+            RungStack.Background = Brushes.Green;
+            coil.LogicComponent.RightLide = new Core.Components.Node(coil.LogicComponent);
+            coil.LogicComponent.RightLide.LogicLevel = true;
+            coil.LogicComponent.LeftLide.LogicLevel = true;
+            coil.LogicComponent.Execute();
+            SetCanvasPos(coil, 200, 0);
+            Button but = new Button();
+            but.Content = "TExto";
+            SetCanvasPos(but, 300, 10);
+        }
+
+
+        private Canvas CreateRung()
+        {
+            Canvas rung = new Canvas();
+            rung.MinHeight = this.FontSize * 2;
+            rung.Background = Brushes.BlueViolet;
+            Binding size = new Binding("ActualWidth");
+            size.Source = RungStack;
+            rung.SetBinding(Canvas.MinWidthProperty, size);
+            //rung.Focusable = true;
+            rung.IsEnabled = true;
+            return rung;
+        }
+
+        private void SetCanvasPos(UIElement element, double x, double y)
+        {
+            Canvas.SetLeft(element, x);
+            Canvas.SetTop(element, y);
+        }
+
+        private void New_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show((RungStack.Children[0] as Canvas).ActualWidth.ToString());
         }
     }
 }
