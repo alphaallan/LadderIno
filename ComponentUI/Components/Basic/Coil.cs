@@ -23,7 +23,7 @@ namespace ComponentUI
 
         protected override void LogicComponent_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (sender is Core.Components.Coil && sender == this.LogicComponent)
+            if (sender is Core.Components.Coil && sender == LogicComponent)
             {
                 var component = sender as Core.Components.Coil;
 

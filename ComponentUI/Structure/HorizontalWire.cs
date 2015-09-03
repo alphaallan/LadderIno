@@ -29,7 +29,5 @@ namespace ComponentUI
         }
         public static readonly DependencyProperty LogicNodeProperty =
             DependencyProperty.Register("LogicNode", typeof(Core.Components.Node), typeof(HorizontalWire), new PropertyMetadata(null));
-
-        
     }
 }

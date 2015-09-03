@@ -21,46 +21,66 @@ namespace Ladderino
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        ComponentUI.Rung rung;
         public MainWindow()
         {
             InitializeComponent();
             //RungStack;
-            Canvas rung1 = CreateRung();
-            var coil = new ComponentUI.Coil();
-            var contact = new ComponentUI.Contact();
-            var but1 = new Button();
-            but1.Content = "Asda";
-            RungStack.Children.Add(rung1);
-            rung1.Children.Add(contact);
-            rung1.Children.Add(coil);
+            rung = CreateRung();
+            RungStack.Children.Add(rung);
 
-            var line = new ComponentUI.Node();
-            line.LogicNode = coil.LogicComponent.LeftLide;
+            var cont = new ComponentUI.Contact();
+            (cont.LogicComponent as Core.Components.Contact).IsInverted = true;
+            (cont.LogicComponent as Core.Components.Contact).Name = "2";
 
-            RungStack.Children.Add(line);
+
+            rung.Add(new ComponentUI.Coil());
+            rung.Add(new ComponentUI.Coil());
+            rung.Add(new ComponentUI.Contact());
+            rung.Add(cont);
+            rung.DataTable = new Core.Data.LadderDataTable();
 
             RungStack.Background = Brushes.Green;
-            coil.LogicComponent.RightLide = new Core.Components.Node(coil.LogicComponent);
-            coil.LogicComponent.RightLide.LogicLevel = true;
-            coil.LogicComponent.LeftLide.LogicLevel = true;
-            coil.LogicComponent.Execute();
-            SetCanvasPos(coil, 200, 0);
-            Button but = new Button();
-            but.Content = "TExto";
-            SetCanvasPos(but, 300, 10);
+           
+
+            Timer.Tick += new EventHandler(Timer_Click);
+            Timer.Interval = new TimeSpan(0, 0, 1);
+            Timer.Start();
         }
 
+        System.Windows.Threading.DispatcherTimer Timer = new System.Windows.Threading.DispatcherTimer();
 
-        private Canvas CreateRung()
+        /// <summary>
+        /// Função que notifica a atualização do relógio a cada segundo
+        /// </summary>
+        private void Timer_Click(object sender, EventArgs e)
         {
-            Canvas rung = new Canvas();
+            rung.Execute();
+        }
+
+        private ComponentUI.Rung CreateRung()
+        {
+            //Canvas rung = new ComponentUI.Rung();
+            //rung.MinHeight = this.FontSize * 2;
+            //rung.Background = Brushes.BlueViolet;
+            //Binding size = new Binding("ActualWidth");
+            //size.Source = RungStack;
+            //rung.SetBinding(Canvas.MinWidthProperty, size);
+            //rung.IsEnabled = true;
+            //return rung;
+
+            ComponentUI.Rung rung = new ComponentUI.Rung();
             rung.MinHeight = this.FontSize * 2;
             rung.Background = Brushes.BlueViolet;
             Binding size = new Binding("ActualWidth");
             size.Source = RungStack;
             rung.SetBinding(Canvas.MinWidthProperty, size);
-            //rung.Focusable = true;
             rung.IsEnabled = true;
+
+            
+            
+            
             return rung;
         }
 
@@ -70,9 +90,5 @@ namespace Ladderino
             Canvas.SetTop(element, y);
         }
 
-        private void New_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show((RungStack.Children[0] as Canvas).ActualWidth.ToString());
-        }
     }
 }

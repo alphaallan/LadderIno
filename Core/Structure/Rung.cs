@@ -83,6 +83,27 @@ namespace Core.Components
             Trace.Unindent();
         }
 
+        public System.Collections.Generic.List<ComponentBase> GetAllBetween(Node startNode, Node endNode)
+        {
+            Trace.WriteLine("GetAllBetween Called", "Rung");
+            int start = 0, end = _Components.Count - 1;
+            System.Collections.Generic.List<ComponentBase> temp = new System.Collections.Generic.List<ComponentBase>();
+
+            if (startNode == endNode) throw new Exception("Start and End nodes are the same");
+
+            while (start < _Components.Count && _Components[start++].LeftLide != startNode);
+            if (start == _Components.Count) throw new ArgumentException("Node not inserted in current Rung", "startNode");
+            
+
+            while (end >= 0 && _Components[end].RightLide != endNode) end--;
+            if (end < 0) throw new ArgumentException("Node not inserted in current Rung", "endNode");
+            
+            if (end < start) throw new Exception("End and Start node are in reverse order");
+
+            for (int index = start; index <= end; index++ ) temp.Add(_Components[index]);
+
+            return temp;
+        }
 
         #region Insert Functions
         //This sector contains all the functions that insert a component in the rung
@@ -492,7 +513,7 @@ namespace Core.Components
         ~Rung()
         {
             Trace.WriteLine("Rung Destructor Called", "Rung");
-            DataTable = null; //This will force memory deallocate by all components to avoid another call to the garbage collector
+            //DataTable = null; //This will force memory deallocate by all components to avoid another call to the garbage collector
         }
         #endregion Destructor
 

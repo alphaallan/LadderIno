@@ -47,12 +47,13 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Basic\Coil.cs" />
-    <Compile Include="Basic\Contact.cs" />
-    <Compile Include="Basic\SC.cs" />
-    <Compile Include="CompoentUIBase.cs" />
+    <Compile Include="Components\Basic\Coil.cs" />
+    <Compile Include="Components\Basic\Contact.cs" />
+    <Compile Include="Components\Basic\SC.cs" />
+    <Compile Include="Components\CompoentUIBase.cs" />
     <Compile Include="Structure\HorizontalWire.cs" />
     <Compile Include="Structure\Node.cs" />
+    <Compile Include="Structure\Rung.cs" />
     <Compile Include="Structure\VerticalWire.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -90,13 +91,14 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Analog\" />
-    <Folder Include="Compare\" />
-    <Folder Include="Counter\" />
-    <Folder Include="Delay\" />
-    <Folder Include="Math\" />
-    <Folder Include="Timer\" />
-    <Folder Include="UART\" />
+    <Folder Include="Components\Analog\" />
+    <Folder Include="Components\Compare\" />
+    <Folder Include="Components\Counter\" />
+    <Folder Include="Components\Delay\" />
+    <Folder Include="Components\Math\" />
+    <Folder Include="Components\Timer\" />
+    <Folder Include="Components\UART\" />
+    <Folder Include="Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
