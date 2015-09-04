@@ -91,7 +91,7 @@ namespace Core.Components
 
             if (startNode == endNode) throw new Exception("Start and End nodes are the same");
 
-            while (start < _Components.Count && _Components[start++].LeftLide != startNode);
+            while (start < _Components.Count && _Components[start].LeftLide != startNode) start++;
             if (start == _Components.Count) throw new ArgumentException("Node not inserted in current Rung", "startNode");
             
 
@@ -103,6 +103,62 @@ namespace Core.Components
             for (int index = start; index <= end; index++ ) temp.Add(_Components[index]);
 
             return temp;
+        }
+
+        public Tuple<Node, Node> FindInterception(ComponentBase componentA, ComponentBase componentB)
+        {
+            if (componentA == componentB) throw new Exception("Components A and B are the same");
+
+            int indexA = _Components.IndexOf(componentA);
+            int indexB = _Components.IndexOf(componentB);
+
+            if (indexA == -1) throw new ArgumentException("Component not inserted in current Rung", "componentA");
+            if (indexB == -1) throw new ArgumentException("Component not inserted in current Rung", "componentB");
+
+            if (indexA > indexB)
+            {
+                int temp = indexA;
+                indexA = indexB;
+                indexB = temp;
+            }
+
+            #region Search Node A
+            bool foundA = false;
+            int lni = indexB + 1;
+
+            while (!foundA && --lni > indexA)
+            {
+                for (int lnj = indexA; lnj >= 0; lnj--)
+                {
+                    if (_Components[lnj].LeftLide == _Components[lni].LeftLide)
+                    {
+                        foundA = true;
+                        break;
+                    }
+                }
+            }
+            if (!foundA) return null;
+            #endregion
+
+            #region Search Node B
+            bool foundB = false;
+            int rni = indexA - 1;
+
+            while (!foundB && ++rni < indexB)
+            {
+                for (int rnj = indexB; rnj < _Components.Count; rnj++)
+                {
+                    if (_Components[rnj].RightLide == _Components[rni].RightLide)
+                    {
+                        foundB = true;
+                        break;
+                    }
+                }
+            }
+            if (!foundB) return null;
+            #endregion
+
+            return new Tuple<Node, Node>(_Components[lni].LeftLide, _Components[rni].RightLide);
         }
 
         #region Insert Functions
