@@ -103,54 +103,16 @@ namespace ComponentUI
                     (_Components.Where(x => x.Row == row && x.Column == col).Count() == 0));
         }
 
-        private List<ComponentGridPosition> FindComponentToMove(ComponentUIBase anchor)
-        {
-            var list = new List<ComponentGridPosition>();
-
-            foreach (var item in _Components.Where(x => x.Component.LogicComponent.LeftLide == anchor.LogicComponent.LeftLide))
-            {
-                list.Add(item);
-                var node = item.Component.LogicComponent.RightLide;
-                if (item.Component.LogicComponent.RightLide != anchor.LogicComponent.RightLide) list.AddRange(FindComponentToMove(item.Component));
-            }
-
-            return list;
-        }
-
         private List<ComponentGridPosition> GetAllBetween(Core.Components.Node startNode, Core.Components.Node endNode)
         {
             var logicList = _LogicalRung.GetAllBetween(startNode, endNode);
             return _Components.Where(x => logicList.Contains(x.Component.LogicComponent)).ToList();
         }
 
-        public Core.Components.Node FindInterception(ComponentUIBase componentA, ComponentUIBase componentB)
+        private Tuple<Core.Components.Node,Core.Components.Node> FindInterception(ComponentUIBase componentA, ComponentUIBase componentB)
         {
-            if (componentA == componentB) throw new Exception("Components A and B are the same");
-
-            var logic_components = _LogicalRung.Components;
-
-            int indexA = logic_components.IndexOf(componentA.LogicComponent);
-            int indexB = logic_components.IndexOf(componentB.LogicComponent);
-            
-            if (indexA == -1) throw new ArgumentException("Component not inserted in current Rung", "componentA");
-            if (indexB == -1) throw new ArgumentException("Component not inserted in current Rung", "componentB");
-
-            if (indexA < indexB)
-            {
-                int temp = indexA;
-                indexA = indexB;
-                indexB = temp;
-            }
-
-            int finishA = indexB - 1;
-            int finishB = indexB;
-            while (finishB < logic_components.Count && logic_components[finishB].RightLide != logic_components[finishA].RightLide) finishB++;
-
-            if(finishB < logic_components.Count) throw new Exception("Interception not found");
-
-            return logic_components[finishA].RightLide;
+            return _LogicalRung.FindInterception(componentA.LogicComponent, componentB.LogicComponent);
         }
-        
         #endregion Help Function
 
         /// <summary>
@@ -194,30 +156,39 @@ namespace ComponentUI
         /// <param name="anchor">Anchor component</param>
         public Rung InsertAbove(ComponentUIBase component, ComponentUIBase anchor)
         {
-            _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
-            _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column));
+            IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
 
-            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column)) AddRow(_anchor.Row);
+            Core.Components.Node NodeA;
+            Core.Components.Node NodeB;
 
-            var column_components = _Components.Where(x => (x.Column == _anchor.Column));
-            //Core.Components.Node nodeA =
-
-            var move_list = GetAllBetween(anchor.LogicComponent.LeftLide, anchor.LogicComponent.RightLide).Where(x => x.Row > _anchor.Row);
-
-            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
-
-            if (component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output)
+            if (column_components.Count() > 1)
             {
-                
+                var nodes = FindInterception(column_components.First().Component, column_components.Last().Component);
+                NodeA = nodes.Item1;
+                NodeB = nodes.Item2;
             }
             else
             {
-                
+                //No other components um column
+                NodeA = anchor.LogicComponent.LeftLide;
+                NodeB = anchor.LogicComponent.RightLide;
             }
 
+            IEnumerable<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row);
+
+            _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
+
+            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column)) AddRow(_anchor.Row);
+
+            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
+
+            _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column));
+
+            _anchor.SetPossition(_anchor.Row + 1, _anchor.Column);
+
             Children.Add(component);
-            return this;        
+            return this;
         }
 
         /// <summary>
@@ -227,13 +198,37 @@ namespace ComponentUI
         /// <param name="anchor">Anchor component</param>
         public Rung InsertUnder(ComponentUIBase component, ComponentUIBase anchor)
         {
-            _LogicalRung.InsertUnder(component.LogicComponent, anchor.LogicComponent);
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
+            IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
+
+            Core.Components.Node NodeA;
+            Core.Components.Node NodeB;
+
+            if (column_components.Count() > 1)
+            {
+                var nodes = FindInterception(column_components.First().Component, column_components.Last().Component);
+                NodeA = nodes.Item1;
+                NodeB = nodes.Item2;
+            }
+            else
+            {
+                //No other components um column
+                NodeA = anchor.LogicComponent.LeftLide;
+                NodeB = anchor.LogicComponent.RightLide;
+            }
+
+            IEnumerable<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row);
+
+            _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
+
+            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column)) AddRow(_anchor.Row);
+
+            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
+
             _Components.Add(new ComponentGridPosition(component, _anchor.Row + 1, _anchor.Column));
 
-
             Children.Add(component);
-            return this;        
+            return this;  
         }
 
         /// <summary>
