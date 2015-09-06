@@ -10,23 +10,30 @@
 
     <!-- Region Vertical Wire -->
     <Style TargetType="{x:Type local:VerticalWire}">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="VerticalAlignment" Value="Stretch"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:VerticalWire}">
-                    <Viewbox Stretch="Fill">
-                        <Viewbox.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </Viewbox.LayoutTransform>
-                        <TextBlock x:Name="Body" Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" Text="──"/>
-                    </Viewbox>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="{TemplateBinding FontSize, Converter={StaticResource ResourceKey=HalfConverter}}"/>
+                            <RowDefinition />
+                            <RowDefinition Height="{TemplateBinding FontSize, Converter={StaticResource ResourceKey=HalfConverter}}"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Grid.Row="0" Padding="0" LineStackingStrategy="BlockLineHeight" LineHeight="{TemplateBinding FontSize}" />
+
+                        <Line x:Name="Body" Grid.Row="2" X1="0" X2="0" Y1="0" Y2="1" Stretch="Fill" Stroke="{TemplateBinding Foreground}" StrokeThickness="2"/>
+
+                    </Grid>
                     
+
                     <ControlTemplate.Triggers>
                         <DataTrigger Binding="{Binding LogicNode.LogicLevel, RelativeSource={RelativeSource Self}}" Value="True">
-                            <Setter TargetName="Body" Property="Foreground" Value="{StaticResource HighLevelBrush}"/>
+                            <Setter TargetName="Body" Property="Stroke" Value="{StaticResource HighLevelBrush}"/>
                         </DataTrigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

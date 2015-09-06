@@ -31,6 +31,48 @@ namespace ComponentUI
             DependencyProperty.Register("LogicNode", typeof(Core.Components.Node), typeof(Node), new PropertyMetadata(null));
     }
 
+    public class VerticalWire : Node
+    {
+        static VerticalWire()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(VerticalWire), new FrameworkPropertyMetadata(typeof(VerticalWire)));
+        }
+
+        public VerticalWire(Core.Components.Node logicNode, int column, int startRow, int endRow)
+        {
+            Grid.SetColumn(this, column);
+            Grid.SetRow(this, startRow);
+            Grid.SetRowSpan(this,(endRow - startRow > 0) ? endRow - startRow + 1 : 2);
+            this.LogicNode = logicNode;
+        }
+
+        public VerticalWire()
+        {
+
+        }
+    }
+
+    public class HorizontalWire : Node
+    {
+        static HorizontalWire()
+        {
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(HorizontalWire), new FrameworkPropertyMetadata(typeof(HorizontalWire)));
+        }
+
+        public HorizontalWire(Core.Components.Node logicNode, int row, int startColumn, int endColumn)
+        {
+            Grid.SetRow(this, row);
+            Grid.SetColumn(this, startColumn);
+            Grid.SetColumnSpan(this, endColumn - startColumn);
+            this.LogicNode = logicNode;
+        }
+
+        public HorizontalWire()
+        {
+
+        }
+    }
+
     public class HalfConverter : IValueConverter
     {
 

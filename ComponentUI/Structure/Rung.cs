@@ -172,11 +172,14 @@ namespace ComponentUI
                 NodeB = anchor.LogicComponent.RightLide;
             }
 
-            IEnumerable<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row);
+            List<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row).ToList();
 
             _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
 
-            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column)) AddRow(_anchor.Row);
+            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column) || (component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output && _anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth)) AddRow(_anchor.Row);
+            if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth) 
+                move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && x.Row > _anchor.Row && !move_list.Contains(x)));
+
 
             foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
 
@@ -214,11 +217,13 @@ namespace ComponentUI
                 NodeB = anchor.LogicComponent.RightLide;
             }
 
-            IEnumerable<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row);
+            List<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row).ToList();
 
             _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
 
-            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column)) AddRow(_anchor.Row);
+            if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column) || (component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output && _anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth)) AddRow(_anchor.Row);
+            if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth)
+                move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && x.Row > _anchor.Row && !move_list.Contains(x)));
 
             foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
 
@@ -305,6 +310,7 @@ namespace ComponentUI
 
             if (addColumn)
             {
+                if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth) _OutputBlockLegth++;
                 AddColumn(_anchor.Column);
                 move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && !move_list.Contains(x)));
             }
@@ -415,6 +421,89 @@ namespace ComponentUI
         }
         #endregion Delete Functions
 
+        #region Wiring Functions
+        public Rung PlaceWires()
+        {
+            foreach (var wire in _Wires) Children.Remove(wire);
+            _Wires.Clear();
+
+            List<Core.Components.Node> Nodes = new List<Core.Components.Node>();
+            IEnumerable<Core.Components.Node> LN = _LogicalRung.Components.Select(x => x.LeftLide);
+            IEnumerable<Core.Components.Node> DLN = LN.Distinct();
+            IEnumerable<Core.Components.Node> RN = _LogicalRung.Components.Select(x => x.RightLide);
+            IEnumerable<Core.Components.Node> DRN = RN.Distinct();
+
+            Nodes.AddRange(DLN.Where(x => LN.Count(y => y == x) > 1));
+            Nodes.AddRange(DRN.Where(x => RN.Count(y => y == x) > 1));
+            Nodes = Nodes.Distinct().ToList();
+            if (Nodes.Contains(_LogicalRung.Components.Last().RightLide)) Nodes.Remove(_LogicalRung.Components.Last().RightLide);
+
+            foreach(var node in Nodes)
+            {
+                var temp = _Components.Where(x => x.Component.LogicComponent.LeftLide == node || x.Component.LogicComponent.RightLide == node);
+                var tempL = temp.Where(x => x.Component.LogicComponent.LeftLide == node);
+                var tempR = temp.Where(x => x.Component.LogicComponent.RightLide == node);
+
+                int col = 0,
+                    sr = 0,
+                    er = 0;
+
+                if (tempL.Count() > 0)
+                {
+                    col = tempL.Min(x => x.Column);
+                    sr = tempL.Min(x => x.Row);
+                    er = tempL.Max(x => x.Row);
+                }
+
+                if (tempR.Count() > 0)
+                {
+                    col = Math.Max(col, tempR.Max(x => x.Column));
+                    sr = Math.Min(sr, tempR.Min(x => x.Row));
+                    er = Math.Max(er, tempR.Max(x => x.Row));
+                }
+
+                ComponentUI.VerticalWire wire = new VerticalWire(node, col, sr, er);
+                _Wires.Add(wire);
+            }
+
+            for (int row = 0; row < RowDefinitions.Count; row++)
+            {
+                var row_components = _Components.Where(x => x.Row == row).OrderBy(x => x.Column).ToList();
+
+                for (int index = 0; index < row_components.Count() - 1; index++)
+                {
+                    Core.Components.Node na = row_components[index].Component.LogicComponent.RightLide;
+                    Core.Components.Node nb = row_components[index + 1].Component.LogicComponent.LeftLide;
+
+                    if ((na == nb) && (row_components[index].Column + 1 < row_components[index + 1].Column))
+                    {
+                        ComponentUI.HorizontalWire wire = new HorizontalWire(na, row, row_components[index].Column + 1, row_components[index + 1].Column);
+                        _Wires.Add(wire);
+                    }
+                }
+
+                if (row == RowDefinitions.Count - 1 && row_components.Count == 1)
+                {
+                    var temp = _Components.Where(x => x.Component.LogicComponent.RightLide == row_components[0].Component.LogicComponent.LeftLide);
+                    if(temp.Count() > 0)
+                    {
+                        int sc = temp.Max(x => x.Column);
+
+                        ComponentUI.HorizontalWire wire = new HorizontalWire(row_components[0].Component.LogicComponent.LeftLide, row, sc + 1, row_components[0].Column);
+                        _Wires.Add(wire);
+                    }
+                    
+                }
+            }
+
+            
+
+            foreach (var wire in _Wires) Children.Insert(0, wire);
+
+            return this;
+        }
+        #endregion Wiring Functions
+
         #endregion Functions
 
 
@@ -422,12 +511,16 @@ namespace ComponentUI
         {
             _Components = new List<ComponentGridPosition>();
             _LogicalRung = new Core.Components.Rung();
+            _Wires = new List<Node>();
+            _OutputBlockLegth = 1;
             Clear();
         }
 
         #region Internal Data
         private List<ComponentGridPosition> _Components;
         private Core.Components.Rung _LogicalRung;
+        private List<ComponentUI.Node> _Wires;
+        private int _OutputBlockLegth;
         #endregion Internal Data
 
         #region Internal Class

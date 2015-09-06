@@ -57,17 +57,20 @@ namespace Ladderino
 
             rung.Add(cont1)
                 .InsertUnder(cont2, cont1)
-                .InsertBefore(cont3, coil1)
-                .InsertAfter(cont5, cont3)
-                .InsertBefore(cont4, coil2);
+                //.InsertBefore(cont3, coil1)
+                .InsertBefore(cont4, coil2).InsertBefore(cont5, cont4).InsertAbove(cont3, cont4);
+
+            //Grid.SetRow(coil1, 4);
+
+            rung.PlaceWires();
 
             rung.DataTable = new Core.Data.LadderDataTable();
             
-            RungStack.Background = Brushes.Green;
+            
            
 
             Timer.Tick += new EventHandler(Timer_Click);
-            Timer.Interval = new TimeSpan(0, 0, 1);
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             Timer.Start();
         }
 
@@ -94,7 +97,7 @@ namespace Ladderino
 
             ComponentUI.Rung rung = new ComponentUI.Rung();
             rung.MinHeight = this.FontSize * 2;
-            rung.Background = Brushes.BlueViolet;
+            //rung.Background = Brushes.BlueViolet;
             Binding size = new Binding("ActualWidth");
             size.Source = RungStack;
             rung.SetBinding(Canvas.MinWidthProperty, size);

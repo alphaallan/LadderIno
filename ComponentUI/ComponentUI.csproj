@@ -51,10 +51,8 @@
     <Compile Include="Components\Basic\Contact.cs" />
     <Compile Include="Components\Basic\SC.cs" />
     <Compile Include="Components\CompoentUIBase.cs" />
-    <Compile Include="Structure\HorizontalWire.cs" />
-    <Compile Include="Structure\Node.cs" />
+    <Compile Include="Structure\Wiring.cs" />
     <Compile Include="Structure\Rung.cs" />
-    <Compile Include="Structure\VerticalWire.cs" />
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
