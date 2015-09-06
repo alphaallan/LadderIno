@@ -37,6 +37,15 @@ namespace Ladderino
             var cont2 = new ComponentUI.Contact();
             (cont2.LogicComponent as Core.Components.NameableComponent).Name = "2";
 
+            var cont3 = new ComponentUI.Contact();
+            (cont3.LogicComponent as Core.Components.NameableComponent).Name = "3";
+
+            var cont4 = new ComponentUI.Contact();
+            (cont4.LogicComponent as Core.Components.NameableComponent).Name = "4";
+
+            var cont5 = new ComponentUI.Contact();
+            (cont5.LogicComponent as Core.Components.NameableComponent).Name = "5";
+
             var coil1 = new ComponentUI.Coil();
             (coil1.LogicComponent as Core.Components.NameableComponent).Name = "1";
             var coil2 = new ComponentUI.Coil();
@@ -46,8 +55,12 @@ namespace Ladderino
             rung.Add(coil1);
             rung.InsertAbove(coil2, coil1);
 
-            rung.Add(cont1);
-            rung.InsertUnder(cont2, cont1);
+            rung.Add(cont1)
+                .InsertUnder(cont2, cont1)
+                .InsertBefore(cont3, coil1)
+                .InsertAfter(cont5, cont3)
+                .InsertBefore(cont4, coil2);
+
             rung.DataTable = new Core.Data.LadderDataTable();
             
             RungStack.Background = Brushes.Green;

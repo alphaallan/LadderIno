@@ -65,7 +65,6 @@ namespace ComponentUI
             var col = new ColumnDefinition();
             col.Width = GridLength.Auto;
             ColumnDefinitions.Insert(0, col);
-            foreach (var item in _Components) item.SetPossition(item.Row, item.Column + 1);
             return this;
         }
 
@@ -74,7 +73,6 @@ namespace ComponentUI
             var col = new ColumnDefinition();
             col.Width = new GridLength(width, unit);
             ColumnDefinitions.Insert(0, col);
-            foreach (var item in _Components) item.SetPossition(item.Row, item.Column + 1);
             return this;
         }
 
@@ -83,7 +81,6 @@ namespace ComponentUI
             var col = new ColumnDefinition();
             col.Width = GridLength.Auto;
             ColumnDefinitions.Insert(pos, col);
-            foreach (var item in _Components.Where(x => pos < x.Column)) item.SetPossition(item.Row, item.Column + 1);
             return this;
         }
 
@@ -92,7 +89,6 @@ namespace ComponentUI
             var col = new ColumnDefinition();
             col.Width = new GridLength(width, unit);
             ColumnDefinitions.Insert(pos, col);
-            foreach (var item in _Components.Where(x => pos < x.Column)) item.SetPossition(item.Row, item.Column + 1);
             return this;
         }
 
@@ -142,6 +138,7 @@ namespace ComponentUI
             else
             {
                 AddColumn();
+                foreach (var item in _Components) item.SetPossition(item.Row, item.Column + 1);
                 _Components.Add(new ComponentGridPosition(component, 0, 0));
             }
 
@@ -238,10 +235,81 @@ namespace ComponentUI
         /// <param name="anchor">Anchor component</param>
         public Rung InsertBefore(ComponentUIBase component, ComponentUIBase anchor)
         {
-            _LogicalRung.InsertBefore(component.LogicComponent, anchor.LogicComponent);
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
-            _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column));
+            IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
+            List<ComponentGridPosition> move_list = new List<ComponentGridPosition>();
+            IEnumerable<Core.Components.ComponentBase> parallel = null;
+            bool addColumn = false;
 
+            if (_anchor.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output)
+            {
+                Core.Components.Node NodeA;
+                Core.Components.Node NodeB;
+
+                if (column_components.Count() > 1)
+                {
+                    var nodes = FindInterception(column_components.First().Component, column_components.Last().Component);
+                    NodeA = nodes.Item1;
+                    NodeB = nodes.Item2;
+                }
+                else
+                {
+                    //No other components um column
+                    NodeA = anchor.LogicComponent.LeftLide;
+                    NodeB = anchor.LogicComponent.RightLide;
+                }
+
+                parallel = _LogicalRung.GetAllBetween(NodeA, NodeB);
+
+                int parallel_min_col = _Components.Where(x => parallel.Contains(x.Component.LogicComponent)).Min(x => x.Column);
+                addColumn = !(parallel_min_col < _anchor.Column && IsSlotEmpty(_anchor.Row, _anchor.Column - 1));
+
+                int insert_pos = parallel_min_col;
+                while (insert_pos < _anchor.Column && !IsSlotEmpty(_anchor.Row, insert_pos)) insert_pos++;
+
+                _LogicalRung.InsertBefore(component.LogicComponent, anchor.LogicComponent);
+
+                _Components.Add(new ComponentGridPosition(component, _anchor.Row, insert_pos));
+            }
+            else
+            {
+                if (column_components.Count() > 1)
+                {
+                    IEnumerable<ComponentGridPosition> test_componets = column_components.Where(x => x != _anchor);
+                    int parallel_max_col;
+
+                    foreach (var item in test_componets)
+                    {
+                        var nodes = FindInterception(item.Component, _anchor.Component);
+                        var temp = _LogicalRung.GetAllBetween(nodes.Item1, nodes.Item2);
+                        parallel = (parallel == null || parallel.Count() > temp.Count()) ? temp : parallel;
+                    }
+
+                    parallel_max_col = _Components.Where(x => parallel.Contains(x.Component.LogicComponent)).Max(x => x.Column);
+
+                    addColumn = !IsSlotEmpty(_anchor.Row, parallel_max_col);
+                    move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
+                }
+                else
+                {
+                    move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column)));
+                    addColumn = true;
+                }
+
+                move_list.Add(_anchor);
+
+                _LogicalRung.InsertBefore(component.LogicComponent, anchor.LogicComponent);
+
+                _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column));
+            }
+
+            if (addColumn)
+            {
+                AddColumn(_anchor.Column);
+                move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && !move_list.Contains(x)));
+            }
+
+            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row, item.Column + 1);
 
             Children.Add(component);
             return this;        
@@ -264,12 +332,49 @@ namespace ComponentUI
         /// <param name="anchor">Anchor component</param>
         public Rung InsertAfter(ComponentUIBase component, ComponentUIBase anchor)
         {
-            _LogicalRung.InsertAfter(component.LogicComponent, anchor.LogicComponent);
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
+            IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
+            List<ComponentGridPosition> move_list = new List<ComponentGridPosition>();
+            bool addColumn = false;
+
+            if (column_components.Count() > 1)
+            {
+                IEnumerable<ComponentGridPosition> test_componets = column_components.Where(x => x != _anchor);
+                IEnumerable<Core.Components.ComponentBase> parallel = null;
+                int parallel_max_col;
+
+                foreach (var item in test_componets)
+                {
+                    var nodes = FindInterception(item.Component, _anchor.Component);
+                    var temp = _LogicalRung.GetAllBetween(nodes.Item1, nodes.Item2);
+                    parallel = (parallel == null || parallel.Count() > temp.Count()) ? temp : parallel;
+                }
+
+                parallel_max_col = _Components.Where(x => parallel.Contains(x.Component.LogicComponent)).Max(x => x.Column);
+
+                addColumn = !IsSlotEmpty(_anchor.Row, parallel_max_col);
+                move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
+            }
+            else
+            {
+                move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column)));
+                addColumn = true;
+            }
+
+            _LogicalRung.InsertAfter(component.LogicComponent, anchor.LogicComponent);
+
             _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column + 1));
 
+            if (addColumn)
+            {
+                AddColumn(_anchor.Column);
+                move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && !move_list.Contains(x)));
+            }
+
+            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row, item.Column + 1);
 
             Children.Add(component);
+
             return this;        
         }
 
