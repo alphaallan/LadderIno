@@ -122,24 +122,6 @@ namespace Core.Components
                 indexB = temp;
             }
 
-            #region Search Node A
-            bool foundA = false;
-            int lni = indexB + 1;
-
-            while (!foundA && --lni > indexA)
-            {
-                for (int lnj = indexA; lnj >= 0; lnj--)
-                {
-                    if (_Components[lnj].LeftLide == _Components[lni].LeftLide)
-                    {
-                        foundA = true;
-                        break;
-                    }
-                }
-            }
-            if (!foundA) return null;
-            #endregion
-
             #region Search Node B
             bool foundB = false;
             int rni = indexA - 1;
@@ -156,6 +138,24 @@ namespace Core.Components
                 }
             }
             if (!foundB) return null;
+            #endregion
+
+            #region Search Node A
+            bool foundA = false;
+            int lni = indexB + 1;
+
+            while (!foundA && --lni > indexA)
+            {
+                for (int lnj = indexA; lnj >= 0; lnj--)
+                {
+                    if (_Components[lnj].LeftLide == _Components[lni].LeftLide)
+                    {
+                        foundA = true;
+                        break;
+                    }
+                }
+            }
+            if (!foundA) return null;
             #endregion
 
             return new Tuple<Node, Node>(_Components[lni].LeftLide, _Components[rni].RightLide);
