@@ -71,7 +71,7 @@ namespace Core.Components
         /// <summary>
         /// Run logical test in the entire rung
         /// </summary>
-        public void Execute()
+        public Rung Execute()
         {
             if (_DataTable == null) throw new NullReferenceException("No data table associated to the Rung");
             Trace.WriteLine("RungTest Started " + _Components.Count + " elements in rung", "Rung");
@@ -81,8 +81,11 @@ namespace Core.Components
                 foreach (ComponentBase comp in _Components) comp.Execute();
             }
             Trace.Unindent();
+
+            return this;
         }
 
+        #region Search and Collection
         public System.Collections.Generic.List<ComponentBase> GetAllBetween(Node startNode, Node endNode)
         {
             Trace.WriteLine("GetAllBetween Called", "Rung");
@@ -160,6 +163,7 @@ namespace Core.Components
 
             return new Tuple<Node, Node>(_Components[lni].LeftLide, _Components[rni].RightLide);
         }
+        #endregion
 
         #region Insert Functions
         //This sector contains all the functions that insert a component in the rung
@@ -169,10 +173,11 @@ namespace Core.Components
         /// Check component nodes to avoid null references
         /// </summary>
         /// <param name="component">Component to be verified</param>
-        private void CheckNodes(ComponentBase component)
+        private Rung CheckNodes(ComponentBase component)
         {
             if (component.LeftLide == null) component.LeftLide = new Node();
             if (component.RightLide == null) component.RightLide = new Node();
+            return this;
         }
 
         /// <summary>
@@ -180,7 +185,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        private void CheckComponentPair(ComponentBase component, ComponentBase anchor)
+        private Rung CheckComponentPair(ComponentBase component, ComponentBase anchor)
         {
             if (anchor == null) throw new ArgumentNullException("Null component", "anchor");
             if (component == null) throw new ArgumentNullException("Null component", "component");
@@ -188,6 +193,7 @@ namespace Core.Components
             if (_Components.Contains(component)) throw new ArgumentException("Component already inserted in current rung", "component");
             if (component == anchor) throw new ArgumentException("Root components and inserter component are the same", "anchor");
             CheckNodes(component);
+            return this;
         }
 
         /// <summary>
@@ -195,13 +201,13 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor node</param>
-        private void CheckComponentPair(ComponentBase component, Node anchor)
+        private Rung CheckComponentPair(ComponentBase component, Node anchor)
         {
             if (anchor == null) throw new ArgumentNullException("Null node", "anchor");
             if (component == null) throw new ArgumentNullException("Null component", "component");
             if (_Components.Contains(component)) throw new ArgumentException("Component already inserted in current rung", "component");
             CheckNodes(component);
-            foreach (ComponentBase comp in _Components) if (comp.LeftLide == anchor || comp.RightLide == anchor) return;
+            foreach (ComponentBase comp in _Components) if (comp.LeftLide == anchor || comp.RightLide == anchor) return this;
             throw new ArgumentException("Anchor node not inserted in current rung", "anchor");
         }
         #endregion Auxiliar
@@ -210,7 +216,7 @@ namespace Core.Components
         /// Inset component with auto select position 
         /// </summary>
         /// <param name="component">Component to be added</param>
-        public void Add(ComponentBase component)
+        public Rung Add(ComponentBase component)
         {
             Trace.WriteLine("Auto insert called", "Rung");
             if (component == null) throw new ArgumentNullException("Null component","component");
@@ -278,6 +284,7 @@ namespace Core.Components
             }
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -285,7 +292,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public void InsertAbove(ComponentBase component, ComponentBase anchor)
+        public Rung InsertAbove(ComponentBase component, ComponentBase anchor)
         {
             Trace.WriteLine("Insert above called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -315,6 +322,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -322,7 +330,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public void InsertUnder(ComponentBase component, ComponentBase anchor)
+        public Rung InsertUnder(ComponentBase component, ComponentBase anchor)
         {
             Trace.WriteLine("Insert under called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -353,6 +361,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -360,7 +369,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public void InsertBefore(ComponentBase component, ComponentBase anchor)
+        public Rung InsertBefore(ComponentBase component, ComponentBase anchor)
         {
             Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -388,6 +397,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -395,7 +405,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor Node</param>
-        public void InsertBefore(ComponentBase component, Node anchor)
+        public Rung InsertBefore(ComponentBase component, Node anchor)
         {
             Trace.WriteLine("Insert before called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -418,6 +428,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -425,7 +436,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public void InsertAfter(ComponentBase component, ComponentBase anchor)
+        public Rung InsertAfter(ComponentBase component, ComponentBase anchor)
         {
             Trace.WriteLine("Insert after called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -462,6 +473,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
@@ -469,7 +481,7 @@ namespace Core.Components
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor node</param>
-        public void InsertAfter(ComponentBase component, Node anchor)
+        public Rung InsertAfter(ComponentBase component, Node anchor)
         {
             Trace.WriteLine("Insert after called with anchor: " + anchor.GetType(), "Rung");
             CheckComponentPair(component, anchor);
@@ -498,6 +510,7 @@ namespace Core.Components
             Trace.WriteLine(component.GetType() + " inserted", "Rung");
             component.DataTable = DataTable;
             Trace.Unindent();
+            return this;
         }
         #endregion Insert Functions
 
@@ -506,7 +519,7 @@ namespace Core.Components
         /// Delete compoenent from the rung
         /// </summary>
         /// <param name="component">Component to be deleted</param>
-        public void Remove(ComponentBase component)
+        public Rung Remove(ComponentBase component)
         {
             Trace.WriteLine("Insert under called with component: " + component.GetType(), "Rung");
             if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
@@ -537,6 +550,7 @@ namespace Core.Components
             _Components.Remove(component);
             GC.Collect(); // Call gabarge collector
             Trace.Unindent();
+            return this;
         }
 
         /// <summary>
