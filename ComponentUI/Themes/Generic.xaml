@@ -92,7 +92,7 @@
 
     <!-- Region Component Base -->
     <Style TargetType="{x:Type local:ComponentUIBase}">
-        <Setter Property="HorizontalAlignment" Value="Center"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
         
         <Setter Property="Template">
             <Setter.Value>
@@ -111,7 +111,7 @@
                         <local:HorizontalWire Grid.Row="1" Grid.Column="0" LogicNode="{Binding LogicComponent.LeftLide, RelativeSource={RelativeSource TemplatedParent}}"/>
 
                         <TextBlock x:Name="Line1" Grid.Row="0" Grid.Column="0" 
-                                   Grid.ColumnSpan="3" Padding="0" 
+                                   Grid.ColumnSpan="3" Padding="5,0" 
                                    HorizontalAlignment="Center" 
                                    LineStackingStrategy="BlockLineHeight" 
                                    LineHeight="{TemplateBinding FontSize}" 
