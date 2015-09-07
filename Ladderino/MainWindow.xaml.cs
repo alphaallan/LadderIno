@@ -57,16 +57,13 @@ namespace Ladderino
 
             rung.Add(cont1)
                 .InsertUnder(cont2, cont1)
-                //.InsertBefore(cont3, coil1)
-                .InsertBefore(cont4, coil2).InsertBefore(cont5, cont4).InsertAbove(cont3, cont4);
-
-            //Grid.SetRow(coil1, 4);
+                .InsertBefore(cont4, coil2)
+                .InsertAbove(cont3, cont4)
+                .InsertBefore(cont5, cont3);
 
             rung.PlaceWires();
 
             rung.DataTable = new Core.Data.LadderDataTable();
-            
-            
            
 
             Timer.Tick += new EventHandler(Timer_Click);

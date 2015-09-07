@@ -42,7 +42,7 @@ namespace ComponentUI
         {
             Grid.SetColumn(this, column);
             Grid.SetRow(this, startRow);
-            Grid.SetRowSpan(this,(endRow - startRow > 0) ? endRow - startRow + 1 : 2);
+            Grid.SetRowSpan(this, endRow - startRow + 1);
             this.LogicNode = logicNode;
         }
 
