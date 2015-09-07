@@ -528,40 +528,38 @@ namespace ComponentUI
                     }
                 }
 
-                //if (row_components.Count() == 1)
+                var lose_componentsR = row_components.Where(x => x.Component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output
+                                                            && GetAllBetween(x.Component.LogicComponent.LeftLide, x.Component.LogicComponent.RightLide).Where(y => y.Column != x.Column).Count() != 0
+                                                            && (row_components.Where(y => y.Component.LogicComponent.LeftLide == x.Component.LogicComponent.RightLide).Count() == 0));
+
+                var lose_componentsL = row_components.Where(x => x.Component.LogicComponent.LeftLide.Root != null && !lose_componentsR.Contains(x) 
+                                                                && (row_components.Where(y => y.Component.LogicComponent.RightLide == x.Component.LogicComponent.LeftLide).Count() == 0));
+
+
+                if (lose_componentsR.Count() > 0)
                 {
-                    var lose_componentsR = row_components.Where(x => x.Component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output
-                                                              && (row_components.Where(y => y.Component.LogicComponent.LeftLide == x.Component.LogicComponent.RightLide).Count() == 0));
-
-                    var lose_componentsL = row_components.Where(x => x.Component.LogicComponent.LeftLide.Root != null && !lose_componentsR.Contains(x)
-                                                                  && (row_components.Where(y => y.Component.LogicComponent.RightLide == x.Component.LogicComponent.LeftLide).Count() == 0));
-
-
-                    if (lose_componentsR.Count() > 0)
+                    foreach (var component in lose_componentsR)
                     {
-                        foreach (var component in lose_componentsR)
+                        int ec = _Components.Where(x => x.Component.LogicComponent.LeftLide == component.Component.LogicComponent.RightLide).Max(x => x.Column);
+                        if (ec > component.Column + 1 && _Components.Where(x => x.Row == component.Row && x.Column > component.Column && x.Column < ec).Count() == 0)
                         {
-                            int ec = _Components.Where(x => x.Component.LogicComponent.LeftLide == component.Component.LogicComponent.RightLide).Max(x => x.Column);
-                            if (ec > component.Column + 1 && _Components.Where(x => x.Row == component.Row && x.Column > component.Column && x.Column < ec).Count() == 0)
-                            {
-                                ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.RightLide, row, component.Column + 1, ec);
-                                _Wires.Add(wire);
-                            }
+                            ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.RightLide, row, component.Column + 1, ec);
+                            _Wires.Add(wire);
                         }
                     }
+                }
 
-                    if (lose_componentsL.Count() > 0)
+                if (lose_componentsL.Count() > 0)
+                {
+                    foreach (var component in lose_componentsL)
                     {
-                        foreach (var component in lose_componentsL)
+                        int sc = _Components.Where(x => x.Component.LogicComponent.RightLide == component.Component.LogicComponent.LeftLide).Min(x => x.Column);
+                        if (sc < component.Column - 1 && _Components.Where(x => x.Row == component.Row && x.Column < component.Column && x.Column > sc).Count() == 0)
                         {
-                            int sc = _Components.Where(x => x.Component.LogicComponent.RightLide == component.Component.LogicComponent.LeftLide).Min(x => x.Column);
-                            if (sc < component.Column - 1 && _Components.Where(x => x.Row == component.Row && x.Column < component.Column && x.Column > sc).Count() == 0)
-                            {
-                                ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.LeftLide, row, sc + 1, component.Column);
-                                _Wires.Add(wire);
-                            }
-                            
+                            ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.LeftLide, row, sc + 1, component.Column);
+                            _Wires.Add(wire);
                         }
+                            
                     }
                 }
             }

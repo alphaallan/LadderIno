@@ -51,20 +51,17 @@ namespace Ladderino
             var coil2 = new ComponentUI.Coil();
             (coil2.LogicComponent as Core.Components.NameableComponent).Name = "2";
 
-            rung.Add(new ComponentUI.Coil());
             rung.Add(coil1);
-            rung.InsertAbove(coil2, coil1);
-
-            rung.Add(cont1)
-                .InsertUnder(cont2, cont1)
-                .InsertBefore(cont4, coil2)
-                .InsertAbove(cont3, cont4)
-                .InsertBefore(cont5, cont3);
+            rung.Add(cont1);
+            rung.InsertAfter(cont2, cont1)
+                .InsertUnder(cont5, cont2)
+                .InsertUnder(cont3, cont2)
+                .InsertAfter(cont4, cont2)
+                .InsertUnder(coil2, coil1);
 
             rung.PlaceWires();
 
             rung.DataTable = new Core.Data.LadderDataTable();
-           
 
             Timer.Tick += new EventHandler(Timer_Click);
             Timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
