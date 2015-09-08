@@ -53,11 +53,11 @@ namespace Ladderino
 
             rung.Add(coil1);
             rung.Add(cont1);
-            rung.InsertAfter(cont2, cont1)
-                .InsertUnder(cont5, cont2)
-                .InsertUnder(cont3, cont2)
-                .InsertAfter(cont4, cont2)
-                .InsertUnder(coil2, coil1);
+            rung.InsertAbove(coil2, coil1)
+                .InsertUnder(cont2, cont1)
+                .InsertAfter(cont4, cont1)
+                .InsertBefore(cont5, cont4)
+                .InsertAbove(cont3, cont4);
 
             rung.PlaceWires();
 

@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Core.Components
 {
@@ -86,7 +88,7 @@ namespace Core.Components
         }
 
         #region Search and Collection
-        public System.Collections.Generic.List<ComponentBase> GetAllBetween(Node startNode, Node endNode)
+        public List<ComponentBase> GetAllBetween(Node startNode, Node endNode)
         {
             Trace.WriteLine("GetAllBetween Called", "Rung");
             int start = 0, end = _Components.Count - 1;
@@ -525,25 +527,25 @@ namespace Core.Components
             if (!_Components.Contains(component)) throw new ArgumentException("Component not inserted in current Rung", "component");
             Trace.Indent();
 
-            int nextComponentIndex = _Components.IndexOf(component) + 1;
-
-            if (component.RightLide.Root == component) //Component is owner of the Right node
+            if(_Components.Where(x => x.LeftLide == component.LeftLide && x.RightLide == component.RightLide).Count() == 1)
             {
-                if (nextComponentIndex < _Components.Count) //is not the last component in rung
+                IEnumerable<ComponentBase> RR = _Components.Where(x => x.RightLide == component.RightLide && x != component);
+
+                if (RR.Count() > 0)
                 {
-                    if (_Components[nextComponentIndex].RightLide == component.RightLide)// Next component conected in parallel
-                    {
-                        component.RightLide.Root = _Components[nextComponentIndex];
-                    }
-                    else //next component in series
-                    {
-                        //In case of parallel components
-                        for (int c = nextComponentIndex; c < _Components.Count && _Components[c].LeftLide == component.RightLide; c++)
-                        {
-                            _Components[c].LeftLide = component.LeftLide;
-                        }
-                    }
+                    if (component.RightLide.Root == component) component.RightLide.Root = RR.First();
+                    if (_Components.Where(x => x.LeftLide == component.LeftLide).Count() == 1)
+                        foreach (ComponentBase comp in _Components.Where(x => x.RightLide == component.LeftLide)) comp.RightLide = component.RightLide;
                 }
+                else
+                {
+                    foreach (ComponentBase comp in _Components.Where(x => x.LeftLide == component.RightLide)) comp.LeftLide = component.LeftLide;
+                }
+
+            }
+            else if (component.RightLide.Root == component)
+            {
+                component.RightLide.Root = _Components.Where(x => x.LeftLide == component.LeftLide && x.RightLide == component.RightLide && x != component).First();
             }
 
             Trace.WriteLine(component.GetType() + " removed", "Rung");

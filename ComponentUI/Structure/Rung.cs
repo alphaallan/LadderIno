@@ -112,18 +112,16 @@ namespace ComponentUI
 
         private List<ComponentGridPosition> GetAllWiredUnder(ComponentGridPosition component)
         {
-            var LC =_Components.Where(x => x.Component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output && x.Row > component.Row && x.Column < component.Column);
+            var LC =_Components.Where(x => x.Row > component.Row && x.Column < component.Column);
             if(LC.Count() == 0) return new List<ComponentGridPosition>();
 
-            var Nodes = LC.Select(x => x.Component.LogicComponent.RightLide).Distinct();
-            if(Nodes.Count() == 0) return new List<ComponentGridPosition>();
-
-            var RC = _Components.Where(x => Nodes.Contains(x.Component.LogicComponent.LeftLide));
+            var RC = _Components.Where(x => x.Row > component.Row && x.Column > component.Column);
             if (RC.Count() == 0) return new List<ComponentGridPosition>();
 
-            var SN = Nodes.Where(x => LC.Min(y => y.Column) < RC.Min(z => z.Column) - 1 && RC.Min(z => z.Column) > component.Column);
+            var Nodes = LC.Select(x => x.Component.LogicComponent.RightLide).Distinct().Intersect(RC.Select(x => x.Component.LogicComponent.LeftLide));
+            if(Nodes.Count() == 0) return new List<ComponentGridPosition>();
 
-            return new List<ComponentGridPosition>(LC.Where(x => SN.Contains(x.Component.LogicComponent.RightLide)));
+            return new List<ComponentGridPosition>(LC.Where(x => Nodes.Contains(x.Component.LogicComponent.RightLide)));
         }
         #endregion Help Function
 
@@ -199,7 +197,7 @@ namespace ComponentUI
             if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth) 
                 move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && x.Row > _anchor.Row && !move_list.Contains(x)));
 
-            var WU = GetAllWiredUnder(_anchor).Where(x => !move_list.Contains(x));
+            var WU = GetAllWiredUnder(_anchor);
 
             if (WU.Count() > 0)
             {
@@ -208,7 +206,7 @@ namespace ComponentUI
                 if (max_row > RowDefinitions.Count - 1) AddRow(_anchor.Row);
             }
 
-            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
+            foreach (ComponentGridPosition item in move_list.Distinct()) item.SetPossition(item.Row + 1, item.Column);
 
             _Components.Add(new ComponentGridPosition(component, _anchor.Row, _anchor.Column));
 
@@ -246,7 +244,7 @@ namespace ComponentUI
 
             List<ComponentGridPosition> move_list = GetAllBetween(NodeA, NodeB).Where(x => x.Row > _anchor.Row).ToList();
 
-            _LogicalRung.InsertAbove(component.LogicComponent, anchor.LogicComponent);
+            _LogicalRung.InsertUnder(component.LogicComponent, anchor.LogicComponent);
 
             if (!IsSlotEmpty(RowDefinitions.Count - 1, _anchor.Column) ||
                 (component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output && _anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth))
@@ -255,7 +253,7 @@ namespace ComponentUI
             if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth)
                 move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && x.Row > _anchor.Row && !move_list.Contains(x)));
 
-            var WU = GetAllWiredUnder(_anchor).Where(x => !move_list.Contains(x));
+            var WU = GetAllWiredUnder(_anchor);
 
             if (WU.Count() > 0)
             {
@@ -264,7 +262,7 @@ namespace ComponentUI
                 if (max_row > RowDefinitions.Count - 1) AddRow(_anchor.Row);
             }
 
-            foreach (ComponentGridPosition item in move_list) item.SetPossition(item.Row + 1, item.Column);
+            foreach (ComponentGridPosition item in move_list.Distinct()) item.SetPossition(item.Row + 1, item.Column);
 
             _Components.Add(new ComponentGridPosition(component, _anchor.Row + 1, _anchor.Column));
 
@@ -332,7 +330,7 @@ namespace ComponentUI
                     parallel_max_col = _Components.Where(x => parallel.Contains(x.Component.LogicComponent)).Max(x => x.Column);
 
                     addColumn = !IsSlotEmpty(_anchor.Row, parallel_max_col);
-                    move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
+                    if (addColumn) move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
                 }
                 else
                 {
@@ -398,7 +396,7 @@ namespace ComponentUI
                 parallel_max_col = _Components.Where(x => parallel.Contains(x.Component.LogicComponent)).Max(x => x.Column);
 
                 addColumn = !IsSlotEmpty(_anchor.Row, parallel_max_col);
-                move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
+                if (addColumn) move_list.AddRange(_Components.Where(x => (x.Column > _anchor.Column) && (!(parallel.Contains(x.Component.LogicComponent)) || x.Row == _anchor.Row)));
             }
             else
             {
@@ -441,9 +439,57 @@ namespace ComponentUI
         /// <param name="component">Component to be deleted</param>
         public Rung Remove(ComponentUIBase component)
         {
+            ComponentGridPosition _component = _Components.Where(x => x.Component == component).First();
 
 
+            if (_LogicalRung.Components.Where(x => x.LeftLide == component.LogicComponent.LeftLide && x.RightLide == component.LogicComponent.RightLide).Count() > 1)
+            {
+                foreach (ComponentGridPosition item in GetAllBetween(component.LogicComponent.LeftLide, component.LogicComponent.RightLide).Where(x => x.Row > _component.Row)) item.SetPossition(item.Row - 1, item.Column);
+            }
+            else
+            {
+                IEnumerable<ComponentGridPosition> RR = _Components.Where(x => x.Component.LogicComponent.RightLide == component.LogicComponent.RightLide && x != _component);
 
+                if (RR.Count() > 0)
+                {
+                    IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => x.Column == _component.Column);
+
+                    if (column_components.Count() == 1)
+                    {
+                        foreach (ComponentGridPosition item in _Components.Where(x => x.Column > _component.Column)) item.SetPossition(item.Row, item.Column - 1);
+                    }
+                    else
+                    {
+                        foreach (ComponentGridPosition item in GetAllBetween(component.LogicComponent.LeftLide, component.LogicComponent.RightLide).Where(x => x.Row > _component.Row)) item.SetPossition(item.Row - 1, item.Column);
+                    }
+                }
+                else
+                {
+                    foreach (ComponentGridPosition item in _Components.Where(x => x.Component.LogicComponent.LeftLide == component.LogicComponent.RightLide)) item.SetPossition(item.Row, item.Column - 1);
+                }
+            }
+
+            var row = RowDefinitions.Where(x => _Components.Where(y => (y.Row == RowDefinitions.IndexOf(x))).Count() == 0);
+
+            if (row.Count() != 0)
+            {
+                int row_index = RowDefinitions.IndexOf(row.First());
+                foreach (ComponentGridPosition item in _Components.Where(x => x.Row > row_index)) item.SetPossition(item.Row - 1, item.Column);
+                RowDefinitions.RemoveAt(row_index);
+            }
+
+            var column = ColumnDefinitions.Where(x => _Components.Where(y => (y.Column == ColumnDefinitions.IndexOf(x))).Count() == 0);
+
+            if (column.Count() != 0)
+            {
+                int column_index = ColumnDefinitions.IndexOf(column.First());
+                foreach (ComponentGridPosition item in _Components.Where(x => x.Column > column_index)) item.SetPossition(item.Row, item.Column - 1);
+                ColumnDefinitions.RemoveAt(column_index);
+            }
+
+            _LogicalRung.Remove(component.LogicComponent);
+            _Components.Remove(_component);
+            Children.Remove(component);
             return this;        
         }
 
@@ -469,6 +515,8 @@ namespace ComponentUI
         {
             foreach (var wire in _Wires) Children.Remove(wire);
             _Wires.Clear();
+
+            if (_Components.Count == 0) return this;
 
             #region Parallel Wiring
             List<Core.Components.Node> Nodes = new List<Core.Components.Node>();
@@ -514,57 +562,38 @@ namespace ComponentUI
             #region Serial Wiring
             for (int row = 0; row < RowDefinitions.Count; row++)
             {
-                var row_components = _Components.Where(x => x.Row == row).OrderBy(x => x.Column).ToList();
-
-                for (int index = 0; index < row_components.Count() - 1; index++)
+                foreach (var component in _Components.Where(x => x.Row == row))
                 {
-                    Core.Components.Node na = row_components[index].Component.LogicComponent.RightLide;
-                    Core.Components.Node nb = row_components[index + 1].Component.LogicComponent.LeftLide;
+                    IEnumerable<ComponentGridPosition> temp;
 
-                    if ((na == nb) && (row_components[index].Column + 1 < row_components[index + 1].Column))
+                    if (component.Component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output)
                     {
-                        ComponentUI.HorizontalWire wire = new HorizontalWire(na, row, row_components[index].Column + 1, row_components[index + 1].Column);
-                        _Wires.Add(wire);
-                    }
-                }
-
-                var lose_componentsR = row_components.Where(x => x.Component.LogicComponent.Class != Core.Components.ComponentBase.ComponentClass.Output
-                                                            && GetAllBetween(x.Component.LogicComponent.LeftLide, x.Component.LogicComponent.RightLide).Where(y => y.Column != x.Column).Count() != 0
-                                                            && (row_components.Where(y => y.Component.LogicComponent.LeftLide == x.Component.LogicComponent.RightLide).Count() == 0));
-
-                var lose_componentsL = row_components.Where(x => x.Component.LogicComponent.LeftLide.Root != null && !lose_componentsR.Contains(x) 
-                                                                && (row_components.Where(y => y.Component.LogicComponent.RightLide == x.Component.LogicComponent.LeftLide).Count() == 0));
-
-
-                if (lose_componentsR.Count() > 0)
-                {
-                    foreach (var component in lose_componentsR)
-                    {
-                        int ec = _Components.Where(x => x.Component.LogicComponent.LeftLide == component.Component.LogicComponent.RightLide).Max(x => x.Column);
-                        if (ec > component.Column + 1 && _Components.Where(x => x.Row == component.Row && x.Column > component.Column && x.Column < ec).Count() == 0)
+                        temp = _Components.Where(x => x.Component.LogicComponent.LeftLide == component.Component.LogicComponent.RightLide);
+                        if (temp.Count() > 0)
                         {
-                            ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.RightLide, row, component.Column + 1, ec);
-                            _Wires.Add(wire);
+                            int ec = temp.Min(x => x.Column);
+
+                            if (ec > component.Column + 1)
+                            {
+                                ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.RightLide, row, component.Column + 1, ec);
+                                _Wires.Add(wire);
+                            }
                         }
                     }
-                }
 
-                if (lose_componentsL.Count() > 0)
-                {
-                    foreach (var component in lose_componentsL)
+                    temp = _Components.Where(x => x.Component.LogicComponent.RightLide == component.Component.LogicComponent.LeftLide);
+
+                    if (temp.Count() > 0)
                     {
-                        int sc = _Components.Where(x => x.Component.LogicComponent.RightLide == component.Component.LogicComponent.LeftLide).Min(x => x.Column);
+                        int sc = temp.Max(x => x.Column);
                         if (sc < component.Column - 1 && _Components.Where(x => x.Row == component.Row && x.Column < component.Column && x.Column > sc).Count() == 0)
                         {
                             ComponentUI.HorizontalWire wire = new HorizontalWire(component.Component.LogicComponent.LeftLide, row, sc + 1, component.Column);
                             _Wires.Add(wire);
                         }
-                            
                     }
                 }
             }
-
-
             #endregion
 
             foreach (var wire in _Wires) Children.Insert(0, wire);
