@@ -136,6 +136,7 @@ namespace ComponentUI
             if (component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output)
             {
                 var temp = _Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output);
+                if (_OutputBlockLegth == 0) _OutputBlockLegth = 1;
 
                 if (temp.Count() == 0)
                 {
@@ -410,6 +411,8 @@ namespace ComponentUI
 
             if (addColumn)
             {
+                if (_OutputBlockLegth == 0 && component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output) _OutputBlockLegth = 1;
+                else if (_anchor.Column >= ColumnDefinitions.Count - _OutputBlockLegth) _OutputBlockLegth++;
                 AddColumn(_anchor.Column);
                 move_list.AddRange(_Components.Where(x => x.Component.LogicComponent.Class == Core.Components.ComponentBase.ComponentClass.Output && !move_list.Contains(x)));
             }
@@ -469,6 +472,10 @@ namespace ComponentUI
                 }
             }
 
+            _Components.Remove(_component);
+            _LogicalRung.Remove(component.LogicComponent);
+            Children.Remove(component);
+
             var row = RowDefinitions.Where(x => _Components.Where(y => (y.Row == RowDefinitions.IndexOf(x))).Count() == 0);
 
             if (row.Count() != 0)
@@ -483,13 +490,11 @@ namespace ComponentUI
             if (column.Count() != 0)
             {
                 int column_index = ColumnDefinitions.IndexOf(column.First());
+                if (_component.Column >= ColumnDefinitions.Count - _OutputBlockLegth) _OutputBlockLegth--;
                 foreach (ComponentGridPosition item in _Components.Where(x => x.Column > column_index)) item.SetPossition(item.Row, item.Column - 1);
                 ColumnDefinitions.RemoveAt(column_index);
             }
 
-            _LogicalRung.Remove(component.LogicComponent);
-            _Components.Remove(_component);
-            Children.Remove(component);
             return this;        
         }
 
@@ -604,13 +609,12 @@ namespace ComponentUI
 
         #endregion Functions
 
-
         public Rung()
         {
             _Components = new List<ComponentGridPosition>();
             _LogicalRung = new Core.Components.Rung();
             _Wires = new List<Node>();
-            _OutputBlockLegth = 1;
+            _OutputBlockLegth = 0;
             Clear();
         }
 
