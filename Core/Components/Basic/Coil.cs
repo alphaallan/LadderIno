@@ -45,22 +45,25 @@ namespace Core.Components
             {
                 case CoilMode.Normal:
                     InternalState = LeftLide.LogicLevel;
+                    if(DataTable != null) DataTable.SetValue(FullName, InternalState);
                     break;
 
                 case CoilMode.Negated:
                     InternalState = !LeftLide.LogicLevel;
+                    if(DataTable != null) DataTable.SetValue(FullName, InternalState);
                     break;
 
                 case CoilMode.Reset:
-                    if (InternalState && LeftLide.LogicLevel) InternalState = false;
+                    InternalState = LeftLide.LogicLevel;
+                    if (DataTable != null && LeftLide.LogicLevel) DataTable.SetValue(FullName, false);
                     break;
 
                 case CoilMode.Set:
-                    if (!InternalState && LeftLide.LogicLevel) InternalState = true;
+                    InternalState = LeftLide.LogicLevel;
+                    if (DataTable != null && LeftLide.LogicLevel) DataTable.SetValue(FullName, true);
                     break;
             }
 
-            if(DataTable != null) DataTable.SetValue(FullName, InternalState);
         }
         #endregion Functions
 

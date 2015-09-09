@@ -60,18 +60,15 @@ namespace CoreLogicalTest
             Assert.IsTrue(coil.InternalState);
             PowerRail.LogicLevel = false;
             coil.Execute();
-            Assert.IsTrue(coil.InternalState);
+            Assert.IsFalse(coil.InternalState);
 
             coil.Mode = Coil.CoilMode.Reset;
             coil.Execute();
+            Assert.IsFalse(coil.InternalState);
+            PowerRail.LogicLevel = true;
+            coil.Execute();
             Assert.IsTrue(coil.InternalState);
-            PowerRail.LogicLevel = true;
-            coil.Execute();
-            Assert.IsFalse(coil.InternalState);
             PowerRail.LogicLevel = false;
-            coil.Execute();
-            Assert.IsFalse(coil.InternalState);
-            PowerRail.LogicLevel = true;
             coil.Execute();
             Assert.IsFalse(coil.InternalState);
             #endregion Coil
