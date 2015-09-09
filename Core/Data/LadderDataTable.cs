@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 
 namespace Core.Data
@@ -27,7 +28,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="type">Variable type</param>
-        public void Add(string name, Type type)
+        public LadderDataTable Add(string name, Type type)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
@@ -45,6 +46,8 @@ namespace Core.Data
                 Table.Add(name, new LDIVariable(type));
                 Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type, "Ladder Data Table");
             }
+
+            return this;
         }
 
         /// <summary>
@@ -53,7 +56,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="type">Variable type</param>
-        public void Add(string name, Type type, object value)
+        public LadderDataTable Add(string name, Type type, object value)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
             if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
@@ -74,6 +77,7 @@ namespace Core.Data
                 Table.Add(name, new LDIVariable(type, value));
                 Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type + ", Value set: " + value, "Ladder Data Table");
             }
+            return this;
         }
 
         /// <summary>
@@ -81,7 +85,7 @@ namespace Core.Data
         /// In case of a variable with multiple references it only decrease variable’s reference counter
         /// </summary>
         /// <param name="name">Variable name</param>
-        public void Remove(string name)
+        public LadderDataTable Remove(string name)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
 
@@ -99,6 +103,7 @@ namespace Core.Data
                 }
             }
             else throw new ArgumentException("Variable not found", "name");
+            return this;
         }
         
         /// <summary>
@@ -107,7 +112,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="oldName">Variable old name</param>
         /// <param name="newName">Variable new name</param>
-        public void Rename(string oldName, string newName)
+        public LadderDataTable Rename(string oldName, string newName)
         {
             Trace.WriteLine("Rename invoked", "Ladder Data Table");
             if (string.IsNullOrEmpty(oldName)) throw new ArgumentNullException("Variable old name must be provided", "oldName");
@@ -143,6 +148,7 @@ namespace Core.Data
                 }
             }
             else throw new ArgumentException("Variable name not found", "oldName");
+            return this;
         }
 
         /// <summary>
@@ -217,16 +223,23 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="value">Value to be set</param>
-        public void SetValue(string name, object value)
+        public LadderDataTable SetValue(string name, object value)
         {
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
                 if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
-                Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
-                Table.Values[index].Value = value;
-                return;
+                if (!Table.Values[index].Locked)
+                {
+                    Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
+                    Table.Values[index].Value = value;
+                }
+                else 
+                {
+                    Trace.WriteLine("Change in value of " + name + " ignored", "Ladder Data Table");
+                }
+                return this;
             }
             else throw new ArgumentException("Variable not found", "name");
         }
@@ -236,13 +249,95 @@ namespace Core.Data
         /// </summary>
         /// <param name="index">Variable index</param>
         /// <param name="value">Value to be set</param>
-        public void SetValue(int index, object value)
+        public LadderDataTable SetValue(int index, object value)
         {
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
             if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
-            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
 
-            Table.Values[index].Value = value;
+            if (!Table.Values[index].Locked)
+            {
+                Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
+                Table.Values[index].Value = value;
+            }
+            else
+            {
+                Trace.WriteLine("Change in value at [" + index + "] (" + Table.Keys[index] + ") ignored", "Ladder Data Table");
+            }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Set Variable lock state by index
+        /// </summary>
+        /// <param name="index">Variable index</param>
+        /// <param name="value">Value to be set</param>
+        public LadderDataTable SetLock(int index, bool value)
+        {
+            if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
+            Trace.WriteLine("Value at [" + index + "] (" + Table.Keys[index] + "): lock state changed to " + value, "Ladder Data Table");
+
+            Table.Values[index].Locked = value;
+            return this;
+        }
+
+        /// <summary>
+        /// Set variable lock state by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Value to be set</param>
+        public LadderDataTable SetLock(string name, object value)
+        {
+            int index = Table.IndexOfKey(name);
+
+            if (index != -1)
+            {
+                if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
+                Trace.WriteLine("Lock state of " + name + " changed to " + value, "Ladder Data Table");
+                Table.Values[index].Value = value;
+                return this;
+            }
+            else throw new ArgumentException("Variable not found", "name");
+        }
+
+        /// <summary>
+        /// Lock variable by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        public LadderDataTable Lock(string name)
+        {
+            SetLock(name, true);
+            return this;
+        }
+
+        /// <summary>
+        /// Lock variable by index
+        /// </summary>
+        /// <param name="index">Variable index</param>
+        public LadderDataTable Lock(int index)
+        {
+            SetLock(index, true);
+            return this;
+        }
+
+        /// <summary>
+        /// Unlock variable by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        public LadderDataTable Unlock(string name)
+        {
+            SetLock(name, false);
+            return this;
+        }
+
+        /// <summary>
+        /// Unlock variable by index
+        /// </summary>
+        /// <param name="index">Variable index</param>
+        public LadderDataTable Unlock(int index)
+        {
+            SetLock(index, false);
+            return this;
         }
         #endregion Functions
 
@@ -265,11 +360,47 @@ namespace Core.Data
         /// <summary>
         /// Class that represents one memory entry
         /// </summary>
-        private class LDIVariable : ICloneable
+        private class LDIVariable : ICloneable, INotifyPropertyChanged
         {
-            public object Value { get; set; }
-            public int NumRefs { get; set; }
-            public Type Type { get; set; }
+            public object Value
+            {
+                get { return _Value; }
+                set
+                {
+                    _Value = value;
+                    if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Value")); }
+                }
+            }
+
+            public int NumRefs
+            {
+                get { return _NumRefs; }
+                set
+                {
+                    _NumRefs = value;
+                    if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("NumRefs")); }
+                }
+            }
+
+            public Type Type
+            {
+                get { return _Type; }
+                set
+                {
+                    _Type = value;
+                    if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Type")); }
+                }
+            }
+
+            public bool Locked
+            {
+                get { return _Locked; }
+                set
+                {
+                    _Locked = value;
+                    if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Locked")); }
+                }
+            }
 
             /// <summary>
             /// Master builder 
@@ -282,6 +413,7 @@ namespace Core.Data
                 Value = value;
                 NumRefs = numRefs;
                 Type = type;
+                Locked = false;
             }
 
             /// <summary>
@@ -292,7 +424,8 @@ namespace Core.Data
                 : this(type, 1, null)
             {
                 //get default value for the given type
-                Value = (type.IsValueType) ? Activator.CreateInstance(type) : null; 
+                Value = (type.IsValueType) ? Activator.CreateInstance(type) : null;
+                Locked = false;
             }
 
             /// <summary>
@@ -309,6 +442,15 @@ namespace Core.Data
             {
                 return new LDIVariable(Type, NumRefs, Value);
             }
+
+            #region Internal Data
+            public event PropertyChangedEventHandler PropertyChanged;
+            private object _Value;
+            private int _NumRefs;
+            private Type _Type;
+            private bool _Locked;
+            #endregion Internal Data
+
         }
         #endregion Classes
     }
