@@ -15,7 +15,7 @@ namespace CoreLogicalTest
             LadderDataTable TestTable = new LadderDataTable();
 
             TestTable.Add("Var1", typeof(int));
-            TestTable.Add("Var1", typeof(int), 10);
+            TestTable.Add("Var1", typeof(int), LDVarClass.Data, 10);
             TestTable.Add("Var2", typeof(bool));
             TestTable.Add("Var3", typeof(byte));
             TestTable.Add("Var4", typeof(short));
@@ -64,7 +64,7 @@ namespace CoreLogicalTest
 
             try
             {
-                TestTable.Add("", typeof(int),10);
+                TestTable.Add("", typeof(int), LDVarClass.Data, 10);
                 throw new AssertFailedException("Exception expected");
             }
             catch (ArgumentNullException ex)
@@ -74,7 +74,7 @@ namespace CoreLogicalTest
 
             try
             {
-                TestTable.Add("Var2", null,10);
+                TestTable.Add("Var2", null, LDVarClass.Data, 10);
                 throw new AssertFailedException("Exception expected");
             }
             catch (ArgumentNullException ex)
@@ -177,7 +177,7 @@ namespace CoreLogicalTest
 
             try
             {
-                TestTable.Add("Var1", typeof(bool), false);
+                TestTable.Add("Var1", typeof(bool), LDVarClass.Data, false);
                 throw new AssertFailedException("Exception expected");
             }
             catch (ArgumentException ex)
@@ -188,7 +188,7 @@ namespace CoreLogicalTest
 
             try
             {
-                TestTable.Add("Var3", typeof(int), null);
+                TestTable.Add("Var3", typeof(int), LDVarClass.Data, null);
                 throw new AssertFailedException("Exception expected");
             }
             catch (ArgumentNullException ex)

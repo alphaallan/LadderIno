@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Core.Components
 {
@@ -23,7 +25,7 @@ namespace Core.Components
         }
 
         /// <summary>
-        /// Rung datacontext
+        /// Rungs datacontext
         /// </summary>
         public Data.LadderDataTable DataTable
         {
@@ -36,6 +38,20 @@ namespace Core.Components
                 if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("DataTable")); }
             }
         }
+
+        /// <summary>
+        /// Diagram Pinout
+        /// </summary>
+        public ObservableCollection<Data.LDPin> Pins
+        {
+            get { return _Pins; }
+            private set
+            {
+                _Pins = value;
+                if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Pins")); }
+            }
+        }
+
 
         /// <summary>
         /// Master control relay, it is used to turn the hole program on and off. 
@@ -65,7 +81,7 @@ namespace Core.Components
         /// <summary>
         /// Execute a program cycle
         /// </summary>
-        public void Execute()
+        public Diagram Execute()
         {
             if (_DataTable == null) throw new NullReferenceException("No data table associated to the diagram");
             if (MasterRelay)
@@ -75,8 +91,27 @@ namespace Core.Components
                 foreach (Rung rung in _Rungs) rung.Execute();
                 Trace.Unindent();
             }
+
+            return this;
         }
 
+        public Diagram RefreshPins()
+        {
+            if (DataTable != null)
+            {
+                List<string> variables = DataTable.GetNames().Where(x => x[0] == (char)NameableComponent.ComponentPrefix.AnalogInput
+                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.Input
+                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.Output
+                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.PWM).ToList();
+
+
+            }
+            else _Pins.Clear();
+
+            if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("Pins")); }
+
+            return this;
+        }
 
         #region Insert Functions
         /// <summary>
@@ -200,6 +235,7 @@ namespace Core.Components
         {
             Trace.WriteLine("Diagram Clear invoked", "Diagram");
             _Rungs.Clear();
+            _Pins.Clear();
             Trace.Indent();
             GC.Collect();
             Trace.Unindent();
@@ -218,6 +254,7 @@ namespace Core.Components
             Trace.WriteLine("New diagram created", "Diagram");
             Rungs = new ObservableCollection<Rung>();
             DataTable = new Data.LadderDataTable();
+            Pins = new ObservableCollection<Data.LDPin>();
         }
         #endregion Constructors
 
@@ -226,6 +263,7 @@ namespace Core.Components
         bool _MasterRelay;
 
         private Data.LadderDataTable _DataTable;
+        private ObservableCollection<Data.LDPin> _Pins;
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data

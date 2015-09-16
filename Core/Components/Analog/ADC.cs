@@ -19,7 +19,7 @@ namespace Core.Components
             set
             {
                 _ReadValue = (short)((value > 1023) ? 1023 : (value < 0) ? 0 : value);
-                if (DataTable != null) DataTable.SetValue(FullName, _ReadValue);
+                if (DataTable != null) DataTable.SetValue(FullName + "_READ", _ReadValue);
                 RaisePropertyChanged("ReadValue");
             }
         }
@@ -55,13 +55,24 @@ namespace Core.Components
             if (DataTable != null)
             {
                 base.NameChangedHandler(oldName, newName);
+
+                try
+                {
+                    DataTable.Rename(oldName + "_READ", newName + "_READ");
+                }
+                catch (ArgumentException ex)
+                {
+                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_READ", typeof(short), Data.LDVarClass.Data);
+                    else throw ex;
+                }
+
                 try
                 {
                     DataTable.Rename(oldName + "_INPUT", newName + "_INPUT");
                 }
                 catch (ArgumentException ex)
                 {
-                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_INPUT", typeof(Int16));
+                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_INPUT", typeof(Int16), Data.LDVarClass.Simulator);
                     else throw ex;
                 }
             }
@@ -70,6 +81,12 @@ namespace Core.Components
         protected override void DataTableRelease()
         {
             base.DataTableRelease();
+
+            try
+            {
+                if (DataTable != null) DataTable.Remove(FullName + "_READ");
+            }
+            catch (ArgumentException) { }
 
             try
             {
@@ -82,30 +99,40 @@ namespace Core.Components
         {
             base.DataTableAlloc();
 
-            if (DataTable != null) DataTable.Add(FullName + "_INPUT", typeof(Int16));
+            if (DataTable != null)
+            {
+                DataTable.Add(FullName + "_READ", typeof(short), Data.LDVarClass.Data);
+                DataTable.Add(FullName + "_INPUT", typeof(Int16), Data.LDVarClass.Simulator);
+            }
         }
         #endregion Functions
 
         #region Constructors
         public ADC(string name, Node Left)
-            : base(typeof(short), name,Left,null)
+            : base(typeof(string), name,Left,null)
         {
             Class = ComponentClass.Output;
             NamePerfix = ComponentPrefix.AnalogInput;
+            VarClass = Data.LDVarClass.Analog;
+            DefaultValue = "ADC INPUT";
         }
 
         public ADC(Node Left)
-            : base(typeof(short), Left, null)
+            : base(typeof(string), Left, null)
         {
             Class = ComponentClass.Output;
             NamePerfix = ComponentPrefix.AnalogInput;
+            VarClass = Data.LDVarClass.Analog;
+            DefaultValue = "ADC INPUT";
         }
 
         public ADC()
-            : base(typeof(short), new Node(), null)
+            : base(typeof(string), new Node(), null)
         {
             Class = ComponentClass.Output;
             NamePerfix = ComponentPrefix.AnalogInput;
+            VarClass = Data.LDVarClass.Analog;
+            DefaultValue = "ADC INPUT";
         }
         #endregion Constructors
 

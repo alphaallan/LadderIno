@@ -21,7 +21,10 @@ namespace Core.Components
             {
                 _Type = value;
 
-                NamePerfix = (_Type == CoilType.OutputPin) ? ComponentPrefix.Output : ComponentPrefix.Relay; 
+                VarClass = (_Type == CoilType.OutputPin) ? Data.LDVarClass.Output : Data.LDVarClass.Data;
+                NamePerfix = (_Type == CoilType.OutputPin) ? ComponentPrefix.Output : ComponentPrefix.Relay;
+
+                if (DataTable != null) DataTable.SetVarClass(FullName, VarClass);
 
                 RaisePropertyChanged("Type");
             }
@@ -74,6 +77,7 @@ namespace Core.Components
             this.Type = type;
             this.Mode = mode;
             this.Class = ComponentClass.Output;
+            this.VarClass = Data.LDVarClass.Output;
         }
 
         public Coil(string name, Node Left)
@@ -82,6 +86,7 @@ namespace Core.Components
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
             this.Class = ComponentClass.Output;
+            this.VarClass = Data.LDVarClass.Output;
         }
 
         public Coil(Node Left)
@@ -90,6 +95,7 @@ namespace Core.Components
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
             this.Class = ComponentClass.Output;
+            this.VarClass = Data.LDVarClass.Output;
         }
 
         public Coil()
@@ -98,6 +104,7 @@ namespace Core.Components
             this.Type = CoilType.OutputPin;
             this.Mode = CoilMode.Normal;
             this.Class = ComponentClass.Output;
+            this.VarClass = Data.LDVarClass.Output;
         }
         #endregion Constructors
 

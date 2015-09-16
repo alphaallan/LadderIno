@@ -68,6 +68,9 @@
     <Compile Include="Components\Math\MUL.cs" />
     <Compile Include="Components\Math\SUB.cs" />
     <Compile Include="Components\NameableComponent.cs" />
+    <Compile Include="Data\LDPin.cs" />
+    <Compile Include="Data\PinType.cs" />
+    <Compile Include="Data\LDVarClass.cs" />
     <Compile Include="Structure\Diagram.cs" />
     <Compile Include="Structure\Node.cs" />
     <Compile Include="Structure\Rung.cs" />

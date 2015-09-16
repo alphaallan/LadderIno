@@ -27,24 +27,25 @@ namespace Core.Data
         /// In case of an existing variable it only increase its reference counter
         /// </summary>
         /// <param name="name">Variable name</param>
+        /// <param name="dataType">Variable data type</param>
         /// <param name="type">Variable type</param>
-        public LadderDataTable Add(string name, Type type)
+        public LadderDataTable Add(string name, Type dataType, LDVarClass type = LDVarClass.Data)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
-            if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
+            if (dataType == null) throw new ArgumentNullException("Variable type must be provided", "dataType");
 
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
-                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
+                if (dataType != Table.Values[index].DataType) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
                 Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs, "Ladder Data Table");
             }
             else
             {
-                Table.Add(name, new LDIVariable(type));
-                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type, "Ladder Data Table");
+                Table.Add(name, new LDIVariable(dataType, type));
+                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + dataType, "Ladder Data Table");
             }
 
             return this;
@@ -55,27 +56,27 @@ namespace Core.Data
         /// In case of an existing variable it only increase its reference counter
         /// </summary>
         /// <param name="name">Variable name</param>
-        /// <param name="type">Variable type</param>
-        public LadderDataTable Add(string name, Type type, object value)
+        /// <param name="dataType">Variable data type</param>
+        public LadderDataTable Add(string name, Type dataType, LDVarClass type, object value)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
-            if (type == null) throw new ArgumentNullException("Variable type must be provided", "type");
-            if (value == null && Nullable.GetUnderlyingType(type) == null) throw new ArgumentNullException("Variable value must be provided for non-nullable types", "value");
-            if (value.GetType() != type) throw new ArgumentException("Type Mismatch", "type");
+            if (dataType == null) throw new ArgumentNullException("Variable type must be provided", "dataType");
+            if (value == null && Nullable.GetUnderlyingType(dataType) == null) throw new ArgumentNullException("Variable value must be provided for non-nullable types", "value");
+            if (value.GetType() != dataType) throw new ArgumentException("Type Mismatch", "type");
 
             int index = Table.IndexOfKey(name);
 
             if (index != -1)
             {
-                if (type != Table.Values[index].Type) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
+                if (dataType != Table.Values[index].DataType) throw new ArgumentException("Name already used", "name", new FormatException("Value Type Mismatch"));
                 Table.Values[index].NumRefs++;
                 Table.Values[index].Value = value;
                 Trace.WriteLine("New reference to variable " + name + ", total number of references: " + Table.Values[index].NumRefs + ", Value set: " + value, "Ladder Data Table");
             }
             else
             {
-                Table.Add(name, new LDIVariable(type, value));
-                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + type + ", Value set: " + value, "Ladder Data Table");
+                Table.Add(name, new LDIVariable(dataType, type, value));
+                Trace.WriteLine("New Variable inserted: " + name + ", Type: " + dataType + ", Value set: " + value, "Ladder Data Table");
             }
             return this;
         }
@@ -127,13 +128,13 @@ namespace Core.Data
                 {
                     if (indexN != -1) //new name exists in list
                     {
-                        if (Table.Values[indexO].Type != Table.Values[indexN].Type) throw new ArgumentException("Name already used", "newName", new FormatException("Value Type Mismatch"));
+                        if (Table.Values[indexO].DataType != Table.Values[indexN].DataType) throw new ArgumentException("Name already used", "newName", new FormatException("Value Type Mismatch"));
                         else Table.RemoveAt(indexO);
                         Trace.WriteLine("New variable name already exists, reference added", "Ladder Data Table");
                     }
                     else //new name does not exist in list
                     {
-                        var temp = new LDIVariable(Table.Values[indexO].Type, Table.Values[indexO].Value);
+                        var temp = new LDIVariable(Table.Values[indexO].DataType, Table.Values[indexO].Class, Table.Values[indexO].Value);
                         Table.RemoveAt(indexO);
                         Table.Add(newName, temp);
                         Trace.WriteLine(oldName + " Renamed to " + newName, "Ladder Data Table");
@@ -143,8 +144,8 @@ namespace Core.Data
                 {
                     Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName, "Ladder Data Table");
                     Table.Values[indexO].NumRefs--;
-                    Table.Add(newName, new LDIVariable(Table.Values[indexO].Type, Table.Values[indexO].Value));
-                    Trace.WriteLine("New Variable inserted: " + newName + ", Type: " + Table.Values[indexO].Type + ", Value set: " + Table.Values[indexO].Value, "Ladder Data Table");
+                    Table.Add(newName, new LDIVariable(Table.Values[indexO].DataType, Table.Values[indexO].Class, Table.Values[indexO].Value));
+                    Trace.WriteLine("New Variable inserted: " + newName + ", Type: " + Table.Values[indexO].DataType + ", Value set: " + Table.Values[indexO].Value, "Ladder Data Table");
                 }
             }
             else throw new ArgumentException("Variable name not found", "oldName");
@@ -177,6 +178,15 @@ namespace Core.Data
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
             Trace.WriteLine("Name at [" + index + "]: " + Table.Keys[index], "Ladder Data Table");
             return Table.Keys[index];
+        }
+
+        /// <summary>
+        /// Get all names in data table
+        /// </summary>
+        /// <returns></returns>
+        public IList<string> GetNames()
+        {
+            return Table.Keys;
         }
 
         /// <summary>
@@ -229,7 +239,7 @@ namespace Core.Data
 
             if (index != -1)
             {
-                if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
+                if (value.GetType() != Table.Values[index].DataType) throw new FormatException("Value Type Mismatch");
                 if (!Table.Values[index].Locked)
                 {
                     Trace.WriteLine("Value of " + name + " changed from " + Table.Values[index].Value + " to " + value, "Ladder Data Table");
@@ -252,7 +262,7 @@ namespace Core.Data
         public LadderDataTable SetValue(int index, object value)
         {
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
-            if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
+            if (value.GetType() != Table.Values[index].DataType) throw new FormatException("Value Type Mismatch");
 
             if (!Table.Values[index].Locked)
             {
@@ -263,6 +273,43 @@ namespace Core.Data
             {
                 Trace.WriteLine("Change in value at [" + index + "] (" + Table.Keys[index] + ") ignored", "Ladder Data Table");
             }
+
+            return this;
+        }
+
+        /// <summary>
+        /// Set variable class by name
+        /// </summary>
+        /// <param name="name">Variable name</param>
+        /// <param name="value">Value to be set</param>
+        public LadderDataTable SetVarClass(string name, LDVarClass value)
+        {
+            int index = Table.IndexOfKey(name);
+
+            if (index != -1)
+            {
+                if (Table.Values[index].NumRefs > 1 && Table.Values[index].Class != value) throw new InvalidOperationException("Can't change variable LD Class");
+
+                Trace.WriteLine("Class of " + name + " changed to " + value, "Ladder Data Table");
+                Table.Values[index].Class = value;
+                
+                return this;
+            }
+            else throw new ArgumentException("Variable not found", "name");
+        }
+
+        /// <summary>
+        /// Set variable class by index
+        /// </summary>
+        /// <param name="index">Variable index</param>
+        /// <param name="value">Value to be set</param>
+        public LadderDataTable SetVarClass(int index, LDVarClass value)
+        {
+            if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
+            if (Table.Values[index].NumRefs > 1 && Table.Values[index].Class != value) throw new InvalidOperationException("Can't change variable LD Class");
+
+            Trace.WriteLine("Class at [" + index + "] (" + Table.Keys[index] + "): changed to " + value, "Ladder Data Table");
+            Table.Values[index].Class = value;
 
             return this;
         }
@@ -292,7 +339,7 @@ namespace Core.Data
 
             if (index != -1)
             {
-                if (value.GetType() != Table.Values[index].Type) throw new FormatException("Value Type Mismatch");
+                if (value.GetType() != Table.Values[index].DataType) throw new FormatException("Value Type Mismatch");
                 Trace.WriteLine("Lock state of " + name + " changed to " + value, "Ladder Data Table");
                 Table.Values[index].Value = value;
                 return this;
@@ -382,7 +429,17 @@ namespace Core.Data
                 }
             }
 
-            public Type Type
+            public Type DataType
+            {
+                get { return _DataType; }
+                set
+                {
+                    _DataType = value;
+                    if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("DataType")); }
+                }
+            }
+
+            public LDVarClass Class
             {
                 get { return _Type; }
                 set
@@ -405,49 +462,52 @@ namespace Core.Data
             /// <summary>
             /// Master builder 
             /// </summary>
+            /// <param name="dataType">Variable data type</param>
             /// <param name="type">Variable type</param>
             /// <param name="numRefs">Number of references to this variable</param>
             /// <param name="value">Variable initial value</param>
-            public LDIVariable(Type type, int numRefs, object value)
+            public LDIVariable(Type dataType, LDVarClass type, int numRefs, object value)
             {
                 Value = value;
                 NumRefs = numRefs;
-                Type = type;
+                DataType = dataType;
+                Class = type;
                 Locked = false;
             }
 
             /// <summary>
             /// Builder (sets type's default value)
             /// </summary>
-            /// <param name="type">Variable type</param>
-            public LDIVariable(Type type)
-                : this(type, 1, null)
+            /// <param name="dataType">Variable type</param>
+            public LDIVariable(Type dataType, LDVarClass type)
+                : this(dataType, type, 1, null)
             {
                 //get default value for the given type
-                Value = (type.IsValueType) ? Activator.CreateInstance(type) : null;
+                Value = (dataType.IsValueType) ? Activator.CreateInstance(dataType) : null;
                 Locked = false;
             }
 
             /// <summary>
             /// Builder 
             /// </summary>
-            /// <param name="type">Variable type</param>
+            /// <param name="dataType">Variable type</param>
             /// <param name="value">Variable initial value</param>
-            public LDIVariable(Type type, object value)
-                : this(type, 1, value)
+            public LDIVariable(Type dataType, LDVarClass type, object value)
+                : this(dataType, type, 1, value)
             {
             }
 
             public object Clone()
             {
-                return new LDIVariable(Type, NumRefs, Value);
+                return new LDIVariable(DataType, Class, NumRefs, Value);
             }
 
             #region Internal Data
             public event PropertyChangedEventHandler PropertyChanged;
             private object _Value;
             private int _NumRefs;
-            private Type _Type;
+            private Type _DataType;
+            private LDVarClass _Type;
             private bool _Locked;
             #endregion Internal Data
 

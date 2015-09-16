@@ -65,9 +65,11 @@ namespace Core.Components
                 }
                 catch (ArgumentException ex)
                 {
-                    if (ex.ParamName == "oldName") DataTable.Add(newName, DataType);
+                    if (ex.ParamName == "oldName") DataTable.Add(newName, DataType, VarClass);
                     else throw ex;
                 }
+
+                if (DefaultValue != null) DataTable.SetValue(newName, DefaultValue);
             }
         }
 
@@ -86,7 +88,11 @@ namespace Core.Components
         {
             base.DataTableAlloc();
 
-            if (DataTable != null) DataTable.Add(FullName, DataType);
+            if (DataTable != null)
+            {
+                DataTable.Add(FullName, DataType, VarClass);
+                if (DefaultValue != null) DataTable.SetValue(FullName, DefaultValue);
+            }
         }
 
         public override string ToString()
@@ -96,10 +102,21 @@ namespace Core.Components
         #endregion Functions
 
         #region Constructors
+        public NameableComponent()
+            : this("NEW")
+        {
+           
+        }
+
         public NameableComponent(Type dType) 
             : this(dType,"NEW")
         {
             
+        }
+
+        public NameableComponent(string name)
+        {
+            Name = name;
         }
 
         public NameableComponent(Type dType, string name)
@@ -110,6 +127,12 @@ namespace Core.Components
 
         public NameableComponent(Type dType, Node Left, Node Right) 
             : this (dType, "NEW", Left, Right)
+        {
+
+        }
+
+        public NameableComponent(Node Left, Node Right)
+            : base(Left, Right)
         {
 
         }
@@ -126,6 +149,8 @@ namespace Core.Components
         private ComponentPrefix _NamePrefix = ComponentPrefix.None;
 
         private readonly Type DataType;
+        protected Data.LDVarClass VarClass = Data.LDVarClass.Data;
+        protected object DefaultValue;
         private string _Name;
         #endregion Internal Data
 
@@ -138,6 +163,7 @@ namespace Core.Components
             Output = 'Y',
             Relay = 'R',
             Timer = 'T',
+            PWM = 'P',
             None = ' '
         }
         #endregion Enums

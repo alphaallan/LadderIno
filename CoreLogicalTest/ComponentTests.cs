@@ -151,7 +151,7 @@ namespace CoreLogicalTest
             Node PowerRail = new Node();
             PowerRail.LogicLevel = false;
 
-            PWM pwm = new PWM(PowerRail);
+            PWM pwm = new PWM("1",PowerRail);
             pwm.DataTable = TestTable;
             ADC adc = new ADC("1",PowerRail);
             adc.DataTable = TestTable;

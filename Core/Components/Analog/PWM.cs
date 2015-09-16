@@ -7,7 +7,7 @@ namespace Core.Components
     /// Description: Analog output based on Pulse Width Modulation
     /// Function: Set PWM Duty Cycle in one of the modules avaliable
     /// </summary>
-    public class PWM : ComponentBase
+    public class PWM : NameableComponent
     {
         #region Properties
         /// <summary>
@@ -100,12 +100,20 @@ namespace Core.Components
         {
             if (DataTable != null)
             {
-                DataTable.Remove(_DudyCycle);
+                base.DataTableRelease();
+
+                try
+                {
+                    if (DataTable != null) DataTable.Remove(_DudyCycle);
+                }
+                catch (ArgumentException) { }
             }
         }
 
         protected override void DataTableAlloc()
         {
+            base.DataTableAlloc();
+
             if (!byte.TryParse(_DudyCycle, out temp) && !string.IsNullOrEmpty(_DudyCycle))
             {
                 if (DataTable != null) DataTable.Add(_DudyCycle, typeof(byte));                
@@ -114,16 +122,31 @@ namespace Core.Components
         #endregion Functions
 
         #region Constructors
-        public PWM(Node Left)
-            : base(Left, null)
+        public PWM(string name, Node Left)
+            : base(typeof(string), name, Left, null)
         {
             Class = ComponentClass.Output;
+            NamePerfix = ComponentPrefix.PWM;
+            VarClass = Data.LDVarClass.PWM;
+            DefaultValue = "PWM OUTPUT";
+        }
+
+        public PWM(Node Left)
+            : base(typeof(string), Left, null)
+        {
+            Class = ComponentClass.Output;
+            NamePerfix = ComponentPrefix.PWM;
+            VarClass = Data.LDVarClass.PWM;
+            DefaultValue = "PWM OUTPUT";
         }
 
         public PWM()
-            : base(new Node(), null)
+            : base(typeof(string), new Node(), null)
         {
             Class = ComponentClass.Output;
+            NamePerfix = ComponentPrefix.PWM;
+            VarClass = Data.LDVarClass.PWM;
+            DefaultValue = "PWM OUTPUT";
         }
         #endregion Constructors
 

@@ -48,8 +48,14 @@ namespace Core.Components
             {
                 _Type = value;
 
+                VarClass = ((_Type == ContactType.InputPin) ? Data.LDVarClass.Input :
+                              (_Type == ContactType.InternalRelay) ? Data.LDVarClass.Data : Data.LDVarClass.Output);
+
                 NamePerfix = ((_Type == ContactType.InputPin) ? ComponentPrefix.Input : 
-                              (_Type == ContactType.InternalRelay) ? ComponentPrefix.Relay : ComponentPrefix.Output); 
+                              (_Type == ContactType.InternalRelay) ? ComponentPrefix.Relay : ComponentPrefix.Output);
+
+                
+                if (DataTable != null) DataTable.SetVarClass(FullName, VarClass);
 
                 RaisePropertyChanged("Type");
             }
@@ -71,6 +77,7 @@ namespace Core.Components
             this.IsInverted = inverted;
             this.Type = type;
             this.Class = ComponentClass.Input;
+            this.VarClass = Data.LDVarClass.Input;
         }
 
         public Contact(string name, Node Left, Node Right)
@@ -78,6 +85,7 @@ namespace Core.Components
         {
             this.Type = ContactType.InputPin;
             this.Class = ComponentClass.Input;
+            this.VarClass = Data.LDVarClass.Input;
         }
 
         public Contact(Node Left, Node Right)
@@ -85,6 +93,7 @@ namespace Core.Components
         {
             this.Type = ContactType.InputPin;
             this.Class = ComponentClass.Input;
+            this.VarClass = Data.LDVarClass.Input;
         }
 
         public Contact()
@@ -92,6 +101,7 @@ namespace Core.Components
         {
             this.Type = ContactType.InputPin;
             this.Class = ComponentClass.Input;
+            this.VarClass = Data.LDVarClass.Input;
         }
         #endregion Constructors
 
