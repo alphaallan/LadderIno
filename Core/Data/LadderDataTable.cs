@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 
 namespace Core.Data
 {
@@ -385,6 +386,15 @@ namespace Core.Data
         {
             SetLock(index, false);
             return this;
+        }
+
+        /// <summary>
+        /// Retrieve all data stored data
+        /// </summary>
+        /// <returns>Tuple (Name, DataType, VarClass, Value)</returns>
+        public List<Tuple<string, Type, LDVarClass, object>> ListAllData()
+        {
+            return Table.Select(x => new Tuple<string, Type, LDVarClass, object>(x.Key, x.Value.DataType, x.Value.Class, x.Value.Value)).ToList();
         }
         #endregion Functions
 

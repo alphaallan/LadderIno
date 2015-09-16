@@ -99,10 +99,20 @@ namespace Core.Components
         {
             if (DataTable != null)
             {
-                List<string> variables = DataTable.GetNames().Where(x => x[0] == (char)NameableComponent.ComponentPrefix.AnalogInput
-                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.Input
-                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.Output
-                                                                      || x[0] == (char)NameableComponent.ComponentPrefix.PWM).ToList();
+                List<Tuple<string, Data.LDVarClass>> variables = DataTable.ListAllData()
+                                                                          .Where(x => x.Item3 == Data.LDVarClass.Analog
+                                                                                   || x.Item3 == Data.LDVarClass.Input
+                                                                                   || x.Item3 == Data.LDVarClass.Output
+                                                                                   || x.Item3 == Data.LDVarClass.PWM)
+                                                                          .Select(x => new Tuple<string, Data.LDVarClass>(x.Item1, x.Item3)).ToList();
+
+                IEnumerable<string> varNames = variables.Select(x => x.Item1);
+                IEnumerable<string> pinNames = _Pins.Select(x => x.Variable);
+                IEnumerable<Data.LDPin> excludePins = _Pins.Where(x => !varNames.Contains(x.Variable));
+                IEnumerable<Tuple<string, Data.LDVarClass>> newPins = variables.Where(x => !pinNames.Contains(x.Item1));
+
+
+                foreach (string exItem in pinNames.Except(varNames)) _Pins.Remove(_Pins.Where(x => x.Variable == exItem).First());
 
 
             }
