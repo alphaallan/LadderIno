@@ -10,7 +10,7 @@ namespace Core.Data
     /// LadderIno main core "RAM"
     /// this class manages the entire storage and manipulation of variables, including memory allocation 
     /// </summary>
-    public class LadderDataTable
+    public sealed class LadderDataTable
     {
         #region Properties
         /// <summary>
@@ -523,5 +523,12 @@ namespace Core.Data
 
         }
         #endregion Classes
+
+        #region Events
+        public event EventHandler<VarAddedArgs> VariableAdded;
+        public event EventHandler<VarClassChangedArgs> VariableClassChanged;
+        public event EventHandler<VarRemovedArgs> VariableRemoved;
+        public event EventHandler<VarRenamedArgs> VariableRenamed;
+        #endregion Events
     }
 }
