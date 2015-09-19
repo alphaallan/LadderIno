@@ -37,14 +37,14 @@ namespace LDFile
             #endregion Stratup
 
             #region Comment Header
-            writer.WriteComment("This files has created by DiagramWriter V. 0.1a");
+            writer.WriteComment("This files has created by DiagramWriter V. 0.2a");
             writer.WriteComment("Developed by: Allan Leon");
             Trace.WriteLine("Comment Header written", "LD File");
             #endregion Comment Header
 
             #region Main Process
             writer.WriteStartElement("Diagram");
-            Trace.WriteLine("Diagram started");
+            Trace.WriteLine("Diagram started", "DiagramWriter");
             Trace.Indent();
 
             writer.WriteStartAttribute("Date");
@@ -60,7 +60,7 @@ namespace LDFile
             #region Rung Loop
             foreach (Rung rung in diagram.Rungs)
             {
-                Trace.WriteLine("Rung Started");
+                Trace.WriteLine("Rung Started", "DiagramWriter");
                 Trace.Indent();
 
                 #region Node Analisys
@@ -156,8 +156,8 @@ namespace LDFile
                 #endregion Component Write
 
                 writer.WriteEndElement();
-                Trace.WriteLine("Rung Ended");
                 Trace.Unindent();
+                Trace.WriteLine("Rung Ended", "DiagramWriter");
             }
             #endregion Rung Loop
 
@@ -165,7 +165,7 @@ namespace LDFile
             #endregion Rungs
 
             #region DataTable
-            Trace.WriteLine("Data Table Started");
+            Trace.WriteLine("Data Table Started", "DiagramWriter");
             Trace.Indent();
             writer.WriteStartElement("DataTable");
             writer.WriteStartAttribute("Count");
@@ -175,34 +175,71 @@ namespace LDFile
             #region Variable Loop
             //Write every variable in table to file. 
             //Tag name is the variable type without the "System." prefix
-            for (int c = 0; c < diagram.DataTable.Count; c++)
+            foreach (var variable in diagram.DataTable.ListAllData())
             {
-                object value = diagram.DataTable.GetValue(c);
-                string name = diagram.DataTable.GetName(c);
-                string type = value.GetType().ToString().Replace("System.",string.Empty);
+                string type = variable.Item2.ToString().Replace("System.", string.Empty);
 
                 writer.WriteStartElement(type);
 
                 writer.WriteStartAttribute("Name");
-                writer.WriteValue(name);
+                writer.WriteValue(variable.Item1);
                 writer.WriteEndAttribute();
 
+                //So far not needed
+                //writer.WriteStartAttribute("Class");
+                //writer.WriteValue(variable.Item3.ToString());
+                //writer.WriteEndAttribute();
+
                 writer.WriteStartAttribute("Value");
-                writer.WriteValue(value);
+                writer.WriteValue(variable.Item4);
                 writer.WriteEndAttribute();
 
                 writer.WriteEndElement();
 
-                Trace.WriteLine("Written: " + type + ", Name=" + name + ", Value=" + value, "DataTable");
+                Trace.WriteLine("Written: " + type + ", Name=" + variable.Item1 + ", Value=" + variable.Item4, "DataTable");
             }
             #endregion Variable Loop
 
             writer.WriteEndElement();//Data table end
+            Trace.Unindent();
+            Trace.WriteLine("Data Table Ended", "DiagramWriter");
             #endregion DataTable
 
-            writer.WriteEndElement(); //Diagram end
+            #region Pin Table
+            Trace.WriteLine("Pinout Started", "DiagramWriter");
+            Trace.Indent();
+            writer.WriteStartElement("Pinout");
+            writer.WriteStartAttribute("Count");
+            writer.WriteValue(diagram.Pins.Count);
+            writer.WriteEndAttribute();
+
+            #region Pin Loop
+            //Write every pin in table to file. 
+            //Tag name is the Pin type
+            foreach (var ldPin in diagram.Pins.OrderBy(x => x.Variable))
+            {
+                writer.WriteStartElement(ldPin.Type.ToString());
+
+                writer.WriteStartAttribute("Variable");
+                writer.WriteValue(ldPin.Variable);
+                writer.WriteEndAttribute();
+
+                writer.WriteStartAttribute("Pin");
+                writer.WriteValue(ldPin.Pin);
+                writer.WriteEndAttribute();
+
+                writer.WriteEndElement();
+
+                Trace.WriteLine("Written: " + ldPin.Type + ", Variable=" + ldPin.Variable + ", Pin=" + ldPin.Pin, "Pinout Table");
+            }
+            #endregion Pin Loop
+
+            writer.WriteEndElement();//Pinout table end
             Trace.Unindent();
-            Trace.WriteLine("Data Table Ended");
+            Trace.WriteLine("Pinout Ended", "DiagramWriter");
+            #endregion Pin Table
+
+            writer.WriteEndElement(); //Diagram end
             #endregion Main Process
 
             #region Finish
@@ -210,7 +247,7 @@ namespace LDFile
             writer.Close();
 
             Trace.Unindent();
-            Trace.WriteLine("Save process ended successful");
+            Trace.WriteLine("Save process ended successful", "DiagramWriter");
             #endregion Finish
         }
 
@@ -289,6 +326,9 @@ namespace LDFile
                 case "MUL":
                 case "SUB":
                 case "MOV":
+                    writer.WriteStartAttribute("Destination");
+                    writer.WriteValue((component as MathComponent).Destination);
+                    writer.WriteEndAttribute();
                     writer.WriteStartAttribute("VarA");
                     writer.WriteValue((component as MathComponent).VarA);
                     writer.WriteEndAttribute();
@@ -300,8 +340,8 @@ namespace LDFile
 
                 #region Analog Components
                 case "ADC":
-                    writer.WriteStartAttribute("InputValue");
-                    writer.WriteValue((component as ADC).InputValue);
+                    writer.WriteStartAttribute("Destination");
+                    writer.WriteValue((component as ADC).Destination);
                     writer.WriteEndAttribute();
                     break;
 

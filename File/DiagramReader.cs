@@ -35,6 +35,9 @@ namespace LDFile
 
             XmlNodeList variables = file.SelectSingleNode("/Diagram/DataTable").ChildNodes;
             Trace.WriteLine("Variables Loaded", "LD File");
+
+            XmlNodeList pins = file.SelectSingleNode("/Diagram/Pinout").ChildNodes;
+            Trace.WriteLine("Pinout Loaded", "LD File");
             #endregion File Load
 
             #region Rung Rebuild
@@ -259,6 +262,23 @@ namespace LDFile
             Trace.WriteLine("Data Load Ended");
             #endregion Data Load
 
+            #region Pinout Load
+            diagram.RefreshPins();
+
+            Trace.WriteLine("Pins Load Started");
+            Trace.Indent();
+            foreach (XmlNode xPin in pins)
+            {
+                PinType temp;
+                if (!Enum.TryParse<PinType>(xPin.LocalName, out temp)) throw new System.IO.FileLoadException("Corrupted File. Unrecognized pin type", filePath);
+
+                LDPin pin = diagram.Pins.Where(x => x.Variable == xPin.Attributes["Variable"].Value).First();
+                pin.Pin = xPin.Attributes["Pin"].Value;
+            }
+            Trace.Unindent();
+            Trace.WriteLine("Pins Load Ended");
+            #endregion Pinout Load
+
             Trace.Unindent();
             Trace.WriteLine("Load process ended successful");
 
@@ -336,7 +356,7 @@ namespace LDFile
                 #region Analog Components
                 case "ADC":
                     ADC adc = new ADC();
-                    adc.InputValue = node.Attributes["InputValue"].Value.ToShort();
+                    adc.Destination = node.Attributes["Destination"].Value;
                     component = adc; 
                     break;
                 case "PWM":
@@ -347,7 +367,7 @@ namespace LDFile
                 #endregion Analog Components
 
                 default:
-                    throw new ArgumentException("Unknow Component", "xml");
+                    throw new ArgumentException("Unknow Component", "node");
             }
 
             component.Comment = node.Attributes["Comment"].Value;
@@ -366,6 +386,7 @@ namespace LDFile
             }
             else if (component is MathComponent)
             {
+                (component as MathComponent).Destination = node.Attributes["Destination"].Value;
                 (component as MathComponent).VarA = node.Attributes["VarA"].Value;
                 (component as MathComponent).VarB = node.Attributes["VarB"].Value;
             }

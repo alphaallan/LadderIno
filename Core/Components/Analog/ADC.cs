@@ -11,6 +11,41 @@ namespace Core.Components
     {
         #region Properties
         /// <summary>
+        /// Destination Variable
+        /// </summary>
+        public string Destination
+        {
+            get { return _Destination; }
+            set
+            {
+                if (!string.IsNullOrEmpty(_Destination))
+                {
+                    try
+                    {
+                        if (DataTable != null) DataTable.Rename(_Destination, value);
+                        _Destination = value;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        if (ex.ParamName == "oldName")
+                        {
+                            DataTable.Add(value, typeof(short));
+                            _Destination = value;
+                        }
+                        else throw ex;
+                    }
+                }
+                else
+                {
+                    if (!string.IsNullOrEmpty(value) && DataTable != null) DataTable.Add(value, typeof(short));
+                    _Destination = value;
+                }
+
+                RaisePropertyChanged("Destination");
+            }
+        }
+
+        /// <summary>
         /// Last value Reded by the ADC
         /// </summary>
         public short ReadValue
@@ -62,7 +97,7 @@ namespace Core.Components
                 }
                 catch (ArgumentException ex)
                 {
-                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_READ", typeof(short), Data.LDVarClass.Data);
+                    if (ex.ParamName == "oldName") DataTable.Add(newName + "_READ", typeof(short), Data.LDVarClass.Simulator);
                     else throw ex;
                 }
 
@@ -101,7 +136,7 @@ namespace Core.Components
 
             if (DataTable != null)
             {
-                DataTable.Add(FullName + "_READ", typeof(short), Data.LDVarClass.Data);
+                DataTable.Add(FullName + "_READ", typeof(short), Data.LDVarClass.Simulator);
                 DataTable.Add(FullName + "_INPUT", typeof(Int16), Data.LDVarClass.Simulator);
             }
         }
@@ -137,6 +172,7 @@ namespace Core.Components
         #endregion Constructors
 
         #region Internal Data
+        string _Destination;
         short _ReadValue;
         short _InputValue;
         #endregion Internal Data
