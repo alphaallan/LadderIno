@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Core.Data
 {
+    /// <summary>
+    /// EventArgs to LadderDataTable VariableRenamed event
+    /// </summary>
     public class VarRenamedArgs : EventArgs
     {
         public string OldName { get; private set; }
@@ -17,6 +20,9 @@ namespace Core.Data
         }
     }
 
+    /// <summary>
+    /// EventArgs to LadderDataTable VariableClassChanged event
+    /// </summary>
     public class VarClassChangedArgs : EventArgs
     {
         public string Name { get; private set; }
@@ -31,6 +37,9 @@ namespace Core.Data
         }
     }
 
+    /// <summary>
+    /// EventArgs to LadderDataTable VariableAdded event
+    /// </summary>
     public class VarAddedArgs : EventArgs
     {
         public string Name { get; private set; }
@@ -43,6 +52,9 @@ namespace Core.Data
         }
     }
 
+    /// <summary>
+    /// EventArgs to LadderDataTable VariableRemoved event
+    /// </summary>
     public class VarRemovedArgs : EventArgs
     {
         public string Name { get; private set; }

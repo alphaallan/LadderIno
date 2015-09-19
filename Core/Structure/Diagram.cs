@@ -33,7 +33,25 @@ namespace Core.Components
             set
             {
                 if (value.Count != 0) throw new ArgumentException("Cannot use a non-empty data table", "DataTable");
+                
+                if (_DataTable != null)
+                {
+                    _DataTable.VariableAdded -= DataTableVarAdded;
+                    _DataTable.VariableClassChanged -= DataTableVarClassChanged;
+                    _DataTable.VariableRemoved -= DataTableVarRemoved;
+                    _DataTable.VariableRenamed -= DataTableVarRenamed;
+                }
+
                 _DataTable = value;
+
+                if (_DataTable != null)
+                {
+                    _DataTable.VariableAdded += DataTableVarAdded;
+                    _DataTable.VariableClassChanged += DataTableVarClassChanged;
+                    _DataTable.VariableRemoved += DataTableVarRemoved;
+                    _DataTable.VariableRenamed += DataTableVarRenamed;
+                }
+
                 foreach (Rung rung in _Rungs) rung.DataTable = value;
                 if (PropertyChanged != null) { PropertyChanged(this, new PropertyChangedEventArgs("DataTable")); }
             }
@@ -95,25 +113,29 @@ namespace Core.Components
             return this;
         }
 
+        private bool isPin(Data.LDVarClass varClass)
+        {
+            return (varClass == Data.LDVarClass.Analog) || (varClass == Data.LDVarClass.Input) || (varClass == Data.LDVarClass.Output) || (varClass == Data.LDVarClass.PWM);
+        }
+
+        private Data.PinType toPin(Data.LDVarClass varClass)
+        {
+            return (Data.PinType)((char)varClass);
+        }
+
         public Diagram RefreshPins()
         {
             if (DataTable != null)
             {
                 List<Tuple<string, Data.LDVarClass>> variables = DataTable.ListAllData()
-                                                                          .Where(x => x.Item3 == Data.LDVarClass.Analog
-                                                                                   || x.Item3 == Data.LDVarClass.Input
-                                                                                   || x.Item3 == Data.LDVarClass.Output
-                                                                                   || x.Item3 == Data.LDVarClass.PWM)
+                                                                          .Where(x => isPin(x.Item3))
                                                                           .Select(x => new Tuple<string, Data.LDVarClass>(x.Item1, x.Item3)).ToList();
 
                 IEnumerable<string> varNames = variables.Select(x => x.Item1);
                 IEnumerable<string> pinNames = _Pins.Select(x => x.Variable);
-                IEnumerable<Data.LDPin> excludePins = _Pins.Where(x => !varNames.Contains(x.Variable));
-                IEnumerable<Tuple<string, Data.LDVarClass>> newPins = variables.Where(x => !pinNames.Contains(x.Item1));
-
 
                 foreach (string exItem in pinNames.Except(varNames)) _Pins.Remove(_Pins.Where(x => x.Variable == exItem).First());
-
+                foreach (var item in variables) if (!pinNames.Contains(item.Item1)) _Pins.Add(new Data.LDPin(item.Item1, toPin(item.Item2)));
 
             }
             else _Pins.Clear();
@@ -122,7 +144,7 @@ namespace Core.Components
 
             return this;
         }
-
+        
         #region Insert Functions
         /// <summary>
         /// Add a new rung in the bottom of the diagram
@@ -263,8 +285,8 @@ namespace Core.Components
         {
             Trace.WriteLine("New diagram created", "Diagram");
             Rungs = new ObservableCollection<Rung>();
-            DataTable = new Data.LadderDataTable();
             Pins = new ObservableCollection<Data.LDPin>();
+            DataTable = new Data.LadderDataTable();
         }
         #endregion Constructors
 
@@ -277,5 +299,51 @@ namespace Core.Components
 
         public event PropertyChangedEventHandler PropertyChanged;
         #endregion Internal Data
+
+        #region Event Handlers
+
+        #region DataTable Event Handlers
+        private void DataTableVarAdded(object sender, Data.VarAddedArgs e)
+        {
+            if (sender == _DataTable && isPin(e.VarClass) && _Pins.Count(x => x.Variable == e.Name) == 0) _Pins.Add(new Data.LDPin(e.Name, toPin(e.VarClass)));
+        }
+
+        private void DataTableVarRemoved(object sender, Data.VarRemovedArgs e)
+        {
+            if (sender == _DataTable && _Pins.Count(x => x.Variable == e.Name) > 0) _Pins.Remove(_Pins.Where(x => x.Variable == e.Name).First());
+        }
+
+        private void DataTableVarRenamed(object sender, Data.VarRenamedArgs e)
+        {
+            if (sender == _DataTable && _Pins.Count(x => x.Variable == e.OldName) > 0) _Pins.Where(x => x.Variable == e.OldName).First().Variable = e.NewName;
+        }
+
+        private void DataTableVarClassChanged(object sender, Data.VarClassChangedArgs e)
+        {
+            if (sender == _DataTable && (isPin(e.OldClass) || isPin(e.NewClass)))
+            {
+                if (isPin(e.OldClass) && !isPin(e.NewClass))
+                {
+                    if (_Pins.Count(x => x.Variable == e.Name) > 0) _Pins.Remove(_Pins.Where(x => x.Variable == e.Name).First());
+                }
+                else if (!isPin(e.OldClass) && isPin(e.NewClass))
+                {
+                    if (_Pins.Count(x => x.Variable == e.Name) == 0) _Pins.Add(new Data.LDPin(e.Name, toPin(e.NewClass)));
+                }
+                else
+                {
+                    if (_Pins.Count(x => x.Variable == e.Name) > 0)
+                    {
+                        Data.LDPin pin = _Pins.Where(x => x.Variable == e.Name).First();
+                        pin.Type = toPin(e.NewClass);
+                        pin.Pin = "NONE";
+                    }
+                    else _Pins.Add(new Data.LDPin(e.Name, toPin(e.NewClass)));
+                }
+            }
+        }
+        #endregion
+
+        #endregion
     }
 }

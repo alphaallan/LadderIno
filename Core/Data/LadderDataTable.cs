@@ -29,8 +29,8 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="dataType">Variable data type</param>
-        /// <param name="type">Variable type</param>
-        public LadderDataTable Add(string name, Type dataType, LDVarClass type = LDVarClass.Data)
+        /// <param name="varClass">Variable type</param>
+        public LadderDataTable Add(string name, Type dataType, LDVarClass varClass = LDVarClass.Data)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
             if (dataType == null) throw new ArgumentNullException("Variable type must be provided", "dataType");
@@ -45,7 +45,8 @@ namespace Core.Data
             }
             else
             {
-                Table.Add(name, new LDIVariable(dataType, type));
+                Table.Add(name, new LDIVariable(dataType, varClass));
+                RaizeVariableAdded(name, varClass);
                 Trace.WriteLine("New Variable inserted: " + name + ", Type: " + dataType, "Ladder Data Table");
             }
 
@@ -58,7 +59,7 @@ namespace Core.Data
         /// </summary>
         /// <param name="name">Variable name</param>
         /// <param name="dataType">Variable data type</param>
-        public LadderDataTable Add(string name, Type dataType, LDVarClass type, object value)
+        public LadderDataTable Add(string name, Type dataType, LDVarClass varClass, object value)
         {
             if (string.IsNullOrEmpty(name)) throw new ArgumentNullException("Variable name must be provided", "name");
             if (dataType == null) throw new ArgumentNullException("Variable type must be provided", "dataType");
@@ -76,7 +77,8 @@ namespace Core.Data
             }
             else
             {
-                Table.Add(name, new LDIVariable(dataType, type, value));
+                Table.Add(name, new LDIVariable(dataType, varClass, value));
+                RaizeVariableAdded(name, varClass);
                 Trace.WriteLine("New Variable inserted: " + name + ", Type: " + dataType + ", Value set: " + value, "Ladder Data Table");
             }
             return this;
@@ -101,6 +103,7 @@ namespace Core.Data
                 if (Table.Values[index].NumRefs == 0)
                 {
                     Table.RemoveAt(index);
+                    RaizeVariableRemoved(name);
                     Trace.WriteLine("Variable " + name + " removed from data table", "Ladder Data Table");
                 }
             }
@@ -132,12 +135,14 @@ namespace Core.Data
                         if (Table.Values[indexO].DataType != Table.Values[indexN].DataType) throw new ArgumentException("Name already used", "newName", new FormatException("Value Type Mismatch"));
                         else Table.RemoveAt(indexO);
                         Trace.WriteLine("New variable name already exists, reference added", "Ladder Data Table");
+
                     }
                     else //new name does not exist in list
                     {
                         var temp = new LDIVariable(Table.Values[indexO].DataType, Table.Values[indexO].Class, Table.Values[indexO].Value);
                         Table.RemoveAt(indexO);
                         Table.Add(newName, temp);
+                        RaizeVariableRenamed(oldName, newName);
                         Trace.WriteLine(oldName + " Renamed to " + newName, "Ladder Data Table");
                     }
                 }
@@ -146,6 +151,7 @@ namespace Core.Data
                     Trace.WriteLine("Multiple references to " + oldName + " detected, trying to add " + newName, "Ladder Data Table");
                     Table.Values[indexO].NumRefs--;
                     Table.Add(newName, new LDIVariable(Table.Values[indexO].DataType, Table.Values[indexO].Class, Table.Values[indexO].Value));
+                    RaizeVariableAdded(newName, Table.Values[indexO].Class);
                     Trace.WriteLine("New Variable inserted: " + newName + ", Type: " + Table.Values[indexO].DataType + ", Value set: " + Table.Values[indexO].Value, "Ladder Data Table");
                 }
             }
@@ -291,9 +297,15 @@ namespace Core.Data
             {
                 if (Table.Values[index].NumRefs > 1 && Table.Values[index].Class != value) throw new InvalidOperationException("Can't change variable LD Class");
 
-                Trace.WriteLine("Class of " + name + " changed to " + value, "Ladder Data Table");
-                Table.Values[index].Class = value;
-                
+                if (Table.Values[index].Class != value)
+                {
+                    Trace.WriteLine("Class of " + name + " changed to " + value, "Ladder Data Table");
+                    LDVarClass oldClass = Table.Values[index].Class;
+                    Table.Values[index].Class = value;
+                    RaizeVariableClassChanged(name, oldClass, value);
+                }
+                else Trace.WriteLine("Class change of " + name + " ignored", "Ladder Data Table");
+
                 return this;
             }
             else throw new ArgumentException("Variable not found", "name");
@@ -309,8 +321,14 @@ namespace Core.Data
             if (index < 0 || index >= Table.Count) throw new ArgumentOutOfRangeException("Index is not inside table limits");
             if (Table.Values[index].NumRefs > 1 && Table.Values[index].Class != value) throw new InvalidOperationException("Can't change variable LD Class");
 
-            Trace.WriteLine("Class at [" + index + "] (" + Table.Keys[index] + "): changed to " + value, "Ladder Data Table");
-            Table.Values[index].Class = value;
+            if (Table.Values[index].Class != value)
+            {
+                Trace.WriteLine("Class at [" + index + "] (" + Table.Keys[index] + "): changed to " + value, "Ladder Data Table");
+                LDVarClass oldClass = Table.Values[index].Class;
+                Table.Values[index].Class = value;
+                RaizeVariableClassChanged(Table.Keys[index], oldClass, value);
+            }
+            else Trace.WriteLine("Class change at [" + index + "] (" + Table.Keys[index] + ") ignored", "Ladder Data Table");
 
             return this;
         }
@@ -529,6 +547,26 @@ namespace Core.Data
         public event EventHandler<VarClassChangedArgs> VariableClassChanged;
         public event EventHandler<VarRemovedArgs> VariableRemoved;
         public event EventHandler<VarRenamedArgs> VariableRenamed;
+
+        private void RaizeVariableAdded(string name, LDVarClass varClass)
+        {
+            if (VariableAdded != null) VariableAdded(this, new VarAddedArgs(name, varClass));
+        }
+
+        private void RaizeVariableClassChanged(string name, LDVarClass oldClass, LDVarClass newClass)
+        {
+            if (VariableClassChanged != null) VariableClassChanged(this, new VarClassChangedArgs(name, oldClass, newClass));
+        }
+
+        private void RaizeVariableRemoved(string name)
+        {
+            if (VariableRemoved != null) VariableRemoved(this, new VarRemovedArgs(name));
+        }
+
+        private void RaizeVariableRenamed(string oldName, string newName)
+        {
+            if (VariableRenamed != null) VariableRenamed(this, new VarRenamedArgs(oldName, newName));
+        }
         #endregion Events
     }
 }
