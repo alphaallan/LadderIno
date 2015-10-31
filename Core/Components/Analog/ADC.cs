@@ -46,7 +46,7 @@ namespace Core.Components
         }
 
         /// <summary>
-        /// Last value Reded by the ADC
+        /// Last value Readed by the ADC
         /// </summary>
         public short ReadValue
         {

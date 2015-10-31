@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Diagnostics;
+using System.IO;
 
 namespace LDFile
 {
@@ -22,15 +23,41 @@ namespace LDFile
             if (diagram == null) throw new ArgumentNullException("diagram", "Null Diagram");
             if (string.IsNullOrEmpty(filePath)) throw new ArgumentNullException("filePath", "Empty File Path");
 
-            #region Stratup
             Trace.WriteLine("Save process started", "LD File");
+            Trace.Indent();
+
+            FileStream stream = new FileStream(filePath, FileMode.Create);
+            Trace.WriteLine("File stream started", "LD File");
+            
+            SerializeDiagram(diagram).Save(stream);
+            
+            stream.Close();
+            Trace.WriteLine("File stream closed", "LD File");
+
+            Trace.Unindent();
+            Trace.WriteLine("Save process ended successful", "DiagramWriter");
+        }
+
+        /// <summary>
+        /// Serialize a LD Diagram
+        /// </summary>
+        /// <param name="diagram">Diagram to be serialized</param>
+        /// <returns>Serialized Diagram</returns>
+        public static XmlDocument SerializeDiagram(Diagram diagram)
+        {
+            if (diagram == null) throw new ArgumentNullException("diagram", "Null Diagram");
+
+            #region Stratup
+            Trace.WriteLine("Serialize process started", "LD File");
             Trace.Indent();
 
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings();
             xmlWriterSettings.NewLineOnAttributes = false;
             xmlWriterSettings.Indent = true;
 
-            XmlWriter writer = XmlWriter.Create(filePath, xmlWriterSettings);
+            StringWriter textWriter = new StringWriter();
+
+            XmlWriter writer = XmlWriter.Create(textWriter, xmlWriterSettings);
 
             writer.WriteStartDocument();
             Trace.WriteLine("Writer Started", "LD File");
@@ -247,7 +274,11 @@ namespace LDFile
             writer.Close();
 
             Trace.Unindent();
-            Trace.WriteLine("Save process ended successful", "DiagramWriter");
+            Trace.WriteLine("Serialize process ended successful", "DiagramWriter");
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(textWriter.ToString());
+            return doc;
             #endregion Finish
         }
 

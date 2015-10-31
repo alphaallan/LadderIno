@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ComponentTests.cs" />
     <Compile Include="DiagramTest.cs" />
+    <Compile Include="CompilerTest.cs" />
     <Compile Include="XmlReaderSettings.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -39,6 +39,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CompilerBuffer.cs" />
+    <Compile Include="CompilerCodeBuilder.cs" />
+    <Compile Include="CompilerCodeGenerator.cs" />
+    <Compile Include="CompilerContants.cs" />
+    <Compile Include="DiagramCompiler.cs" />
     <Compile Include="DiagramReader.cs" />
     <Compile Include="DiagramWriter.cs" />
     <Compile Include="NodeConnections.cs" />
@@ -53,11 +58,6 @@
       <Project>{9d3e6ebd-94a5-4692-9878-f24998299a98}</Project>
       <Name>Utilities</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FileScheme.xsd">
-      <SubType>Designer</SubType>
-    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
