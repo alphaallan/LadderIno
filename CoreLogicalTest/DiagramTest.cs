@@ -333,15 +333,15 @@ namespace CoreLogicalTest
 
             #endregion Build Circuit
 
-            LDFile.LDFile.SaveDiagram(TestDiagram, "test.xml");
+            LDFile.DiagramWriter.SaveDiagram(TestDiagram, "test.xml");
         }
 
         [TestMethod]
         [TestCategory("Diagram")]
         public void FileLoad()
         {
-            Diagram TestDiagram = LDFile.LDFile.LoadDiagram("test.xml");
-            LDFile.LDFile.SaveDiagram(TestDiagram, "testB.xml");
+            Diagram TestDiagram = LDFile.DiagramReader.LoadDiagram("test.xml");
+            LDFile.DiagramWriter.SaveDiagram(TestDiagram, "testB.xml");
         }
     }
 }

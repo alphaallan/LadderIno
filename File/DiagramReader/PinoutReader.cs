@@ -7,7 +7,7 @@ using System;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramReader
     {
         private static void ReadPinout(Diagram diagram, XmlNodeList pins)
         {

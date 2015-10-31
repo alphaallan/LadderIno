@@ -2,7 +2,7 @@
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramCompiler
     {
         /// <summary>
         /// Assemble the code parts into a finished compiled code

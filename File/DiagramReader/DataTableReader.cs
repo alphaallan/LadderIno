@@ -6,7 +6,7 @@ using System;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramReader
     {
         private static void ReadDataTable(Diagram diagram, XmlNodeList variables)
         {

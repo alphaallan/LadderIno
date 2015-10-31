@@ -4,7 +4,7 @@ using System.Xml;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramWriter
     {
         private static void WriteDataTable(XmlWriter writer, LadderDataTable dataTable)
         {

@@ -39,21 +39,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompilerBuffer.cs" />
-    <Compile Include="CompilerCodeBuilder.cs" />
-    <Compile Include="CompilerCodeGenerator.cs" />
-    <Compile Include="CompilerContants.cs" />
-    <Compile Include="DataTableReader.cs" />
-    <Compile Include="PinoutReader.cs" />
-    <Compile Include="RungsReader.cs" />
-    <Compile Include="DataTableWriter.cs" />
-    <Compile Include="DiagramCompiler.cs" />
-    <Compile Include="DiagramReader.cs" />
-    <Compile Include="DiagramWriter.cs" />
+    <Compile Include="DiagramCompiler\CompilerBuffer.cs" />
+    <Compile Include="DiagramCompiler\CompilerCodeBuilder.cs" />
+    <Compile Include="DiagramCompiler\CompilerCodeGenerator.cs" />
+    <Compile Include="DiagramCompiler\CompilerContants.cs" />
+    <Compile Include="DiagramReader\DataTableReader.cs" />
+    <Compile Include="DiagramReader\PinoutReader.cs" />
+    <Compile Include="DiagramReader\RungsReader.cs" />
+    <Compile Include="DiagramWriter\DataTableWriter.cs" />
+    <Compile Include="DiagramCompiler\DiagramCompiler.cs" />
+    <Compile Include="DiagramReader\DiagramReader.cs" />
+    <Compile Include="DiagramWriter\DiagramWriter.cs" />
     <Compile Include="NodeConnections.cs" />
-    <Compile Include="PinoutWriter.cs" />
+    <Compile Include="DiagramWriter\PinoutWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RungsWriter.cs" />
+    <Compile Include="DiagramWriter\RungsWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">

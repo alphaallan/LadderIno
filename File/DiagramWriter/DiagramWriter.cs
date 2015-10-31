@@ -6,7 +6,7 @@ using System.IO;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramWriter
     {
         /// <summary>
         /// Write a LD Diagram to File

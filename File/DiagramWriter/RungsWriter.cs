@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramWriter
     {
         /// <summary>
         /// Write all Rungs

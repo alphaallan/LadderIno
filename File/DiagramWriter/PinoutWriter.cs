@@ -6,7 +6,7 @@ using System.Xml;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramWriter
     {
         private static void WritePinTable(XmlWriter writer, IEnumerable<LDPin> pins)
         {

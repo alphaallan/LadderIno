@@ -6,7 +6,7 @@ using System.Text;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramCompiler
     {
         /// <summary>
         /// Generate code from data table variables

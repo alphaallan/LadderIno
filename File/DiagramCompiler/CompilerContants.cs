@@ -1,6 +1,6 @@
 ﻿namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramCompiler
     {
         /// <summary>
         /// Compiler Current version

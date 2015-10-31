@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramReader
     {
         /// <summary>
         /// Load a LD diagram from file

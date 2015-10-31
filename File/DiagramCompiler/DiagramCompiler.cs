@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramCompiler
     {
 
         public static string CompileDiagram(Diagram diagram)

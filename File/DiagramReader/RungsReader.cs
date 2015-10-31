@@ -9,7 +9,7 @@ using System.Collections.Generic;
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramReader
     {
         /// <summary>
         /// Read rungs from node list

@@ -2,7 +2,7 @@
 
 namespace LDFile
 {
-    public static partial class LDFile
+    public static partial class DiagramCompiler
     {
         /// <summary>
         /// This class is used as a buffer to the compiled code parts and data
