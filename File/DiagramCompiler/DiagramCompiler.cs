@@ -6,26 +6,17 @@ namespace LDFile
 {
     public static partial class DiagramCompiler
     {
-
         public static string CompileDiagram(Diagram diagram)
         {
             if (diagram == null) throw new ArgumentNullException("diagram", "Null Diagram");
 
-            #region Startup
-            CompilerBuffer mainBuffer = new CompilerBuffer();
-            #endregion Startup
+            CompilerBuffer codeBuffer = new CompilerBuffer();
 
-            ProcessDataTable(diagram.DataTable, mainBuffer);
-            ProcessPinout(diagram.Pins, mainBuffer);
+            CompileDataTable(diagram.DataTable, codeBuffer);
+            CompilePinout(diagram.Pins, codeBuffer);
+            CompileRungs(diagram.Rungs, codeBuffer);
 
-            mainBuffer.BoolTempCount = 1;
-            mainBuffer.OSRCount = 2;
-            
-
-            mainBuffer.Rungs.Add(new List<string> { RATD + "[0] = X1;", "Y1 = (((" + OSR_FN + "(0, " + RATD + "[0]) && !Y2) || Y1) && !X2);" });
-            mainBuffer.Rungs.Add(new List<string> { RATD + "[0] = X2;", "Y2 = (((" + OSR_FN + "(1, " + RATD + "[0]) && !Y1) || Y2) && !X1);" });
-
-            return CodeBuilder(mainBuffer);
+            return CodeBuilder(codeBuffer);
         }
 
     }

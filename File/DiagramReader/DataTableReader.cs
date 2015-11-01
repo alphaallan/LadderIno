@@ -8,7 +8,7 @@ namespace LDFile
 {
     public static partial class DiagramReader
     {
-        private static void ReadDataTable(Diagram diagram, XmlNodeList variables)
+        private static void ReadDataTable(XmlNodeList variables, Diagram diagram)
         {
             Trace.WriteLine("Data Load Started");
             Trace.Indent();

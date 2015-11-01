@@ -12,9 +12,9 @@ namespace LDFile
         /// <summary>
         /// Write all Rungs
         /// </summary>
-        /// <param name="writer">File generator</param>
         /// <param name="diagram">LD diagram</param>
-        private static void WriteRungs(XmlWriter writer, IEnumerable<Rung> rungs)
+        /// <param name="writer">File generator</param>
+        private static void WriteRungs(IEnumerable<Rung> rungs, XmlWriter writer)
         {
             writer.WriteStartElement("Rungs");
             writer.WriteStartAttribute("Count");
@@ -104,7 +104,7 @@ namespace LDFile
                         Trace.Indent();
                     }
 
-                    WriteComponent(writer, component);
+                    WriteComponent(component, writer);
                     Trace.WriteLine(component.ToString() + " Added", "Rung");
 
                     //Close sub-circuit
@@ -131,9 +131,9 @@ namespace LDFile
         /// <summary>
         /// Write a simgle component in file
         /// </summary>
-        /// <param name="writer">File generator</param>
         /// <param name="component">Component to be writen</param>
-        private static void WriteComponent(XmlWriter writer, ComponentBase component)
+        /// <param name="writer">File generator</param>
+        private static void WriteComponent(ComponentBase component, XmlWriter writer)
         {
             string componentTypeName = component.GetType().ToString().Replace("Core.Components.", string.Empty);
 

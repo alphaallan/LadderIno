@@ -16,7 +16,7 @@ namespace LDFile
         /// </summary>
         /// <param name="diagram"></param>
         /// <param name="rungs"></param>
-        private static void ReadRungs(Diagram diagram, XmlNodeList rungs)
+        private static void ReadRungs(XmlNodeList rungs, Diagram diagram)
         {
             foreach (XmlNode xRung in rungs)
             {

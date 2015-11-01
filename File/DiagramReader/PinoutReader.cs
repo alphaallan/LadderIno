@@ -9,7 +9,7 @@ namespace LDFile
 {
     public static partial class DiagramReader
     {
-        private static void ReadPinout(Diagram diagram, XmlNodeList pins)
+        private static void ReadPinout(XmlNodeList pins, Diagram diagram)
         {
             diagram.RefreshPins();
 

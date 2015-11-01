@@ -37,9 +37,9 @@ namespace LDFile
             #region Diagram Load
             try
             {
-                ReadRungs(diagram, rungs);
-                ReadDataTable(diagram, variables);
-                ReadPinout(diagram, pins);
+                ReadRungs(rungs, diagram);
+                ReadDataTable(variables, diagram);
+                ReadPinout(pins, diagram);
             }
             catch (Exception ex)
             {

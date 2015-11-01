@@ -13,7 +13,7 @@ namespace LDFile
         /// </summary>
         /// <param name="pins"></param>
         /// <param name="codeBuffer"></param>
-        private static void ProcessPinout(IEnumerable<LDPin> pins, CompilerBuffer codeBuffer)
+        private static void CompilePinout(IEnumerable<LDPin> pins, CompilerBuffer codeBuffer)
         {
             if (pins.Count(x => x.Pin == "NONE") > 0) throw new InvalidOperationException("Can't Compile with unassigned pins in diagram");
 

@@ -73,9 +73,9 @@ namespace LDFile
             writer.WriteValue(DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss"));
             writer.WriteEndAttribute();
 
-            WriteRungs(writer, diagram.Rungs);
-            WriteDataTable(writer, diagram.DataTable);
-            WritePinTable(writer, diagram.Pins);
+            WriteRungs(diagram.Rungs, writer);
+            WriteDataTable(diagram.DataTable, writer);
+            WritePinTable(diagram.Pins, writer);
 
             writer.WriteEndElement(); //Diagram end
             #endregion Main Process

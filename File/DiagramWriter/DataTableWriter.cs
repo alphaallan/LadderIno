@@ -6,7 +6,7 @@ namespace LDFile
 {
     public static partial class DiagramWriter
     {
-        private static void WriteDataTable(XmlWriter writer, LadderDataTable dataTable)
+        private static void WriteDataTable(LadderDataTable dataTable, XmlWriter writer)
         {
             Trace.WriteLine("Data Table Started", "DiagramWriter");
             Trace.Indent();
