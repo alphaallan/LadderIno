@@ -1,4 +1,5 @@
 ﻿using Core.Components;
+using Core.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +15,7 @@ namespace LDFile
         /// </summary>
         /// <param name="diagram">LD diagram</param>
         /// <param name="writer">File generator</param>
-        private static void WriteRungs(IEnumerable<Rung> rungs, XmlWriter writer)
+        internal static void WriteRungs(IEnumerable<Rung> rungs, XmlWriter writer)
         {
             writer.WriteStartElement("Rungs");
             writer.WriteStartAttribute("Count");
@@ -28,38 +29,11 @@ namespace LDFile
                 Trace.Indent();
 
                 #region Node Analisys
-                //List of the nodes in circuit
-                List<NodeConnections> nodes = new List<NodeConnections>();
-
                 Trace.WriteLine("Starting node analysis", "Rung");
-                //Generate circuit's node list
-                foreach (ComponentBase component in rung.Components)
-                {
-                    NodeConnections NodeA = new NodeConnections(component.LeftLide);
-                    NodeConnections NodeB = new NodeConnections(component.RightLide);
 
-                    if (!nodes.Contains(NodeA))
-                    {
-                        nodes.Add(NodeA);
-                        NodeA.OutComponents.Add(component);
-                    }
-                    else
-                    {
-                        int pos = nodes.IndexOf(NodeA);
-                        nodes[pos].OutComponents.Add(component);
-                    }
-
-                    if (!nodes.Contains(NodeB))
-                    {
-                        nodes.Add(NodeB);
-                        NodeB.InComponents.Add(component);
-                    }
-                    else
-                    {
-                        int pos = nodes.IndexOf(NodeB);
-                        nodes[pos].InComponents.Add(component);
-                    }
-                }
+                ///List of the nodes in circuit
+                List<NodeConnections> nodes = new List<NodeConnections>().RunAnalisys(rung);
+                
                 Trace.WriteLine("Analysis finished with " + nodes.Count + " nodes", "Rung");
                 #endregion Node Analisys
 

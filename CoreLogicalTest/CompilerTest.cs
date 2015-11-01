@@ -8,6 +8,7 @@ namespace CoreLogicalTest
     public class CompilerTest
     {
         [TestMethod]
+        [TestCategory("Compiler")]
         public void Compile()
         {
             //|     x1          y2      x2     y1   |

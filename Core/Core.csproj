@@ -70,6 +70,7 @@
     <Compile Include="Components\Math\SUB.cs" />
     <Compile Include="Components\NameableComponent.cs" />
     <Compile Include="Data\LDPin.cs" />
+    <Compile Include="Data\NodeConnections.cs" />
     <Compile Include="Data\PinType.cs" />
     <Compile Include="Data\LDVarClass.cs" />
     <Compile Include="Structure\Diagram.cs" />

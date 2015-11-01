@@ -7,7 +7,7 @@ namespace LDFile
         /// <summary>
         /// This class is used as a buffer to the compiled code parts and data
         /// </summary>
-        private class CompilerBuffer
+        internal class CompilerBuffer
         {
             /// <summary>
             /// Define statments

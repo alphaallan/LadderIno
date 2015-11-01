@@ -9,7 +9,7 @@ namespace LDFile
         /// </summary>
         /// <param name="codeBuffer"></param>
         /// <returns></returns>
-        private static string CodeBuilder(CompilerBuffer codeBuffer)
+        internal static string CodeBuilder(CompilerBuffer codeBuffer)
         {
             StringBuilder codeBuilder = new StringBuilder();
 

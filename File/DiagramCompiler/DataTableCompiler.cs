@@ -13,7 +13,7 @@ namespace LDFile
         /// </summary>
         /// <param name="table"></param>
         /// <param name="codeBuffer"></param>
-        private static void CompileDataTable(LadderDataTable table, CompilerBuffer codeBuffer)
+        internal static void CompileDataTable(LadderDataTable table, CompilerBuffer codeBuffer)
         {
             List<Tuple<string, Type, LDVarClass, object>> tuples = table.ListAllData().OrderBy(x => x.Item1).ToList();
 

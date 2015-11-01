@@ -8,7 +8,7 @@ namespace LDFile
 {
     public static partial class DiagramWriter
     {
-        private static void WritePinTable(IEnumerable<LDPin> pins, XmlWriter writer)
+        internal static void WritePinTable(IEnumerable<LDPin> pins, XmlWriter writer)
         {
             Trace.WriteLine("Pinout Started", "DiagramWriter");
             Trace.Indent();

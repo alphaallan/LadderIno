@@ -52,7 +52,6 @@
     <Compile Include="DiagramCompiler\DiagramCompiler.cs" />
     <Compile Include="DiagramReader\DiagramReader.cs" />
     <Compile Include="DiagramWriter\DiagramWriter.cs" />
-    <Compile Include="NodeConnections.cs" />
     <Compile Include="DiagramWriter\PinoutWriter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DiagramWriter\RungsWriter.cs" />
