@@ -40,9 +40,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DiagramCompiler\CompilerBuffer.cs" />
-    <Compile Include="DiagramCompiler\CompilerCodeBuilder.cs" />
-    <Compile Include="DiagramCompiler\CompilerCodeGenerator.cs" />
-    <Compile Include="DiagramCompiler\CompilerContants.cs" />
+    <Compile Include="DiagramCompiler\CodeBuilder.cs" />
+    <Compile Include="DiagramCompiler\DataTableCompiler.cs" />
+    <Compile Include="DiagramCompiler\Contants.cs" />
+    <Compile Include="DiagramCompiler\PinoutCompiler.cs" />
     <Compile Include="DiagramReader\DataTableReader.cs" />
     <Compile Include="DiagramReader\PinoutReader.cs" />
     <Compile Include="DiagramReader\RungsReader.cs" />
