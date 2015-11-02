@@ -165,6 +165,22 @@ namespace Core.Components
 
             return new Tuple<Node, Node>(_Components[lni].LeftLide, _Components[rni].RightLide);
         }
+
+        public Node GetOutputFrontier()
+        {
+            IEnumerable<ComponentBase> outComponents = _Components.Where(x => x.Class == ComponentBase.ComponentClass.Output);
+
+            if (outComponents.Count() == 1)
+            {
+                return outComponents.First().LeftLide;
+            }
+            else if (outComponents.Count() > 1)
+            {
+                return FindInterception(outComponents.First(), outComponents.Last()).Item1;
+            }
+
+            return null;
+        }
         #endregion
 
         #region Insert Functions

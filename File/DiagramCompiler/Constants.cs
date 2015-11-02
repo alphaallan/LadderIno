@@ -55,6 +55,16 @@
         /// OSR function Name
         /// </summary>
         internal const string OSR_FN = NAME_PREFIX + "OSR";
+
+        /// <summary>
+        /// CTD function Name
+        /// </summary>
+        internal const string CTD_FN = NAME_PREFIX + "CTD";
+
+        /// <summary>
+        /// CTU function Name
+        /// </summary>
+        internal const string CTU_FN = NAME_PREFIX + "CTU";
         #endregion
 
         #endregion

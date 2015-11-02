@@ -121,7 +121,7 @@ namespace LDFile
             #endregion
 
             #region OSR
-            if (codeBuffer.OSRCount > 0)
+            if (codeBuffer.OSRCount + codeBuffer.CTDCount + codeBuffer.CTUCount > 0)
             {
                 codeBuilder.AppendLine("boolean " + OSR_FN + "(int n, boolean input){");
                 codeBuilder.AppendLine(INDENT + "byte *osr = &" + OSR_DATA + "[n / 8];");
@@ -129,6 +129,28 @@ namespace LDFile
                 codeBuilder.AppendLine(INDENT + "boolean prev = bitRead(*osr, j);");
                 codeBuilder.AppendLine(INDENT + "bitWrite(*osr, j, input);");
                 codeBuilder.AppendLine(INDENT + "return !prev && input;");
+                codeBuilder.AppendLine("}");
+                codeBuilder.AppendLine();
+            }
+            #endregion
+
+            #region CTD
+            if (codeBuffer.CTDCount > 0)
+            {
+                codeBuilder.AppendLine("boolean " + CTD_FN + "(int *limit, int *dest, int osr, boolean input){");
+                codeBuilder.AppendLine(INDENT + "if (" + OSR_FN + "(osr, input)) *dest -= 1;");
+                codeBuilder.AppendLine(INDENT + "return *dest >= *limit;");
+                codeBuilder.AppendLine("}");
+                codeBuilder.AppendLine();
+            }
+            #endregion
+
+            #region CTU
+            if (codeBuffer.CTUCount > 0)
+            {
+                codeBuilder.AppendLine("boolean " + CTU_FN + "(int *limit, int *dest, int osr, boolean input){");
+                codeBuilder.AppendLine(INDENT + "if (" + OSR_FN + "(osr, input)) *dest += 1;");
+                codeBuilder.AppendLine(INDENT + "return *dest >= *limit;");
                 codeBuilder.AppendLine("}");
                 codeBuilder.AppendLine();
             }

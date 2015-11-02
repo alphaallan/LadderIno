@@ -60,6 +60,16 @@ namespace LDFile
             public int OSRCount { get; set; }
 
             /// <summary>
+            /// Number of CTD components in diagram
+            /// </summary>
+            public int CTDCount { get; set; }
+
+            /// <summary>
+            /// Number of CTU components in diagram
+            /// </summary>
+            public int CTUCount { get; set; }
+
+            /// <summary>
             /// Number of boolean temporary variables needed in code
             /// </summary>
             public int BoolTempCount { get; set; }
@@ -76,6 +86,8 @@ namespace LDFile
                 Functions = new List<string>();
                 OSFCount = 0;
                 OSRCount = 0;
+                CTDCount = 0;
+                CTUCount = 0;
                 BoolTempCount = 0;
             }
         }

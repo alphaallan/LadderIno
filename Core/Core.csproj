@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\CircuitMode.cs" />
     <Compile Include="Data\EventArgs.cs" />
     <Compile Include="Data\LadderDataTable.cs" />
     <Compile Include="Components\Analog\ADC.cs" />
@@ -73,6 +74,7 @@
     <Compile Include="Data\NodeConnections.cs" />
     <Compile Include="Data\PinType.cs" />
     <Compile Include="Data\LDVarClass.cs" />
+    <Compile Include="Structure\Circuit.cs" />
     <Compile Include="Structure\Diagram.cs" />
     <Compile Include="Structure\Node.cs" />
     <Compile Include="Structure\Rung.cs" />

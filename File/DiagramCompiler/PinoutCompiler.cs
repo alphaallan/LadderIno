@@ -24,7 +24,11 @@ namespace LDFile
                 codeBuffer.InputRefreshContent.Add(pin.Variable + " = digitalRead(" + pin.Pin + ");");
             }
 
-            foreach (var pin in pins.Where(x => x.Type == PinType.Analog)) codeBuffer.SetupContent.Add("//Pin " + pin.Pin + " used as analog input to " + pin.Variable);
+            foreach (var pin in pins.Where(x => x.Type == PinType.Analog))
+            {
+                codeBuffer.SetupContent.Add("//Pin " + pin.Pin + " used as analog input to " + pin.Variable);
+                codeBuffer.Defines.Add("#define " + pin.Variable + " " + pin.Pin + " //Analog input pin");
+            }
 
 
             codeBuffer.SetupContent.Add("//Outputs");
@@ -33,7 +37,11 @@ namespace LDFile
                 codeBuffer.SetupContent.Add("pinMode(" + pin.Pin + ", OUTPUT);//" + pin.Variable);
                 codeBuffer.OutputRefreshContent.Add("digitalWrite(" + pin.Pin + ", " + pin.Variable + ");");
             }
-            foreach (var pin in pins.Where(x => x.Type == PinType.PWM)) codeBuffer.SetupContent.Add("//Pin " + pin.Pin + " used as analog output to " + pin.Variable);
+            foreach (var pin in pins.Where(x => x.Type == PinType.PWM))
+            {
+                codeBuffer.SetupContent.Add("pinMode(" + pin.Pin + ", OUTPUT);//PWM to " + pin.Variable);
+                codeBuffer.Defines.Add("#define " + pin.Variable + " " + pin.Pin + " //PWM pin");
+            }
 
         }
     }
