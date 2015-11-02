@@ -12,12 +12,14 @@ namespace Core.Components
         protected override void RunLogicalTest() { }
 
         public List<ComponentBase> Components { get; set; }
+        public Circuit Parent { get; set; }
         public CircuitMode Mode { get; private set; }
 
-        public Circuit(CircuitMode mode)
+        public Circuit(CircuitMode mode, Circuit parent)
         {
             Components = new List<ComponentBase>();
             Mode = mode;
+            Parent = parent;
         }
 
         /// <summary>
@@ -29,11 +31,12 @@ namespace Core.Components
         {
             this.Components = new List<ComponentBase>();
             this.Mode = CircuitMode.Serial;
+            this.Parent = null;
 
             List<NodeConnections> nodes = new List<NodeConnections>().RunAnalisys(rung);
 
-            Stack<int> Mode = new Stack<int>();
-            Mode.Push(-1);
+            Stack<int> CircuitModeStack = new Stack<int>();
+            CircuitModeStack.Push(-1);
             Stack<Circuit> Circuits = new Stack<Circuit>();
             
             this.LeftLide = rung.Components.First().LeftLide;
@@ -48,24 +51,24 @@ namespace Core.Components
                 //Decide when add a parallel sub-circuit
                 if (NodeA.OutComponents.Count > 1)
                 {
-                    if (Mode.Peek() == -1)
+                    if (CircuitModeStack.Peek() == -1)
                     {
-                        Mode.Push(NodeA.OutComponents.Count - 1);
+                        CircuitModeStack.Push(NodeA.OutComponents.Count - 1);
                         Circuit parent = Circuits.Peek();
-                        Circuit son = new Circuit(CircuitMode.Parallel);
+                        Circuit son = new Circuit(CircuitMode.Parallel, parent);
                         son.LeftLide = component.LeftLide;
                         parent.Components.Add(son);
                         Circuits.Push(son);
                     }
-                    else Mode.Push(Mode.Pop() - 1);
+                    else CircuitModeStack.Push(CircuitModeStack.Pop() - 1);
                 }
 
                 // Decide when add a serial sub-circuit
-                if (NodeB.InComponents.Count == 1 && Mode.Peek() != -1)
+                if (NodeB.InComponents.Count == 1 && CircuitModeStack.Peek() != -1)
                 {
-                    Mode.Push(-1);
+                    CircuitModeStack.Push(-1);
                     Circuit parent = Circuits.Peek();
-                    Circuit son = new Circuit(CircuitMode.Serial);
+                    Circuit son = new Circuit(CircuitMode.Serial, parent);
                     son.LeftLide = component.LeftLide;
                     parent.Components.Add(son);
                     Circuits.Push(son);
@@ -74,9 +77,9 @@ namespace Core.Components
                 Circuits.Peek().Components.Add(component);
 
                 //Close sub-circuit
-                if ((NodeB.InComponents.Count > 1 || NodeA.InComponents.Count > 1) && Mode.Count > 1 && Mode.Peek() <= 0)
+                if ((NodeB.InComponents.Count > 1 || NodeA.InComponents.Count > 1) && CircuitModeStack.Count > 1 && CircuitModeStack.Peek() <= 0)
                 {
-                    Mode.Pop();
+                    CircuitModeStack.Pop();
                     Circuits.Pop().RightLide = component.RightLide;
                 }
             }
