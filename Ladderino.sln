@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ladderino", "Ladderino\Ladd
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{AAE9FF4A-7A71-4750-9EE5-908A336F272D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreLogicalTest", "CoreLogicalTest\CoreLogicalTest.csproj", "{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProjectTests", "CoreLogicalTest\ProjectTests.csproj", "{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE} = {4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE}
 	EndProjectSection
@@ -22,6 +22,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{9D3E6EBD-94A5-4692-9878-F24998299A98}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentUI", "ComponentUI\ComponentUI.csproj", "{63FABC02-2AD3-4500-85D6-4016C799FE91}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Compiler", "Compiler\Compiler.csproj", "{54FA0233-957C-4CBD-8236-D4FB4C7E6736}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{63FABC02-2AD3-4500-85D6-4016C799FE91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54FA0233-957C-4CBD-8236-D4FB4C7E6736}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54FA0233-957C-4CBD-8236-D4FB4C7E6736}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54FA0233-957C-4CBD-8236-D4FB4C7E6736}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54FA0233-957C-4CBD-8236-D4FB4C7E6736}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

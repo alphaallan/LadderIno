@@ -96,7 +96,7 @@ namespace CoreLogicalTest
             TestDiagram.Pins[3].Pin = "4";
 
             Console.WriteLine();
-            Console.Write(LDFile.DiagramCompiler.CompileDiagram(TestDiagram));
+            Console.Write(Compiler.DiagramCompiler.CompileDiagram(TestDiagram));
         }
     }
 }

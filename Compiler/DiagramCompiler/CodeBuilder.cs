@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace LDFile
+namespace Compiler
 {
     public static partial class DiagramCompiler
     {

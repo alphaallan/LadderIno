@@ -6,8 +6,8 @@
     <ProjectGuid>{CBE24B10-B480-4DDF-B4DE-EE0AA2E8FC42}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>CoreLogicalTest</RootNamespace>
-    <AssemblyName>CoreLogicalTest</AssemblyName>
+    <RootNamespace>ProjectTests</RootNamespace>
+    <AssemblyName>ProjectTests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -60,6 +60,10 @@
     <Compile Include="XmlReaderSettings.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Compiler\Compiler.csproj">
+      <Project>{54fa0233-957c-4cbd-8236-d4fb4c7e6736}</Project>
+      <Name>Compiler</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{aae9ff4a-7a71-4750-9ee5-908a336f272d}</Project>
       <Name>Core</Name>

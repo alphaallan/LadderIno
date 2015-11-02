@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace LDFile
+namespace Compiler
 {
     public static partial class DiagramCompiler
     {

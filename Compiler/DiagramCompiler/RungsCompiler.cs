@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace LDFile
+namespace Compiler
 {
     public static partial class DiagramCompiler
     {

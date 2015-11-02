@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{4C53C7DC-8966-4F0A-9BFF-BD8D222F6ADE}</ProjectGuid>
+    <ProjectGuid>{54FA0233-957C-4CBD-8236-D4FB4C7E6736}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LDFile</RootNamespace>
-    <AssemblyName>LDFile</AssemblyName>
+    <RootNamespace>Compiler</RootNamespace>
+    <AssemblyName>Compiler</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -39,24 +39,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DiagramReader\DataTableReader.cs" />
-    <Compile Include="DiagramReader\PinoutReader.cs" />
-    <Compile Include="DiagramReader\RungsReader.cs" />
-    <Compile Include="DiagramWriter\DataTableWriter.cs" />
-    <Compile Include="DiagramReader\DiagramReader.cs" />
-    <Compile Include="DiagramWriter\DiagramWriter.cs" />
-    <Compile Include="DiagramWriter\PinoutWriter.cs" />
+    <Compile Include="DiagramCompiler\CodeBuilder.cs" />
+    <Compile Include="DiagramCompiler\CompilerBuffer.cs" />
+    <Compile Include="DiagramCompiler\Constants.cs" />
+    <Compile Include="DiagramCompiler\DataTableCompiler.cs" />
+    <Compile Include="DiagramCompiler\DiagramCompiler.cs" />
+    <Compile Include="DiagramCompiler\PinoutCompiler.cs" />
+    <Compile Include="DiagramCompiler\RungsCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DiagramWriter\RungsWriter.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{aae9ff4a-7a71-4750-9ee5-908a336f272d}</Project>
       <Name>Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.csproj">
-      <Project>{9d3e6ebd-94a5-4692-9878-f24998299a98}</Project>
-      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
