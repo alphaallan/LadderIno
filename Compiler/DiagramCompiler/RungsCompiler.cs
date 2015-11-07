@@ -15,46 +15,70 @@ namespace Compiler
         {
             foreach (Rung rung in rungs)
             {
-                List<string> sRung = new List<string>();
+                List<string> tempStatements = new List<string>();
                 List<string> ifStatements = new List<string>();
                 List<string> elseStatements = new List<string>();
 
-                
-                //int tempVarCount = 0;
-
-                if (!string.IsNullOrEmpty(rung.Comment)) sRung.Add("/*" + rung.Comment + "*/");
-
                 Node outputFrontier = rung.GetOutputFrontier();
                 int outputBorder = rung.Components.Where(x => x.RightLide == outputFrontier).Max(x => rung.Components.IndexOf(x));
-                /* Basic Input
-                 *  Contact
-                 *  EQU
-                 *  GEQ
-                 *  GRT
-                 *  LEG
-                 *  LES
-                 *  NEQ
-                 * 
-                 * Inputs that cause Expression break
-                 *  OSF
-                 *  OSR
-                 *  CTD
-                 *  CTU
-                 */
-                string expBuffer = string.Empty;
 
-                Circuit circuit = new Circuit(rung);
 
-                circuit.ToString();
+                List<NodeExpression> nodes = new List<NodeExpression>().RunAnalisys(rung);
+                List<string> sRung = new List<string>();
+                if (!string.IsNullOrEmpty(rung.Comment)) sRung.Add("/*" + rung.Comment + "*/");
 
-                sRung.Add("if (" + expBuffer + ")");
-                sRung.Add("{");
-                foreach (string item in ifStatements) sRung.Add(INDENT + item);
-                sRung.Add("}");
-                sRung.Add("else");
-                sRung.Add("{");
-                foreach (string item in elseStatements) sRung.Add(INDENT + item);
-                sRung.Add("}");
+                Stack<int> CircuitModeStack = new Stack<int>();
+                CircuitModeStack.Push(-1);
+
+                for (int pos = 0; pos <= outputBorder; pos++)
+                {
+                    ComponentBase component = rung.Components[pos];
+                    NodeExpression NodeA = nodes.GetNodeConnections(component.LeftLide);
+                    NodeExpression NodeB = nodes.GetNodeConnections(component.RightLide);
+
+                    //Decide when add a parallel sub-circuit
+                    if (NodeA.OutComponents.Count > 1)
+                    {
+                        if (CircuitModeStack.Peek() == -1)
+                        {
+                            CircuitModeStack.Push(NodeA.OutComponents.Count - 1);
+                        }
+                        else CircuitModeStack.Push(CircuitModeStack.Pop() - 1);
+                    }
+
+                    // Decide when add a serial sub-circuit
+                    if (NodeB.InComponents.Count == 1 && CircuitModeStack.Peek() != -1)
+                    {
+                        CircuitModeStack.Push(-1);
+                    }
+
+
+                    if (component is Contact)
+                    {
+                        Contact contact = (component as Contact);
+                    }
+                    else if (component is OSR)
+                    {
+
+                    }
+
+                    //Close sub-circuit
+                    if ((NodeB.InComponents.Count > 1 || NodeA.InComponents.Count > 1) && CircuitModeStack.Count > 1 && CircuitModeStack.Peek() <= 0)
+                    {
+                        CircuitModeStack.Pop();
+                    }
+                }
+
+
+                //foreach (string item in tempStatements) sRung.Add(item);
+                //sRung.Add("if (" + expBuffer + ")");
+                //sRung.Add("{");
+                //foreach (string item in ifStatements) sRung.Add(INDENT + item);
+                //sRung.Add("}");
+                //sRung.Add("else");
+                //sRung.Add("{");
+                //foreach (string item in elseStatements) sRung.Add(INDENT + item);
+                //sRung.Add("}");
 
                 codeBuffer.Rungs.Add(sRung);
             }

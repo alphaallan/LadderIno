@@ -44,6 +44,7 @@
     <Compile Include="DiagramCompiler\Constants.cs" />
     <Compile Include="DiagramCompiler\DataTableCompiler.cs" />
     <Compile Include="DiagramCompiler\DiagramCompiler.cs" />
+    <Compile Include="NodeExpression.cs" />
     <Compile Include="DiagramCompiler\PinoutCompiler.cs" />
     <Compile Include="DiagramCompiler\RungsCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
