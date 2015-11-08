@@ -44,7 +44,7 @@ namespace Compiler
 
                         if (!string.IsNullOrEmpty(NodeA.Expression) && !lastParallel.IsTempValue)
                         {
-                            tempStatements.Add(lastParallel.Expression);
+                            tempStatements.Add(string.Format(RATD + "[{0}]" + " = {1};", tempStatements.Count, lastParallel.Expression));
                             lastParallel.Expression = string.Format(RATD + "[{0}]", tempStatements.Count - 1);
                             lastParallel.IsTempValue = true;
                         }

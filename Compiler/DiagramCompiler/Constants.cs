@@ -5,7 +5,7 @@
         /// <summary>
         /// Compiler Current version
         /// </summary>
-        internal const string COMPILER_VERSION = "0.1";
+        internal const string COMPILER_VERSION = "0.3";
 
         /// <summary>
         /// Indetation level string

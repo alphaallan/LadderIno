@@ -1,5 +1,4 @@
-﻿using Utilities.Encoders;
-using Core.Components;
+﻿using Core.Components;
 using Core.Data;
 using System;
 using System.Collections.Generic;
@@ -99,7 +98,10 @@ namespace Compiler
                 int markerPos = exp.IndexOf(DiagramCompiler.NODE_NUMBER_MARKER);
                 if (markerPos == -1) break;
 
-                index = exp.GetInt(markerPos + 1);
+                int numberLeght = 1;
+                while (char.IsDigit(exp[markerPos + numberLeght]) && (markerPos + numberLeght <= exp.Length)) numberLeght++;
+
+                index = Int16.Parse(exp.Substring(markerPos + 1, numberLeght - 1));
             }
 
             return list[index];

@@ -117,10 +117,10 @@ namespace Utilities.Encoders
 
         public static int GetInt(this string input, int pos)
         {
-            int numberLeght = 2;
-            while (char.IsDigit(input[pos + numberLeght])) numberLeght++;
+            int numberLeght = 0;
+            while (char.IsDigit(input[pos + numberLeght]) && (pos + numberLeght <= input.Length)) numberLeght++;
 
-            return Int16.Parse(input.Substring(pos, numberLeght - 1));
+            return Int16.Parse(input.Substring(pos, numberLeght));
         }
 
         public static decimal ToDecimal(this string input)

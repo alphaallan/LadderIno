@@ -77,6 +77,7 @@ namespace Compiler
             codeBuilder.AppendLine("void loop() {");
             if (codeBuffer.BoolTempCount > 0) codeBuilder.AppendLine(INDENT + "boolean " + RATD + "[" + codeBuffer.BoolTempCount + "]; //Rung Activation Temporary Data");
             if (codeBuffer.InputRefreshContent.Count > 0) codeBuilder.AppendLine(INDENT + REFRESH_INPUT_FN + "();");
+            codeBuilder.AppendLine();
 
             for (int c = 0; c < codeBuffer.Rungs.Count; c++)
             {
@@ -137,9 +138,9 @@ namespace Compiler
             #region CTD
             if (codeBuffer.CTDCount > 0)
             {
-                codeBuilder.AppendLine("boolean " + CTD_FN + "(int *limit, int *dest, int osr, boolean input){");
+                codeBuilder.AppendLine("boolean " + CTD_FN + "(int limit, int *dest, int osr, boolean input){");
                 codeBuilder.AppendLine(INDENT + "if (" + OSR_FN + "(osr, input)) *dest -= 1;");
-                codeBuilder.AppendLine(INDENT + "return *dest >= *limit;");
+                codeBuilder.AppendLine(INDENT + "return *dest >= limit;");
                 codeBuilder.AppendLine("}");
                 codeBuilder.AppendLine();
             }
@@ -148,9 +149,9 @@ namespace Compiler
             #region CTU
             if (codeBuffer.CTUCount > 0)
             {
-                codeBuilder.AppendLine("boolean " + CTU_FN + "(int *limit, int *dest, int osr, boolean input){");
+                codeBuilder.AppendLine("boolean " + CTU_FN + "(int limit, int *dest, int osr, boolean input){");
                 codeBuilder.AppendLine(INDENT + "if (" + OSR_FN + "(osr, input)) *dest += 1;");
-                codeBuilder.AppendLine(INDENT + "return *dest >= *limit;");
+                codeBuilder.AppendLine(INDENT + "return *dest >= limit;");
                 codeBuilder.AppendLine("}");
                 codeBuilder.AppendLine();
             }

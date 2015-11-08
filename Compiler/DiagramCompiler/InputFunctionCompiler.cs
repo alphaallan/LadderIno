@@ -31,12 +31,12 @@ namespace Compiler
 
                 if (component is CTD)
                 {
-                    //output = CTD_FN + "(" + counter.Limit + ", " + input + ")";
+                    buffer = CTD_FN + "(" + counter.Limit + ", &" + counter.FullName + ", " + codeBuffer.OSRCount + ", " + input + ")";
                     codeBuffer.OSRCount++;
                 }
                 else if (component is CTU)
                 {
-                    
+                    buffer = CTU_FN + "(" + counter.Limit + ", &" + counter.FullName + ", " + codeBuffer.OSRCount + ", " + input + ")";                    
                     codeBuffer.OSRCount++;
                 }
             }
