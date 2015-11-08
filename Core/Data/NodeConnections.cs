@@ -5,24 +5,24 @@ using System.Collections.Generic;
 namespace Core.Data
 {
     /// <summary>
-    /// Store a node and the components conented to it
+    /// Store a node and the components connected to it
     /// </summary>
     public class NodeConnections : IEquatable<NodeConnections>
     {
         /// <summary>
         /// Node Reference
         /// </summary>
-        public Node Node { get; set; }
+        public Node Node { get; private set; }
 
         /// <summary>
         /// Components coming to the node
         /// </summary>
-        public List<ComponentBase> InComponents { get; set; }
+        public List<ComponentBase> InComponents { get; private set; }
 
         /// <summary>
         /// Components coming from the node 
         /// </summary>
-        public List<ComponentBase> OutComponents { get; set; }
+        public List<ComponentBase> OutComponents { get; private set; }
 
         public NodeConnections(Node node)
         {
@@ -68,8 +68,8 @@ namespace Core.Data
         /// <summary>
         /// Return the NodeConnections of a Node in the NodeConnections list
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="node"></param>
+        /// <param name="list">List of node Connections</param>
+        /// <param name="node">Node to be found</param>
         /// <returns></returns>
         public static NodeConnections GetNodeConnections(this List<NodeConnections> list, Node node)
         {
@@ -79,10 +79,10 @@ namespace Core.Data
         /// <summary>
         /// Build the node Connections List from a Rung
         /// </summary>
-        /// <param name="list"></param>
-        /// <param name="rung"></param>
+        /// <param name="list">List of node Connections</param>
+        /// <param name="rung">Rung to be analysed</param>
         /// <returns></returns>
-        public static List<NodeConnections> RunAnalisys(this List<NodeConnections> list, Rung rung)
+        public static List<NodeConnections> RunAnalysis(this List<NodeConnections> list, Rung rung)
         {
             foreach (ComponentBase component in rung.Components)
             {

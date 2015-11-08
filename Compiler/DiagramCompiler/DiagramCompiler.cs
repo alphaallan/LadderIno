@@ -1,11 +1,15 @@
 ﻿using Core.Components;
 using System;
-using System.Collections.Generic;
 
 namespace Compiler
 {
     public static partial class DiagramCompiler
     {
+        /// <summary>
+        /// Compile a Ladder Diagram to Arduino C++
+        /// </summary>
+        /// <param name="diagram"></param>
+        /// <returns></returns>
         public static string CompileDiagram(Diagram diagram)
         {
             if (diagram == null) throw new ArgumentNullException("diagram", "Null Diagram");

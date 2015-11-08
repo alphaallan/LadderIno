@@ -115,6 +115,14 @@ namespace Utilities.Encoders
             return buff;
         }
 
+        public static int GetInt(this string input, int pos)
+        {
+            int numberLeght = 2;
+            while (char.IsDigit(input[pos + numberLeght])) numberLeght++;
+
+            return Int16.Parse(input.Substring(pos, numberLeght - 1));
+        }
+
         public static decimal ToDecimal(this string input)
         {
             decimal buff;

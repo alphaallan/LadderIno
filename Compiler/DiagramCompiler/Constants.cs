@@ -12,6 +12,21 @@
         /// </summary>
         internal const string INDENT = "  ";
 
+        /// <summary>
+        /// True constant string
+        /// </summary>
+        internal const string TRUE = "true";
+
+        /// <summary>
+        /// False constant string
+        /// </summary>
+        internal const string FALSE = "false";
+
+        /// <summary>
+        /// Marker for the node number in activation sub-expressions
+        /// </summary>
+        internal const string NODE_NUMBER_MARKER = "#";
+
         #region Names
         /// <summary>
         /// Ladder names prefix

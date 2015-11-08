@@ -33,7 +33,7 @@ namespace Core.Components
             this.Mode = CircuitMode.Serial;
             this.Parent = null;
 
-            List<NodeConnections> nodes = new List<NodeConnections>().RunAnalisys(rung);
+            List<NodeConnections> nodes = new List<NodeConnections>().RunAnalysis(rung);
 
             Stack<int> CircuitModeStack = new Stack<int>();
             CircuitModeStack.Push(-1);

@@ -1,170 +1,108 @@
 ﻿using Core.Components;
-using Core.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Xml;
 
 namespace Compiler
 {
     public static partial class DiagramCompiler
     {
+        /// <summary>
+        /// Compile the diagram's rung collection
+        /// </summary>
+        /// <param name="rungs"></param>
+        /// <param name="codeBuffer"></param>
         internal static void CompileRungs(IEnumerable<Rung> rungs, CompilerBuffer codeBuffer)
         {
             foreach (Rung rung in rungs)
             {
+                #region Buffers
                 List<string> tempStatements = new List<string>();
-                List<string> ifStatements = new List<string>();
-                List<string> elseStatements = new List<string>();
+                List<NodeExpression> nodes = new List<NodeExpression>().RunAnalysis(rung);
+                List<NodeOutputs> outputs = new List<NodeOutputs>();
+                #endregion
 
-                Node outputFrontier = rung.GetOutputFrontier();
-                int outputBorder = rung.Components.Where(x => x.RightLide == outputFrontier).Max(x => rung.Components.IndexOf(x));
-
-
-                List<NodeExpression> nodes = new List<NodeExpression>().RunAnalisys(rung);
-                List<string> sRung = new List<string>();
-                if (!string.IsNullOrEmpty(rung.Comment)) sRung.Add("/*" + rung.Comment + "*/");
-
-                Stack<int> CircuitModeStack = new Stack<int>();
-                CircuitModeStack.Push(-1);
-
-                for (int pos = 0; pos <= outputBorder; pos++)
+                #region Analysis Loop
+                foreach (ComponentBase component in rung.Components)
                 {
-                    ComponentBase component = rung.Components[pos];
                     NodeExpression NodeA = nodes.GetNodeConnections(component.LeftLide);
                     NodeExpression NodeB = nodes.GetNodeConnections(component.RightLide);
 
-                    //Decide when add a parallel sub-circuit
-                    if (NodeA.OutComponents.Count > 1)
+                    if(component.GetCompilerClass() == ComponentCompilerClass.Input)
                     {
-                        if (CircuitModeStack.Peek() == -1)
+                        if (!string.IsNullOrEmpty(NodeA.Expression))
                         {
-                            CircuitModeStack.Push(NodeA.OutComponents.Count - 1);
+                            NodeB += string.Format(NODE_NUMBER_MARKER + "{0} && {1}", nodes.IndexOf(NodeA), CompileInputComponent(component));
                         }
-                        else CircuitModeStack.Push(CircuitModeStack.Pop() - 1);
+                        else
+                        {
+                            NodeB += CompileInputComponent(component);
+                        }
                     }
-
-                    // Decide when add a serial sub-circuit
-                    if (NodeB.InComponents.Count == 1 && CircuitModeStack.Peek() != -1)
+                    else
                     {
-                        CircuitModeStack.Push(-1);
-                    }
+                        NodeExpression lastParallel = nodes.GetLastParallel(NodeA);
 
+                        if (!string.IsNullOrEmpty(NodeA.Expression) && !lastParallel.IsTempValue)
+                        {
+                            tempStatements.Add(lastParallel.Expression);
+                            lastParallel.Expression = string.Format(RATD + "[{0}]", tempStatements.Count - 1);
+                            lastParallel.IsTempValue = true;
+                        }
 
-                    if (component is Contact)
-                    {
-                        Contact contact = (component as Contact);
-                    }
-                    else if (component is OSR)
-                    {
-
-                    }
-
-                    //Close sub-circuit
-                    if ((NodeB.InComponents.Count > 1 || NodeA.InComponents.Count > 1) && CircuitModeStack.Count > 1 && CircuitModeStack.Peek() <= 0)
-                    {
-                        CircuitModeStack.Pop();
+                        if (component.GetCompilerClass() == ComponentCompilerClass.InputFunction)
+                        {
+                            if (!string.IsNullOrEmpty(NodeA.Expression))
+                            {
+                                NodeB += CompileInputFunctionComponent(component, NODE_NUMBER_MARKER + nodes.IndexOf(NodeA), codeBuffer);
+                            }
+                            else
+                            {
+                                NodeB += CompileInputFunctionComponent(component, TRUE, codeBuffer);
+                            }
+                        }
+                        else
+                        {
+                            outputs.AddOutputs(NodeA.Node, CompileOutputComponent(component, codeBuffer));
+                        }
                     }
                 }
+                #endregion
 
+                if (codeBuffer.BoolTempCount < tempStatements.Count) codeBuffer.BoolTempCount = tempStatements.Count;
 
-                //foreach (string item in tempStatements) sRung.Add(item);
-                //sRung.Add("if (" + expBuffer + ")");
-                //sRung.Add("{");
-                //foreach (string item in ifStatements) sRung.Add(INDENT + item);
-                //sRung.Add("}");
-                //sRung.Add("else");
-                //sRung.Add("{");
-                //foreach (string item in elseStatements) sRung.Add(INDENT + item);
-                //sRung.Add("}");
+                List<string> sRung = BuildRung(tempStatements, nodes, outputs);
+                if (!string.IsNullOrEmpty(rung.Comment)) sRung.Insert(0, "/*" + rung.Comment + "*/");
 
                 codeBuffer.Rungs.Add(sRung);
             }
-
-
-            //codeBuffer.BoolTempCount = 1;
-
-            //codeBuffer.Rungs.Add(new List<string> { RATD + "[0] = X1;", "Y1 = (((" + OSR_FN + "(0, " + RATD + "[0]) && !Y2) || Y1) && !X2);" });
-            //codeBuffer.Rungs.Add(new List<string> { RATD + "[0] = X2;", "Y2 = (((" + OSR_FN + "(1, " + RATD + "[0]) && !Y1) || Y2) && !X1);" });
         }
 
-        private static Tuple<string, string> GetOutComponentActions(this ComponentBase component, CompilerBuffer codeBuffer)
+        /// <summary>
+        /// Add output statements to the NodeOutputs collection
+        /// </summary>
+        /// <param name="list">NodeOutputs buffer list</param>
+        /// <param name="node">Reference node</param>
+        /// <param name="statements">if and else statements</param>
+        /// <returns></returns>
+        internal static List<NodeOutputs> AddOutputs(this List<NodeOutputs> list, Node node, Tuple<string, string> statements)
         {
-            string ifCommand = string.Empty, elseCommand = string.Empty;
+            int nodeIndex = list.IndexOf(new NodeOutputs(node));
+            NodeOutputs nodeOutputs = null;
 
-            if (component is Coil)
+            if (nodeIndex == -1)
             {
-                Coil coil = component as Coil;
-                switch (coil.Mode)
-                {
-                    case Coil.CoilMode.Negated:
-                        ifCommand = coil.FullName + " = false;";
-                        elseCommand = coil.FullName + " = true;";
-                        break;
-
-                    case Coil.CoilMode.Normal:
-                        ifCommand = coil.FullName + " = true;";
-                        elseCommand = coil.FullName + " = false;";
-                        break;
-
-                    case Coil.CoilMode.Reset:
-                        ifCommand = coil.FullName + " = false;";
-                        break;
-
-                    case Coil.CoilMode.Set:
-                        ifCommand = coil.FullName + " = true;";
-                        break;
-                }
+                nodeOutputs = new NodeOutputs(node);
+                list.Add(nodeOutputs);
             }
-            else if (component is ADC)
+            else
             {
-                ifCommand = (component as ADC).Destination + " = analogRead(" + (component as ADC).FullName + ");";
-            }
-            else if (component is PWM)
-            {
-                ifCommand = "analogWrite(" + (component as ADC).FullName + ", " + (component as PWM).DudyCycle + ");";
-                elseCommand = "analogWrite(" + (component as ADC).FullName + ", 0);";
-            }
-            else if (component is RES)
-            {
-                ifCommand = (component as RES).FullName + " = 0;";
-            }
-            else if (component is CTC)
-            {
-                CTC ctc = component as CTC;
-                ifCommand = "if (" + OSR_FN + "(" + codeBuffer.OSRCount + ", true)) " + ctc.FullName + " = (" + ctc.FullName + " >= " + ctc.Limit + ") ? 0 : " + ctc.FullName + " + 1;";
-                elseCommand = OSR_FN + "(" + codeBuffer.OSRCount + ", false));";
-                codeBuffer.OSRCount++;
-            }
-            else if (component is MathComponent)
-            {
-                MathComponent mc = component as MathComponent;
-
-                if (component is ADD)
-                {
-                    ifCommand = mc.Destination + " = " + mc.VarA + " + " + mc.VarB + ";";
-                }
-                else if (component is DIV)
-                {
-                    ifCommand = mc.Destination + " = " + mc.VarA + " / " + mc.VarB + ";";
-                }
-                else if (component is MUL)
-                {
-                    ifCommand = mc.Destination + " = " + mc.VarA + " * " + mc.VarB + ";";
-                }
-                else if (component is SUB)
-                {
-                    ifCommand = mc.Destination + " = " + mc.VarA + " - " + mc.VarB + ";";
-                }
-                else if (component is MOV)
-                {
-                    ifCommand = mc.Destination + " = " + mc.VarA + ";";
-                }
+                nodeOutputs = list[nodeIndex];
             }
 
-            return new Tuple<string, string>(ifCommand, elseCommand);
+            nodeOutputs.IfStatements.Add(statements.Item1);
+            nodeOutputs.ElseStatements.Add(statements.Item2);
+
+            return list;
         }
     }
 }

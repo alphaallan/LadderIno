@@ -28,14 +28,14 @@ namespace LDFile
                 Trace.WriteLine("Rung Started", "DiagramWriter");
                 Trace.Indent();
 
-                #region Node Analisys
+                #region Node Analysis
                 Trace.WriteLine("Starting node analysis", "Rung");
 
                 ///List of the nodes in circuit
-                List<NodeConnections> nodes = new List<NodeConnections>().RunAnalisys(rung);
+                List<NodeConnections> nodes = new List<NodeConnections>().RunAnalysis(rung);
                 
                 Trace.WriteLine("Analysis finished with " + nodes.Count + " nodes", "Rung");
-                #endregion Node Analisys
+                #endregion Node Analysis
 
                 writer.WriteStartElement("Rung");
                 writer.WriteStartAttribute("Count");

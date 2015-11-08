@@ -41,18 +41,28 @@
   <ItemGroup>
     <Compile Include="DiagramCompiler\CodeBuilder.cs" />
     <Compile Include="DiagramCompiler\CompilerBuffer.cs" />
+    <Compile Include="DiagramCompiler\ComponentClassifier.cs" />
     <Compile Include="DiagramCompiler\Constants.cs" />
     <Compile Include="DiagramCompiler\DataTableCompiler.cs" />
     <Compile Include="DiagramCompiler\DiagramCompiler.cs" />
+    <Compile Include="DiagramCompiler\InputComponentCompiler.cs" />
+    <Compile Include="DiagramCompiler\InputFunctionCompiler.cs" />
+    <Compile Include="DiagramCompiler\RungBuilder.cs" />
     <Compile Include="NodeExpression.cs" />
     <Compile Include="DiagramCompiler\PinoutCompiler.cs" />
     <Compile Include="DiagramCompiler\RungsCompiler.cs" />
+    <Compile Include="NodeOutputs.cs" />
+    <Compile Include="DiagramCompiler\OutputComponentCompiler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{aae9ff4a-7a71-4750-9ee5-908a336f272d}</Project>
       <Name>Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{9d3e6ebd-94a5-4692-9878-f24998299a98}</Project>
+      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
