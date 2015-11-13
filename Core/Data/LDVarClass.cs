@@ -7,7 +7,9 @@
         Analog = 'A',
         PWM = 'P',
         Data = 'D',
-        Simulator = 'S'
+        Simulator = 'S',
+        InFunction = 'R',
+        OutFunction = 'W'
     }
 
     public static partial class LDCoreExtensions

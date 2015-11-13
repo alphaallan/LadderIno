@@ -40,6 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Function\ELF.cs" />
     <Compile Include="Data\CircuitMode.cs" />
     <Compile Include="Data\EventArgs.cs" />
     <Compile Include="Data\LadderDataTable.cs" />

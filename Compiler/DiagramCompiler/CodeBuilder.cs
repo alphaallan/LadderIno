@@ -57,7 +57,11 @@ namespace Compiler
             if (codeBuffer.Functions.Count > 0)
             {
                 codeBuilder.AppendLine("/* ===============================[ Functions ]============================== */");
-                foreach (string item in codeBuffer.Functions) codeBuilder.AppendLine(item);
+                foreach (var item in codeBuffer.Functions)
+                {
+                    foreach(string line in item) codeBuilder.AppendLine(line);
+                    codeBuilder.AppendLine();
+                }
                 codeBuilder.AppendLine("/* ========================================================================== */");
                 codeBuilder.AppendLine();
             }

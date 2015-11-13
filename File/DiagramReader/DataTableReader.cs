@@ -28,6 +28,10 @@ namespace LDFile
                         diagram.DataTable.SetValue(xVar.Attributes["Name"].Value, xVar.Attributes["Value"].Value.ToByte());
                         break;
 
+                    case "String":
+                        diagram.DataTable.SetValue(xVar.Attributes["Name"].Value, xVar.InnerText);
+                        break;
+
                     default:
                         throw new FormatException("Corrupted File. Unrecognized variable type");
                 }

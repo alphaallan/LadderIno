@@ -293,6 +293,15 @@ namespace LDFile
                     break;
                 #endregion Analog Components
 
+                #region Function Components
+                case "ELF":
+                    ELF elf = new ELF();
+                    elf.Name = node.Attributes["Name"].Value;
+                    elf.Code = node.InnerText;
+                    component = elf;
+                    break;
+                #endregion Function Components
+
                 default:
                     throw new ArgumentException("Unknow Component", "node");
             }

@@ -47,6 +47,27 @@ namespace Compiler
                         throw new FormatException("Unrecognized variable type in data table");
                 }
             }
+
+
+            foreach (var tuple in tuples.Where(x => x.Item3 == LDVarClass.InFunction))
+            {
+                List<string> buffer = new List<string>();
+                buffer.Add("boolean " + tuple.Item1 + "(boolean input)");
+                buffer.Add("{");
+                foreach (string line in tuple.Item4.ToString().Split('\n')) buffer.Add(INDENT + line);
+                buffer.Add("}");
+                codeBuffer.Functions.Add(buffer);
+            }
+
+            foreach (var tuple in tuples.Where(x => x.Item3 == LDVarClass.OutFunction))
+            {
+                List<string> buffer = new List<string>();
+                buffer.Add("void " + tuple.Item1 + "()");
+                buffer.Add("{");
+                foreach (string line in tuple.Item4.ToString().Split('\n')) buffer.Add(INDENT + line);
+                buffer.Add("}");
+                codeBuffer.Functions.Add(buffer);
+            }
         }
     }
 }

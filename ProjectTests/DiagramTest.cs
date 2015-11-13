@@ -324,7 +324,10 @@ namespace CoreLogicalTest
             Rung3.Add(new Contact());
             TestDiagram.InsertUnder(Rung3, Rung2);
 
-            Rung4.Add(new Coil());
+            ELF elf = new ELF();
+            elf.Name = "test";
+            elf.Code = "int a = 10;";
+            Rung4.Add(elf);
             Rung4.Add(X3);
             Rung4.InsertAfter(X4, X3);
             Rung4.InsertUnder(new Contact(), X3);

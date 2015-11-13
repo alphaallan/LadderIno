@@ -203,6 +203,14 @@ namespace LDFile
                     break;
                 #endregion Analog Components
 
+                #region Function Components
+                case "ELF":
+                    writer.WriteStartAttribute("Name");
+                    writer.WriteValue((component as ELF).Name);
+                    writer.WriteEndAttribute();
+                    break;
+                #endregion Function Components
+
                 #region Components that do not require any extra processing
                 case "OSF":
                 case "OSR":

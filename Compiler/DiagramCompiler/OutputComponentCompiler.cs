@@ -84,6 +84,10 @@ namespace Compiler
                     ifCommand = mc.Destination + " = " + mc.VarA + ";";
                 }
             }
+            else if (component is ELF)
+            {
+                ifCommand = (component as ELF).Name + "();";
+            }
 
             return new Tuple<string, string>(ifCommand, elseCommand);
         }

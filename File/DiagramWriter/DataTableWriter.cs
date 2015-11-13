@@ -33,9 +33,13 @@ namespace LDFile
                 //writer.WriteValue(variable.Item3.ToString());
                 //writer.WriteEndAttribute();
 
-                writer.WriteStartAttribute("Value");
-                writer.WriteValue(variable.Item4);
-                writer.WriteEndAttribute();
+                if (variable.Item3 != LDVarClass.OutFunction && variable.Item3 != LDVarClass.OutFunction)
+                {
+                    writer.WriteStartAttribute("Value");
+                    writer.WriteValue(variable.Item4);
+                    writer.WriteEndAttribute();
+                }
+                else writer.WriteString((string)variable.Item4);
 
                 writer.WriteEndElement();
 

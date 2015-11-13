@@ -47,7 +47,7 @@ namespace Compiler
             /// <summary>
             /// User defined C++ functions
             /// </summary>
-            public List<string> Functions { get; set; }
+            public List<List<string>> Functions { get; set; }
 
             /// <summary>
             /// Number of OSF components in diagram
@@ -83,7 +83,7 @@ namespace Compiler
                 InputRefreshContent = new List<string>();
                 OutputRefreshContent = new List<string>();
                 Rungs = new List<List<string>>();
-                Functions = new List<string>();
+                Functions = new List<List<string>>();
                 OSFCount = 0;
                 OSRCount = 0;
                 CTDCount = 0;

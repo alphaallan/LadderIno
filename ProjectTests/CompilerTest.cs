@@ -79,6 +79,10 @@ namespace CoreLogicalTest
             TestDiagram.Add(Rung1);
 
             Rung2.Add(Y2);
+            //ELF elf = new ELF();
+            //elf.Name = "test";
+            //elf.Code = "int a = 10;";
+            //Rung2.Add(elf);
             Rung2.InsertBefore(X1I, Y2);
             Rung2.Add(X2);
             Rung2.InsertUnder(Y2C, X2);
