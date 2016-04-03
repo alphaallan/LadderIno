@@ -45,8 +45,8 @@ namespace Compiler
             }
             else if (component is PWM)
             {
-                ifCommand = "analogWrite(" + (component as ADC).FullName + ", " + (component as PWM).DudyCycle + ");";
-                elseCommand = "analogWrite(" + (component as ADC).FullName + ", 0);";
+                ifCommand = "analogWrite(" + (component as PWM).FullName + ", " + (component as PWM).DudyCycle + ");";
+                elseCommand = "analogWrite(" + (component as PWM).FullName + ", 0);";
             }
             else if (component is RES)
             {
