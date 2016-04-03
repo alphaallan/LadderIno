@@ -47,12 +47,24 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Analog\ADC.cs" />
     <Compile Include="Components\Basic\Coil.cs" />
     <Compile Include="Components\Basic\Contact.cs" />
+    <Compile Include="Components\Basic\OSF.cs" />
     <Compile Include="Components\Basic\SC.cs" />
     <Compile Include="Components\CompoentUIBase.cs" />
+    <Compile Include="Panels\DataPanel.xaml.cs">
+      <DependentUpon>DataPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Basic\OSR.cs" />
+    <Compile Include="Components\NameableComponentUI.cs" />
+    <Compile Include="Structure\DiagramUI.cs" />
     <Compile Include="Structure\Wiring.cs" />
-    <Compile Include="Structure\Rung.cs" />
+    <Compile Include="Structure\RungUI.cs" />
+    <Page Include="Panels\DataPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Themes\Generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -89,14 +101,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Components\Analog\" />
     <Folder Include="Components\Compare\" />
     <Folder Include="Components\Counter\" />
     <Folder Include="Components\Delay\" />
     <Folder Include="Components\Math\" />
     <Folder Include="Components\Timer\" />
     <Folder Include="Components\UART\" />
-    <Folder Include="Data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

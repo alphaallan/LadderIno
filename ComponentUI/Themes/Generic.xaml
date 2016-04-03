@@ -125,7 +125,7 @@
 
                         <local:HorizontalWire Grid.Row="1" Grid.Column="2" LogicNode="{Binding LogicComponent.RightLide, RelativeSource={RelativeSource TemplatedParent}}"/>
                         
-                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}"/>
+                        <!--<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" Content="{TemplateBinding Content}"/>-->
                     </Grid>
                     
                     <ControlTemplate.Triggers>
@@ -149,4 +149,31 @@
     </Style>
     <!-- EndRegion Component Base -->
 
+
+    <Style TargetType="{x:Type local:DiagramUI}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:DiagramUI}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="3"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Grid.Column="0" Stroke="Red" Fill="Red" />
+                            
+                            <ItemsControl Grid.Column="1" ItemsSource="{TemplateBinding Rungs}"/>
+                            
+                            <Rectangle Grid.Column="2" Stroke="Blue" Fill="Blue" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>

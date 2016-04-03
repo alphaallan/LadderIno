@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="ComponentUI.Panels.DataPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" d:DesignHeight="300" d:DesignWidth="800">
+    <Grid>
+        <Grid.Resources>
+            <ResourceDictionary>
+                <Style TargetType="DataGrid" BasedOn="{StaticResource {x:Type DataGrid}}">
+                    <Setter Property="AutoGenerateColumns" Value="False"/>
+                    <Setter Property="SelectionMode" Value="Single"/>
+                    <Setter Property="SelectionUnit" Value="FullRow"/>
+                    <Setter Property="IsReadOnly" Value="True"/>
+                    <Setter Property="CanUserAddRows" Value="False"/>
+                    <Setter Property="CanUserDeleteRows" Value="False"/>
+                    <Setter Property="CanUserResizeRows" Value="False"/>
+                    <Setter Property="CanUserReorderColumns" Value="False"/>
+                    <Setter Property="CanUserResizeColumns" Value="False"/>
+                    <Setter Property="CanUserResizeRows" Value="False"/>
+                    <Setter Property="SelectionMode" Value="Single"/>
+                    <Setter Property="SelectionUnit" Value="FullRow"/>
+
+                    <Setter Property="MinHeight" Value="50"/>
+                    <Setter Property="MinWidth" Value="50"/>
+                    <Setter Property="FontSize" Value="14"/>
+                </Style>
+            </ResourceDictionary>
+        </Grid.Resources>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="Program Pinout" Background="AntiqueWhite"/>
+        <DataGrid x:Name="PinGrid" Grid.Row="1" Grid.Column="0">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Pin Name" Width="1*" Binding="{Binding Variable}"/>
+                <DataGridTextColumn Header="Type" Width="60" Binding="{Binding Type}"/>
+                <DataGridTextColumn Header="Pin N°" Width="60" Binding="{Binding Pin}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label Grid.Row="0" Grid.Column="1" Content="Global Data" Background="AntiqueWhite"/>
+        <DataGrid x:Name="VariableGrid" Grid.Row="1" Grid.Column="1">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Width="1*" Binding="{Binding Key}"/>
+                <DataGridTextColumn Header="Value" Width="60" Binding="{Binding Value}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Label Grid.Row="0" Grid.Column="2" Content="Sub-rotines" Background="AntiqueWhite"/>
+        <DataGrid x:Name="FunctionGrid" Grid.Row="1" Grid.Column="2">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Name" Width="1*" Binding="{Binding Item1}"/>
+                <DataGridTextColumn Header="Type" Width="60" Binding="{Binding Item2}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</UserControl>

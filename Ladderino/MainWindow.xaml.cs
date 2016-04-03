@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using ComponentUI;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Ladderino
 {
@@ -21,47 +9,76 @@ namespace Ladderino
     /// </summary>
     public partial class MainWindow : Window
     {
-
-        ComponentUI.Rung rung;
         public MainWindow()
         {
             InitializeComponent();
-            //RungStack;
-            rung = CreateRung();
-            RungStack.Children.Add(rung);
+            
+            #region Declare Components
+            RungUI Rung1 = new RungUI();
+            RungUI Rung2 = new RungUI();
 
-            var cont1 = new ComponentUI.Contact();
-            (cont1.LogicComponent as Core.Components.Contact).IsInverted = true;
-            (cont1.LogicComponent as Core.Components.Contact).Name = "1";
+            var Y1 = new Coil();
+            Y1.LadderName = "1";
 
-            var cont2 = new ComponentUI.Contact();
-            (cont2.LogicComponent as Core.Components.NameableComponent).Name = "2";
+            var Y2 = new Coil();
+            Y2.LadderName = "2";
 
-            var cont3 = new ComponentUI.Contact();
-            (cont3.LogicComponent as Core.Components.NameableComponent).Name = "3";
+            var X1 = new Contact();
+            X1.LadderName = "1";
 
-            var cont4 = new ComponentUI.Contact();
-            (cont4.LogicComponent as Core.Components.NameableComponent).Name = "4";
+            var X1I = new Contact();
+            X1I.LadderName = "1";
+            X1I.IsInverted = true;
 
-            var cont5 = new ComponentUI.Contact();
-            (cont5.LogicComponent as Core.Components.NameableComponent).Name = "5";
+            var X2 = new Contact();
+            X2.LadderName = "2";
 
-            var coil1 = new ComponentUI.Coil();
-            (coil1.LogicComponent as Core.Components.NameableComponent).Name = "1";
-            var coil2 = new ComponentUI.Coil();
-            (coil2.LogicComponent as Core.Components.NameableComponent).Name = "2";
+            var X2I = new Contact();
+            X2I.LadderName = "2";
+            X2I.IsInverted = true;
 
-            rung.Add(coil1);
-            rung.Add(cont1);
-            rung.InsertAbove(coil2, coil1)
-                .InsertUnder(cont2, cont1)
-                .InsertAfter(cont4, cont1)
-                .InsertBefore(cont5, cont4)
-                .InsertAbove(cont3, cont4);
+            var Y1C = new Contact();
+            Y1C.LadderName = "1";
+            Y1C.Type = Core.Components.Contact.ContactType.OutputPin;
 
-            rung.PlaceWires();
+            var Y1CI = new Contact();
+            Y1CI.LadderName = "1";
+            Y1CI.Type = Core.Components.Contact.ContactType.OutputPin;
+            Y1CI.IsInverted = true;
 
-            rung.DataTable = new Core.Data.LadderDataTable();
+            var Y2C = new Contact();
+            Y2C.LadderName = "2";
+            Y2C.Type = Core.Components.Contact.ContactType.OutputPin;
+
+            var Y2CI = new Contact();
+            Y2CI.LadderName = "2";
+            Y2CI.Type = Core.Components.Contact.ContactType.OutputPin;
+            Y2CI.IsInverted = true;
+            #endregion Declare Components
+
+            #region Build Circuit
+            Rung1.Add(Y1);
+            Rung1.InsertBefore(X2I, Y1);
+            Rung1.Add(X1);
+            Rung1.InsertUnder(Y1C, X1);
+            Rung1.InsertAfter(Y2CI, X1);
+            Rung1.InsertBefore(new OSR(), Y2CI);
+            Rung1.PlaceWires();
+            RungStack.Add(Rung1);
+
+            Rung2.Add(Y2);
+            Rung2.InsertBefore(X1I, Y2);
+            Rung2.Add(X2);
+            Rung2.InsertUnder(Y2C, X2);
+            Rung2.InsertAfter(Y1CI, X2);
+            Rung2.InsertBefore(new OSR(), Y1CI);
+            Rung2.PlaceWires();
+
+            RungStack.Add(Rung2);
+            #endregion Build Circuit
+
+            RungStack.MasterRelay = true;
+            dat.LadderProgram = RungStack.LogicalDiagram;
 
             Timer.Tick += new EventHandler(Timer_Click);
             Timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
@@ -75,39 +92,7 @@ namespace Ladderino
         /// </summary>
         private void Timer_Click(object sender, EventArgs e)
         {
-            rung.Execute();
+            RungStack.Execute();
         }
-
-        private ComponentUI.Rung CreateRung()
-        {
-            //Canvas rung = new ComponentUI.Rung();
-            //rung.MinHeight = this.FontSize * 2;
-            //rung.Background = Brushes.BlueViolet;
-            //Binding size = new Binding("ActualWidth");
-            //size.Source = RungStack;
-            //rung.SetBinding(Canvas.MinWidthProperty, size);
-            //rung.IsEnabled = true;
-            //return rung;
-
-            ComponentUI.Rung rung = new ComponentUI.Rung();
-            rung.MinHeight = this.FontSize * 2;
-            //rung.Background = Brushes.BlueViolet;
-            Binding size = new Binding("ActualWidth");
-            size.Source = RungStack;
-            rung.SetBinding(Canvas.MinWidthProperty, size);
-            rung.IsEnabled = true;
-
-            
-            
-            
-            return rung;
-        }
-
-        private void SetCanvasPos(UIElement element, double x, double y)
-        {
-            Canvas.SetLeft(element, x);
-            Canvas.SetTop(element, y);
-        }
-
     }
 }

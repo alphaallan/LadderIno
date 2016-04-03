@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace ComponentUI
 {
-    public class Rung : Grid
+    public class RungUI : Grid
     {
         #region Properties
         public bool RungPower
@@ -27,6 +26,12 @@ namespace ComponentUI
             get { return _LogicalRung.DataTable; }
             set { _LogicalRung.DataTable = value; }
         }
+
+        public Core.Components.Rung LogicalRung
+        {
+            get { return _LogicalRung; }
+            private set { _LogicalRung = value; }
+        }
         #endregion Properties
 
         #region Functions
@@ -44,7 +49,7 @@ namespace ComponentUI
         //This sector contains all the functions that insert a component in the rung
 
         #region Help Function
-        public Rung AddRow()
+        public RungUI AddRow()
         {
             var row = new RowDefinition();
             row.Height = GridLength.Auto;
@@ -52,7 +57,7 @@ namespace ComponentUI
             return this;
         }
 
-        public Rung AddRow(int pos)
+        public RungUI AddRow(int pos)
         {
             var row = new RowDefinition();
             row.Height = GridLength.Auto;
@@ -60,7 +65,7 @@ namespace ComponentUI
             return this;
         }
 
-        public Rung AddColumn()
+        public RungUI AddColumn()
         {
             var col = new ColumnDefinition();
             col.Width = GridLength.Auto;
@@ -68,7 +73,7 @@ namespace ComponentUI
             return this;
         }
 
-        public Rung AddColumn(double width, GridUnitType unit)
+        public RungUI AddColumn(double width, GridUnitType unit)
         {
             var col = new ColumnDefinition();
             col.Width = new GridLength(width, unit);
@@ -76,7 +81,7 @@ namespace ComponentUI
             return this;
         }
 
-        public Rung AddColumn(int pos)
+        public RungUI AddColumn(int pos)
         {
             var col = new ColumnDefinition();
             col.Width = GridLength.Auto;
@@ -84,7 +89,7 @@ namespace ComponentUI
             return this;
         }
 
-        public Rung AddColumn(int pos, double width, GridUnitType unit)
+        public RungUI AddColumn(int pos, double width, GridUnitType unit)
         {
             var col = new ColumnDefinition();
             col.Width = new GridLength(width, unit);
@@ -129,7 +134,7 @@ namespace ComponentUI
         /// Insert component with auto select position 
         /// </summary>
         /// <param name="component">Component to be added</param>
-        public Rung Add(ComponentUIBase component)
+        public RungUI Add(ComponentUIBase component)
         {
             _LogicalRung.Add(component.LogicComponent);
 
@@ -166,7 +171,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public Rung InsertAbove(ComponentUIBase component, ComponentUIBase anchor)
+        public RungUI InsertAbove(ComponentUIBase component, ComponentUIBase anchor)
         {
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
             IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
@@ -222,7 +227,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public Rung InsertUnder(ComponentUIBase component, ComponentUIBase anchor)
+        public RungUI InsertUnder(ComponentUIBase component, ComponentUIBase anchor)
         {
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
             IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
@@ -276,7 +281,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public Rung InsertBefore(ComponentUIBase component, ComponentUIBase anchor)
+        public RungUI InsertBefore(ComponentUIBase component, ComponentUIBase anchor)
         {
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
             IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
@@ -364,7 +369,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor Node</param>
-        public Rung InsertBefore(ComponentUIBase component, Node anchor)
+        public RungUI InsertBefore(ComponentUIBase component, Node anchor)
         {
             return this;        
         }
@@ -374,7 +379,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor component</param>
-        public Rung InsertAfter(ComponentUIBase component, ComponentUIBase anchor)
+        public RungUI InsertAfter(ComponentUIBase component, ComponentUIBase anchor)
         {
             ComponentGridPosition _anchor = _Components.Where(x => x.Component == anchor).First();
             IEnumerable<ComponentGridPosition> column_components = _Components.Where(x => (x.Column == _anchor.Column));
@@ -429,7 +434,7 @@ namespace ComponentUI
         /// </summary>
         /// <param name="component">New component</param>
         /// <param name="anchor">Anchor node</param>
-        public Rung InsertAfter(ComponentUIBase component, Node anchor)
+        public RungUI InsertAfter(ComponentUIBase component, Node anchor)
         {
             return this;        
         }
@@ -440,7 +445,7 @@ namespace ComponentUI
         /// Delete compoenent from the rung
         /// </summary>
         /// <param name="component">Component to be deleted</param>
-        public Rung Remove(ComponentUIBase component)
+        public RungUI Remove(ComponentUIBase component)
         {
             ComponentGridPosition _component = _Components.Where(x => x.Component == component).First();
 
@@ -501,7 +506,7 @@ namespace ComponentUI
         /// <summary>
         /// Clear Rung (delete all components)
         /// </summary>
-        public Rung Clear()
+        public RungUI Clear()
         {
             Children.Clear();
             ColumnDefinitions.Clear();
@@ -516,7 +521,7 @@ namespace ComponentUI
         #endregion Delete Functions
 
         #region Wiring Functions
-        public Rung PlaceWires()
+        public RungUI PlaceWires()
         {
             foreach (var wire in _Wires) Children.Remove(wire);
             _Wires.Clear();
@@ -609,7 +614,7 @@ namespace ComponentUI
 
         #endregion Functions
 
-        public Rung()
+        public RungUI()
         {
             _Components = new List<ComponentGridPosition>();
             _LogicalRung = new Core.Components.Rung();
